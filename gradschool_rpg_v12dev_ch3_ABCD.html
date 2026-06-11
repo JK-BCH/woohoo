@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — v1.2-dev (3장 A단계)</title>
+<title>격물치지 — v1.2-dev (3장 D단계)</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -197,6 +197,14 @@ const ENC_QUAD={rate:1/22,tiles:'G',groups:[
   {w:20,e:['corn']},{w:25,e:['corn','corn']},{w:20,e:['phantom']},{w:20,e:['corn','phantom']},{w:15,e:['snowman']}]};
 const ENC_ALIB={rate:1/18,tiles:'F',groups:[
   {w:30,e:['hanmun']},{w:25,e:['hanmun','hanmun']},{w:25,e:['mfghost']},{w:20,e:['hanmun','mfghost']}]};
+const ENC_CHARLES={rate:1/20,tiles:'G',groups:[
+  {w:20,e:['gosling','gosling']},{w:25,e:['goose']},{w:20,e:['goose','gosling']},{w:20,e:['goose','goose']},{w:15,e:['gander','gosling','gosling']}]};
+const ENC_MIT={rate:1/20,tiles:'G',groups:[
+  {w:35,e:['tackler']},{w:25,e:['striker']},{w:25,e:['tackler','striker']},{w:15,e:['striker','striker']}]};
+const ENC_INF={rate:1/16,tiles:'F',groups:[
+  {w:30,e:['tackler','tackler']},{w:30,e:['tackler','striker']},{w:25,e:['striker','striker']},{w:15,e:['tackler','tackler','striker']}]};
+const ENC_LW={rate:1/18,tiles:'G',groups:[
+  {w:30,e:['intern']},{w:25,e:['cafghost']},{w:20,e:['intern','cafghost']},{w:15,e:['resident']},{w:10,e:['resident','intern']}]};
 function encFor(){
   if(CUR==='campus')return S.night?ENC_NIGHT:ENC_DAY;
   if(CUR==='liberal')return ENC_LIB;
@@ -204,6 +212,10 @@ function encFor(){
   if(CUR==='alley')return ENC_ALLEY;
   if(CUR==='quad')return ENC_QUAD;
   if(CUR==='asianlib')return ENC_ALIB;
+  if(CUR==='charles')return ENC_CHARLES;
+  if(CUR==='mit')return ENC_MIT;
+  if(CUR==='infinite')return ENC_INF;
+  if(CUR==='longwood')return ENC_LW;
   if(ENC_UNION[CUR])return ENC_UNION[CUR];
   return null;
 }
@@ -268,6 +280,14 @@ const ENEMY_DB={
   aud1:{key:'aud1',name:'깐깐한 청중',hp:130,atk:32,def:14,spd:13,xp:110,gold:5000},
   aud2:{key:'aud2',name:'졸다 깬 청중',hp:120,atk:30,def:10,spd:11,xp:90,gold:4000},
   aud3:{key:'aud3',name:'용어 집착 청중',hp:130,atk:32,def:12,spd:14,xp:100,gold:4500,drain:6},
+  gosling:{key:'gosling',name:'거위 새끼들',hp:150,atk:46,def:12,spd:16,xp:150,gold:5000},
+  goose:{key:'goose',name:'캐나다 구스',hp:240,atk:54,def:16,spd:19,xp:260,gold:8500},
+  gander:{key:'gander',name:'성난 수컷 구스',hp:320,atk:62,def:18,spd:17,xp:330,gold:11000},
+  tackler:{key:'tackler',name:'축구망령 풀백',hp:300,atk:58,def:20,spd:15,xp:320,gold:10000,guard:0.15},
+  striker:{key:'striker',name:'축구망령 스트라이커',hp:280,atk:58,def:16,spd:21,xp:310,gold:10500},
+  intern:{key:'intern',name:'불면 인턴',hp:260,atk:56,def:16,spd:14,xp:280,gold:9000},
+  resident:{key:'resident',name:'번아웃 레지던트',hp:360,atk:60,def:22,spd:12,xp:360,gold:12000,guard:0.2},
+  cafghost:{key:'cafghost',name:'카페인 유령',hp:230,atk:58,def:12,spd:22,xp:300,gold:9500},
   libghost:{key:'libghost',name:'금서 목록의 망령',hp:560,atk:50,def:18,spd:14,xp:450,gold:18000,guard:0.15},
   vgolem:{key:'vgolem',name:'폭주 자판기 골렘',hp:280,atk:40,def:18,spd:9,xp:300,gold:12000,guard:0.2},
   judge:{key:'judge',name:'심사위원',hp:180,atk:18,def:8,spd:9,xp:0,gold:0,guard:0.12},
@@ -277,7 +297,7 @@ const ENEMY_DB={
 // ============ 상태 ============
 const P={lv:1,xp:0,maxhp:50,hp:50,maxmp:20,mp:20,atk:10,def:5,spd:8,luk:5,
   gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
-  dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,counter:false,hangover:false};
+  dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,counter:false,hangover:false,slow:0,mpLeak:0,confuse:0,overwork:0};
 const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0};
 let wandangIdx=0;
@@ -772,6 +792,90 @@ function buildEnemies(){
   px(vgg,9,42,8,6,'#7a241a');px(vgg,21,42,8,6,'#7a241a');
   vgg.fillStyle='#fff';vgg.font='bold 6px sans-serif';vgg.fillText('OUT OF',9,30);vgg.fillText('ORDER',10,37);
   A.enemy.vgolem=vg;
+  // 3장: 거위 새끼들 — 노란 솜털 뭉치 셋
+  const gl=mkC(34,24),glg=gl.getContext('2d');
+  [[2,8],[12,4],[22,9]].forEach(([ox,oy])=>{
+    px(glg,ox,oy+4,10,9,'#ffe79a');px(glg,ox+1,oy+5,8,7,'#ffd866');
+    px(glg,ox+6,oy,6,6,'#ffe79a');
+    px(glg,ox+8,oy+2,2,2,'#1a1a22');
+    px(glg,ox+11,oy+3,3,2,'#e8923a');
+    px(glg,ox+2,oy+13,2,2,'#e8923a');px(glg,ox+6,oy+13,2,2,'#e8923a');
+  });
+  A.enemy.gosling=gl;
+  // 3장: 캐나다 구스 — 갈색 몸통 + 검은 목 + 흰 뺨
+  const gs=mkC(36,34),gsg=gs.getContext('2d');
+  px(gsg,6,14,24,14,'#8a6a44');px(gsg,8,16,20,10,'#a5825a');
+  px(gsg,4,18,4,8,'#6e5436');px(gsg,26,12,8,6,'#6e5436');
+  px(gsg,12,4,5,14,'#1a1a22');px(gsg,10,0,9,7,'#1a1a22');
+  px(gsg,11,3,4,3,'#f4f1e6');
+  px(gsg,12,1,2,2,'#3a3a44');
+  px(gsg,5,2,5,3,'#1a1a22');
+  px(gsg,10,28,3,5,'#3a3a44');px(gsg,20,28,3,5,'#3a3a44');
+  A.enemy.goose=gs;
+  // 3장: 성난 수컷 구스 — 날개 활짝 + 붉은 눈
+  const gd=mkC(44,38),gdg=gd.getContext('2d');
+  px(gdg,10,16,24,14,'#7a5a38');px(gdg,12,18,20,10,'#96744c');
+  px(gdg,0,8,12,12,'#6e5436');px(gdg,32,8,12,12,'#6e5436');
+  px(gdg,2,6,8,4,'#8a6a44');px(gdg,34,6,8,4,'#8a6a44');
+  px(gdg,18,2,6,16,'#1a1a22');px(gdg,15,0,10,7,'#1a1a22');
+  px(gdg,16,3,4,3,'#f4f1e6');
+  px(gdg,18,1,3,2,'#e24b4a');
+  px(gdg,11,2,5,3,'#1a1a22');
+  gdg.fillStyle='#fff';gdg.font='bold 7px sans-serif';gdg.fillText('꽥!!',30,4);
+  px(gdg,14,30,4,6,'#3a3a44');px(gdg,26,30,4,6,'#3a3a44');
+  A.enemy.gander=gd;
+  // 3장: 축구망령 풀백 — 반투명 유니폼 + 슬라이딩 자세
+  const tk=mkC(38,34),tkg=tk.getContext('2d');
+  px(tkg,8,2,16,8,'rgba(220,225,240,.85)');
+  px(tkg,11,4,3,3,'#1d2a5c');px(tkg,18,4,3,3,'#1d2a5c');
+  px(tkg,6,10,20,12,'rgba(140,30,40,.85)');px(tkg,6,10,20,3,'rgba(240,240,245,.85)');
+  tkg.fillStyle='rgba(255,255,255,.9)';tkg.font='bold 8px sans-serif';tkg.fillText('4',14,20);
+  px(tkg,2,22,28,6,'rgba(240,240,245,.75)');
+  px(tkg,28,24,8,4,'rgba(220,225,240,.5)');
+  px(tkg,4,28,10,4,'rgba(20,20,40,.6)');px(tkg,20,28,10,4,'rgba(20,20,40,.6)');
+  A.enemy.tackler=tk;
+  // 3장: 축구망령 스트라이커 — 반투명 유니폼 + 유령 공
+  const sk2=mkC(36,40),skg=sk2.getContext('2d');
+  px(skg,10,2,16,8,'rgba(220,225,240,.85)');
+  px(skg,13,4,3,3,'#5c1d2a');px(skg,20,4,3,3,'#5c1d2a');
+  px(skg,8,10,20,14,'rgba(30,60,140,.85)');px(skg,8,10,20,3,'rgba(240,240,245,.85)');
+  skg.fillStyle='rgba(255,255,255,.9)';skg.font='bold 8px sans-serif';skg.fillText('9',16,21);
+  px(skg,10,24,6,8,'rgba(240,240,245,.7)');px(skg,21,24,6,10,'rgba(240,240,245,.7)');
+  px(skg,2,30,9,9,'rgba(244,241,230,.95)');px(skg,4,32,3,3,'#1a1a22');px(skg,8,35,2,2,'#1a1a22');
+  A.enemy.striker=sk2;
+  // 3장: 불면 인턴 — 수술복 + 다크서클 + 차트
+  const it2=mkC(30,42),itg=it2.getContext('2d');
+  px(itg,8,2,14,6,'#2b2b33');px(itg,8,7,14,8,'#e8c8a8');
+  px(itg,10,9,3,2,'#333');px(itg,17,9,3,2,'#333');
+  px(itg,10,11,3,2,'#7a6a8a');px(itg,17,11,3,2,'#7a6a8a');
+  px(itg,13,13,5,1,'#a06a5a');
+  px(itg,6,15,18,14,'#3a8a8a');px(itg,4,17,3,10,'#3a8a8a');px(itg,23,17,3,10,'#3a8a8a');
+  px(itg,24,18,6,9,'#f4f1e6');px(itg,25,20,4,1,'#9aa');px(itg,25,23,4,1,'#9aa');
+  px(itg,8,29,6,4,'#2d6a6a');px(itg,16,29,6,4,'#2d6a6a');
+  px(itg,8,33,5,6,'#f4f8fc');px(itg,17,33,5,6,'#f4f8fc');
+  A.enemy.intern=it2;
+  // 3장: 번아웃 레지던트 — 구겨진 흰 가운 + 커피 얼룩
+  const rd=mkC(34,46),rdg=rd.getContext('2d');
+  px(rdg,9,2,16,7,'#4a3a2a');px(rdg,9,8,16,8,'#e8c8a8');
+  px(rdg,11,10,3,2,'#333');px(rdg,18,10,3,2,'#333');
+  px(rdg,11,12,3,2,'#6a5a7a');px(rdg,18,12,3,2,'#6a5a7a');
+  px(rdg,14,15,6,1,'#8a5a4a');
+  px(rdg,6,16,22,20,'#f0ede4');px(rdg,13,16,8,9,'#3a8a8a');
+  px(rdg,4,18,3,14,'#f0ede4');px(rdg,27,18,3,14,'#f0ede4');
+  px(rdg,9,26,4,3,'#b89a6a');px(rdg,20,30,3,2,'#b89a6a');
+  px(rdg,24,20,5,8,'#caa53d');px(rdg,25,18,3,3,'#7a5a38');
+  px(rdg,9,36,7,7,'#2b2b33');px(rdg,19,36,7,7,'#2b2b33');
+  A.enemy.resident=rd;
+  // 3장: 카페인 유령 — 커피잔에서 피어오른 갈색 유령
+  const cf=mkC(32,40),cfg=cf.getContext('2d');
+  px(cfg,8,2,16,16,'rgba(122,74,43,.85)');px(cfg,5,7,22,9,'rgba(122,74,43,.8)');
+  px(cfg,11,7,3,3,'#ffd866');px(cfg,19,7,3,3,'#ffd866');
+  px(cfg,13,13,7,2,'#3a2516');
+  px(cfg,7,18,4,4,'rgba(122,74,43,.5)');px(cfg,15,19,4,4,'rgba(122,74,43,.45)');px(cfg,22,18,4,4,'rgba(122,74,43,.5)');
+  px(cfg,9,26,14,10,'#f4f1e6');px(cfg,10,27,12,2,'#5c3a22');
+  px(cfg,23,28,5,5,'#f4f1e6');px(cfg,24,29,3,3,'rgba(0,0,0,0)');
+  px(cfg,12,22,2,4,'rgba(230,230,240,.6)');px(cfg,18,21,2,5,'rgba(230,230,240,.6)');
+  A.enemy.cafghost=cf;
   // 청중 3종 — 착석한 사람들
   function mkAud(hair,top,extra){
     const c=mkC(32,40),g=c.getContext('2d');
@@ -1602,7 +1706,7 @@ function applySnapshot(d){
   Object.assign(P,d.P);P.skills=[...d.P.skills];P.weapon=d.P.weapon||'pen';
   P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},d.P.inv);
   P.tx=P.x;P.ty=P.y;P.fx=P.x*TILE;P.fy=P.y*TILE;P.moving=false;
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
@@ -1727,14 +1831,14 @@ async function battleLoop(){
     if(act.type==='run'){
       if(B.noRun){await bmsg(B.noRunMsg||'도망칠 수 없다!');continue;}
       const ms=Math.max(...alive().map(e=>e.spd));
-      const rc=Math.min(1,0.7+Math.max(0,P.spd-ms)*0.05);
+      const rc=Math.min(1,0.7+Math.max(0,pSpdNow()-ms)*0.05);
       if(Math.random()<rc){
         await bmsg(rc>=1?'압도적인 마감력 — 여유롭게 읽씹하고 자리를 떴다.':'읽씹하고 자리를 떴다…');
         return endBattle();
       }
       await bmsg('도망칠 수 없다! 알림은 어디든 따라온다!');
     }
-    const order=[{p:true,spd:P.spd},...alive().map(e=>({e,spd:e.spd}))].sort((a,b)=>b.spd-a.spd);
+    const order=[{p:true,spd:pSpdNow()},...alive().map(e=>({e,spd:e.spd}))].sort((a,b)=>b.spd-a.spd);
     for(const o of order){
       if(B.over)break;
       if(o.p){if(act.type!=='run')await playerAct(act);}
@@ -1760,6 +1864,9 @@ function roundEnd(){
   if(P.buffAtk>0)P.buffAtk--;
   if(P.debuffAtk>0)P.debuffAtk--;
   if(P.silence>0)P.silence--;
+  if(P.slow>0)P.slow--;
+  if(P.confuse>0)P.confuse--;
+  if(P.mpLeak>0){P.mp=Math.max(0,P.mp-6);P.mpLeak--;updateHud();}
   P.counter=false;
   if(B){
     B.spiked=false;
@@ -1773,7 +1880,7 @@ async function bossLoop(){
   while(true){
     const act=await playerCommand();
     if(act.type==='run'){await bmsg('「앉으세요.」 — 심사 중에는 도망칠 수 없다!');continue;}
-    const order=[{p:true,spd:P.spd},...alive().map(e=>({e,spd:e.spd}))].sort((a,b)=>b.spd-a.spd);
+    const order=[{p:true,spd:pSpdNow()},...alive().map(e=>({e,spd:e.spd}))].sort((a,b)=>b.spd-a.spd);
     for(const o of order){
       if(B.over)break;
       if(o.p)await playerAct(act);
@@ -1806,6 +1913,10 @@ async function playerCommand(){
     if(P.debuffAtk>0)tags.push('<span style="color:#f0a0a0">기죽음 ATK↓</span>');
     if(P.buffAtk>0)tags.push('<span style="color:#ffd866">경세 ATK↑ '+P.buffAtk+'턴</span>');
     if(P.silence>0)tags.push('<span style="color:#f0d080">침묵(스킬 불가)</span>');
+    if(P.slow>0)tags.push('<span style="color:#9cc4ea">둔화 SPD↓ '+P.slow+'턴</span>');
+    if(P.mpLeak>0)tags.push('<span style="color:#c8a0f0">MP누수 −6/턴 '+P.mpLeak+'턴</span>');
+    if(P.confuse>0)tags.push('<span style="color:#f0c060">혼란 '+P.confuse+'턴</span>');
+    if(P.overwork>0)tags.push('<span style="color:#f09595">과로 ×'+P.overwork+' (피해 +'+(P.overwork*8)+'%)</span>');
     const status='<span style="color:#aab;font-size:12px">HP '+P.hp+'/'+P.maxhp+' · MP '+P.mp+'/'+P.maxmp+(tags.length?' · '+tags.join(' · '):'')+'</span>';
     const top=await bchoice('어떻게 할까? '+status,[
       {label:'액션',value:'action'},{label:'아이템',value:'item'},{label:'도주',value:'run'}
@@ -1882,14 +1993,25 @@ function dmgRange(mult,ig,tgt){
 function ilgwanSpend(){return Math.floor(P.mp/2);}
 function ilgwanMult(){return Math.min(4,1+ilgwanSpend()*0.07);}
 function hitChance(aspd,dspd){return Math.max(0.75,Math.min(0.98,0.92+(aspd-dspd)*0.012));}
-function pMiss(t){return Math.random()>hitChance(P.spd,t.spd);}
-function eMiss(e){return Math.random()>hitChance(e.spd,P.spd);}
+function pSpdNow(){return P.slow>0?Math.max(1,P.spd-6):P.spd;}
+function pMiss(t){return Math.random()>hitChance(pSpdNow(),t.spd);}
+function eMiss(e){return Math.random()>hitChance(e.spd,pSpdNow());}
 function lukGuard(d){if(Math.random()*100<P.luk)return{d:Math.max(1,Math.floor(d/2)),g:true};return{d,g:false};}
 function enemyGuard(t,d){if(t.noGuard>0)return{d,g:false};if(t.guard&&Math.random()<t.guard)return{d:Math.max(1,Math.floor(d/2)),g:true};return{d,g:false};}
 async function playerAct(act){
   if(P.hangover){
     P.hangover=false;sfx.crash();
     await bmsg('<b>숙취</b>로 머리가 띵하다… 아무것도 할 수 없었다!');
+    return;
+  }
+  if(P.confuse>0&&act.type!=='item'&&Math.random()<0.35){
+    sfx.crash();
+    if(Math.random()<0.5)await bmsg('<b>혼란</b> — 머릿속이 빙빙 돈다! 논점을 잃고 헛손질을 하고 말았다!');
+    else{
+      const sd=Math.max(5,Math.floor(P.maxhp*0.05));
+      P.hp=Math.max(1,P.hp-sd);updateHud();
+      await bmsg('<b>혼란</b> — 허우적대다 스스로 넘어졌다! '+sd+'의 데미지…');
+    }
     return;
   }
   if(act.type==='attack'||act.type==='gyeokmul'||act.type==='jihaeng'||act.type==='haeche'||act.type==='ilgwan'||act.type==='bakhak'||act.type==='hwalyeon'){
@@ -1947,6 +2069,10 @@ async function playerAct(act){
     if(P.silence>0){P.silence=0;cured.push('침묵');}
     if(P.debuffAtk>0){P.debuffAtk=0;cured.push('기력 저하');}
     if(P.hangover){P.hangover=false;cured.push('숙취');}
+    if(P.slow>0){P.slow=0;cured.push('둔화');}
+    if(P.mpLeak>0){P.mpLeak=0;cured.push('MP 누수');}
+    if(P.confuse>0){P.confuse=0;cured.push('혼란');}
+    if(P.overwork>0){P.overwork=0;cured.push('과로');}
     P.mp=Math.min(P.maxmp,P.mp+12);updateHud();
     await bmsg('<b>수신제가(修身齊家)!</b> 호흡을 고르고 자세를 바로잡는다.');
     await bmsg(cured.length?('<span style="color:#56d364">'+cured.join('·')+'이(가) 해제되었다!</span> 논리(MP)도 12 회복.'):'몸과 마음이 정돈되었다. 논리(MP) 12 회복.');
@@ -2070,6 +2196,7 @@ async function eHitP(e,mult,prefix,noDodge,noGuard){
   if(!noDodge&&eMiss(e)){await bmsg(e.name+'의 공격 — 연구는 마감력으로 회피했다!');return null;}
   const ea=e.debAtk>0?Math.floor(e.atk*0.85):e.atk;
   const r=calcDmg(ea,mult,defNow(),3);let d=r.d;let g=false;
+  if(P.overwork>0)d=Math.floor(d*(1+0.08*P.overwork));
   if(!noGuard){const lg=lukGuard(d);d=lg.d;g=lg.g;}
   P.hp=Math.max(0,P.hp-d);sfx.hit();updateHud();
   await bmsg(prefix+' '+d+'의 데미지!'+(g?' <span style="color:#7fc4ff">(통찰로 흘려냈다 — 절반)</span>':'')+(r.crit?' 아프다!':''));
@@ -2244,6 +2371,89 @@ async function enemyAct(e){
     await bmsg('<b>침묵</b>! (다음 턴 스킬 불가)');
     return;
   }
+  // ===== 3장 찰스 리버: 거위 — 둔화·혼란 =====
+  if(e.key==='gosling'&&Math.random()<0.25){
+    await bmsg(e.name+'은(는) 빵 부스러기를 발견하고 한눈을 팔았다. 꽥.');
+    return;
+  }
+  if(e.key==='goose'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,1.1,'구스의 <b>날개치기</b>! 강변의 바람이 몰아친다!');
+    if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('길이 막혀 걸음이 무거워졌다… <span style="color:#9cc4ea"><b>둔화</b></span>! (SPD 저하, 2턴)');}
+    return;
+  }
+  if(e.key==='gander'){
+    const roll=Math.random();
+    if(roll<0.25){
+      sfx.crash();P.confuse=Math.max(P.confuse,2);
+      await bmsg('수컷 구스가 목을 길게 빼고 <b>꽥꽥거린다</b>! 위협음이 머릿속을 휘젓는다!');
+      await bmsg('<span style="color:#f0c060"><b>혼란</b></span>! (행동 실패 확률, 2턴)');
+      return;
+    }
+    if(roll<0.5){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.4,'수컷 구스의 <b>부리 쪼기</b>! 사정없이 쪼아댄다!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'수컷 구스가 날개를 퍼덕이며 달려들었다!');
+    return;
+  }
+  // ===== 3장 MIT: 축구망령 — 둔화·침묵 =====
+  if(e.key==='tackler'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,1.2,'축구망령의 <b>슬라이딩 태클</b>! 정강이가 저릿하다!');
+    if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('다리가 풀렸다… <span style="color:#9cc4ea"><b>둔화</b></span>! (SPD 저하, 2턴)');}
+    return;
+  }
+  if(e.key==='striker'){
+    const roll=Math.random();
+    if(roll<0.25){
+      sfx.crash();P.silence=Math.max(P.silence,2);
+      await bmsg('축구망령이 손을 번쩍 들었다 — <b>「오프사이드!」</b> 항의가 그치지 않는다!');
+      await bmsg('<b>침묵</b>! (다음 턴 스킬 불가)');
+      return;
+    }
+    if(roll<0.5){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.5,'축구망령의 <b>중거리 슛</b>! 유령 공이 가슴팍에 꽂힌다!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'축구망령이 어깨싸움을 걸어왔다!');
+    return;
+  }
+  // ===== 3장 롱우드: 의료가 — 과로 스택·MP 누수 =====
+  if(e.key==='intern'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.9,'불면 인턴의 <b>차트 떠넘기기</b>! 서류가 쏟아진다!');
+    if(hit!==null&&P.overwork<5){P.overwork++;await bmsg('일이 또 늘었다… <span style="color:#f09595"><b>과로 +1</b></span> (받는 피해 +8%/스택, 현재 ×'+P.overwork+')');}
+    return;
+  }
+  if(e.key==='resident'){
+    const roll=Math.random();
+    if(roll<0.3){
+      sfx.crash();
+      if(P.overwork<5)P.overwork++;
+      await bmsg('레지던트가 <b>당직을 인계한다</b>… 「이것만 좀 부탁해요.」 거절하지 못했다.');
+      await bmsg('<span style="color:#f09595"><b>과로 +1</b></span>! (받는 피해 +8%/스택, 현재 ×'+P.overwork+')');
+      return;
+    }
+    if(roll<0.5){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.4,'레지던트의 <b>한숨 섞인 일격</b>! 36시간 근무의 무게가 실려 있다!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'레지던트가 비틀거리며 부딪쳐 왔다!');
+    return;
+  }
+  if(e.key==='cafghost'&&Math.random()<0.35){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.7,'카페인 유령의 <b>에스프레소 증기</b>! 향만 맡아도 심장이 뛴다!');
+    if(hit!==null){P.mpLeak=Math.max(P.mpLeak,3);await bmsg('각성이 풀리지 않는다… <span style="color:#c8a0f0"><b>MP 누수</b></span>! (매턴 논리 −6, 3턴)');}
+    return;
+  }
   // ===== 잡몹 특성 =====
   if(e.key==='student'&&Math.random()<0.15){
     await bmsg(e.name+'은(는) 크게 하품만 했다. …zZ');
@@ -2268,7 +2478,7 @@ async function enemyAct(e){
     return;
   }
   if(await tryCounter(e))return;
-  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!'};
+  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!'};
   await eHitP(e,1.0,e.name+'이(가) '+(verbs[e.key]||'들이받았다!'));
 }
 async function gainLevels(){
@@ -2349,7 +2559,7 @@ async function defeat(){
     if(br>0){P.inv[k]-=br;broken[k]=br;}
   }
   P.hp=P.maxhp;P.mp=P.maxmp;
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   CUR='campus';
   P.x=29;P.y=16;P.tx=29;P.ty=16;P.fx=29*TILE;P.fy=16*TILE;P.dir='up';P.moving=false;
   updateHud();closeMenu();B=null;BFX.length=0;MODE='map';
@@ -2361,7 +2571,7 @@ async function defeat(){
   showDialog('',lines);
 }
 function endBattle(){
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   closeMenu();B=null;BFX.length=0;MODE='map';
 }
 // ============ 렌더 ============

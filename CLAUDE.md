@@ -2,7 +2,7 @@
 
 > 대학원생 성장 RPG. 쯔꾸루 감성, **단일 index.html**(바닐라 JS + Canvas, 외부 에셋 0).
 > 이 문서 하나로 아키텍처·컨벤션·완료 내역·남은 작업·함정을 모두 파악할 수 있게 작성했다.
-> 함께 인계되는 파일: `index.html`(작업본, 3장 A·B·C 완료), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `grad_school_rpg_balancing.xlsx`(밸런스 시트), `README.md`/`CHANGELOG.md`(배포 리포용).
+> 함께 인계되는 파일: `gradschool_rpg_v12dev_ch3_ABCD.html`(작업본, 3장 A~D 완료), `index.html`(배포본 v1.1), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `grad_school_rpg_balancing.xlsx`(밸런스 시트), `README.md`/`CHANGELOG.md`(배포 리포용).
 
 ---
 
@@ -31,7 +31,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 
 - **배포**: GitHub Pages — 리포 `JK-BCH/woohoo`, main 브랜치 root. URL `https://JK-BCH.github.io/woohoo/`
 - **배포본**: v1.1 (1장 안암 + 2장 일리노이 완결). 리포에는 `index.html` + `README.md` + `CHANGELOG.md` 3개만 올라감.
-- **작업본**: 3장 보스턴 A·B·C단계가 반영된 v1.2-dev. **배포본과 분리 관리** — 3장이 H단계(마감)까지 끝나기 전엔 라이브 `index.html`을 덮어쓰지 말 것.
+- **작업본**: 3장 보스턴 A~D단계가 반영된 v1.2-dev (`gradschool_rpg_v12dev_ch3_ABCD.html`). **배포본과 분리 관리** — 3장이 H단계(마감)까지 끝나기 전엔 라이브 `index.html`을 덮어쓰지 말 것.
 - **절대 금지**: 리포 이름/도메인 변경. localStorage는 origin 단위라 **모든 플레이어의 세이브가 증발**한다 (세이브 코드로만 이주 가능).
 - 업데이트 절차: `index.html` 덮어쓰기 + CHANGELOG 한 줄 + git tag. GH Pages 캐시 ~10분, 캐시버스팅 불필요.
 
@@ -151,25 +151,20 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 - **2장 일리노이**: 쿼드(고양이 올리·꽈이꽈이 1/40 조우, 부적), 아시아도서관(+필드보스 금서 목록의 망령 → 최대 MP+30), 그린 스트리트(JK's 히든재고 = 전투 5승마다 입고·구매 소진, 포닥 리허설→학회 명찰), 카페 거리+헌책방(바리스타 도장카드 할인 / 우체국 밑반찬 / 돋보기 / 민서 USB), 유니언 4층 던전(자판기 골렘 → 롱패딩 DEF+5·보온 텀블러 턴당 MP+5), Prelim 보스.
 - 시스템: 스킬 12종 역할 분리 + 예상뎀 표시, 도주 SPD 가산, **세이브 포인트 제한**(O/E/L 인접 또는 USB), 인카운터율 하향, 숙취(폭탄주 60%/스태그 10%).
 
-### 3장 진행분 (v1.2-dev, A·B·C 완료)
+### 3장 진행분 (v1.2-dev, A·B·C·D 완료)
 - **A 골격**: 9맵 — hsq(허브 40×28)·yenching·banana·newbury·charles(물 타일 M 신설)·mit·infinite(무한복도)·longwood·jobhall. 포털 46개 왕복 검증. travelMenu 3지점(서울↔일리노이↔보스턴, S.boss2 게이트) + 첫 도착 컷신(S.ch3first). **DOORP lock 기능 신설** — jobhall은 `lock:()=>!S.paper3`로 봉인.
 - **B 거점**: 완당 메일함(순환 4종 + paper3/boss3 진행 분기 — 엔딩 메일까지 이미 작성됨), 바나나 라운지 가이드(지역 떡밥), 백베이 보틀숍(바롤로·웰러 현지 조달 = E단계 재료 공급선), 가젯 무기상점. 휴식처(E) 문구 6종 분기.
 - **C 성장**: Lv캡 35(NEXT_XP 34개), 신규 스킬 4종 — 수신제가(Lv21, **자기 디버프 전해제+MP12, 침묵 중에도 사용 가능** — D단계 디버프 메타의 해답), 박학심문(Lv24 ×2.6), 법고창신(Lv27 전체×1.3+전체 약점), 활연관통(Lv30 ×3.0 방어·막기무시). 무기: 태블릿(ATK24/8만)·맥북(ATK36/20만). 디버그 돌탑 Lv35 상향.
+- **D 몹·디버프 엔진**: 신규 디버프 4축 — **둔화**(`P.slow`: 실효 SPD−6, `pSpdNow()`가 명중·턴순서·도주에 일괄 반영), **MP 누수**(`P.mpLeak`: roundEnd서 매턴 MP−6), **혼란**(`P.confuse`: 행동 35% 실패, 그중 절반은 maxhp 5% 자해(비치명) — **아이템 사용은 혼란 면제**), **과로 스택**(`P.overwork`: 스택당 받는 피해 +8%, 최대 5스택, **턴 감소 없음** — 전투 종료·수신제가로만 해제, eHitP에서 증폭). 수신제가 해제 목록에 4축 전부 추가, 전투 상태 태그 4종, 리셋 4지점(P init/applySnapshot/defeat/endBattle) 동기화. 지역 몹 8종 — 거위 3종(gosling/goose/gander: 둔화·혼란, 떼 인카운터), 축구망령 2종(tackler/striker: 둔화·침묵), 롱우드 3종(intern/resident/cafghost: 과로·MP누수). ENC 4테이블 + encFor 분기(charles 1/20 · mit 1/20 · infinite 1/16 · longwood 1/18). **시뮬(4,000회, 무보급+텀블러·태블릿)**: charles Lv20 100% / mit 99% / infinite Lv20 88%→Lv24 98%(엘리트 3팩 tackler×2+striker는 도주 권장 — 이 레벨대 도주율 100%) / longwood 100%(과로 압박은 F단계 보스에서 본격화).
 
 ---
 
-## 7. 남은 단계 (D → H) — 설계서(chapter3_boston_design.md)와 함께 읽을 것
+## 7. 남은 단계 (E → H) — 설계서(chapter3_boston_design.md)와 함께 읽을 것
 
-### D. 몹·디버프 엔진 ★다음 작업
-- 신규 디버프 축을 플레이어 상태에 추가: **둔화(P.slow: SPD↓)**, **MP 누수(P.mpLeak: 매턴 MP−)**, **혼란(P.confuse: 행동 실패/오발 확률)**, **과로 스택(P.overwork: 스택당 받는 피해 증가, 롱우드 테마)**. 기존: silence, debuffAtk, hangover.
-- 구현 지점: roundEnd(턴 감소·MP누수 적용), eHitP/hitChance(둔화 반영), playerAct 진입부(혼란 판정), HUD/전투화면에 상태 아이콘 또는 텍스트, **수신제가 해제 목록에 신규 축 전부 추가**, 천상 라면 디버프(E단계)와 연결.
-- 지역 몹 (각: DB+스프라이트+AI분기+verbs): 거위 2~3종(charles, 둔화·혼란, 떼 인카운터), 축구망령 2종(mit/infinite, 기력소진+침묵 콤보), 롱우드 3종(과로 스택·MP누수·카페인 유령). HP 200~400, ATK 50~70대(§9 곡선 참조).
-- ENC_* 테이블 추가 + encFor 분기 (현재 3장 맵은 encFor가 null → 인카운터 없음 = 안전 상태).
-- 전투 배경은 H단계로 미뤄도 됨(미정의 맵은 기본 폴백).
-
-### E. 요리 시스템 (설계서 §3-1)
+### E. 요리 시스템 (설계서 §3-1) ★다음 작업
 - 락(뉴버리 레스토랑 앞): 스태그/웰러 1병 → 재료A "숙성 육수". 문(찰스 보트하우스): ①주변 몹 N마리 처치 의뢰 → **천상 라면**(full회복+적 전체 ATK·SPD −25% 2턴 전투템, **항상 최대 1개 보유** — 받을 때 1개 있으면 거절) ②바롤로/바르바레스코 → 재료B "와인 졸임 소스". 한(MIT 근처): A+B → 스펙업 요리 **즉시 사용·영구 스탯업**(인벤에 안 남음, 종류 순환: HP+30/ATK+3/DEF+3/SPD+2/LUK+3 등 — 반복 가능하되 재료비가 비싸 자연 제한).
 - 재료는 S 카운트(S.matA, S.matB)로, 라면은 P.inv.ramen으로. 합체요리가 **3장 파워 인플레의 주 동력**이므로 F·G 시뮬은 "요리 K회 사용" 변수로 돌릴 것.
+- **주의**: 적측 디버프는 현재 `e.debAtk`(ATK −15%)뿐 — 천상 라면의 "적 전체 SPD −25%"용 **적 SPD 디버프 축(`e.debSpd` 등)은 E단계에서 신설**해야 함 (감소는 함정 #8대로 roundEnd에만, eMiss/턴순서/도주 계산에 반영).
 
 ### F. 필드보스·수집·바
 - 보스 구스(찰스, 광역 둔화·반격), 목(目)(infinite 끝, 2페이즈 디버프 종합 — 3장 중간 최대 벽), 스트레스 종양(롱우드, 과로 스택 압박). 골렘 게이트 패턴 재사용.

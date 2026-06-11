@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — v1.1</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.0</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v1.1 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.0 完 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -95,13 +95,14 @@ const MAPS={
  green:{name:"그린 스트리트",tiles:["TTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGT","TGGGWGGGGWGGGGWGGGGT","TGGGGGGGGGGGGGGGGGGT","TGGGPGGGGPGGGGPGGGGT","TPPPPPPPPPPPPPPPPPGT","TGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGT","TGTGGGGTGGGGTGGGGTGT","TGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTT"]}, dorm:{name:"셔먼 홀 기숙사",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFEFFCFFFXFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
  union1:{name:"일리니 유니언 1층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFCFFCFFCFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]}, union2:{name:"일리니 유니언 2층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BSFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFKFFKFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFXB","BFFFFFFFFFFFFB","BBBBBBBBBBBBBB"]}, union3:{name:"일리니 유니언 3층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BSFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFCFFCFFCFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBBBBBBBB"]}, union4:{name:"일리니 유니언 4층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFBFFFB","BSFFFFFFFBFFFB","BFFFFFFFFBFFFB","BFFFFFFFFFFXFB","BFFFFFFFFBFFFB","BFFFFFFFFBFFFB","BFFFFFFFFBFFFB","BFFFFFFFFBFFFB","BBBBBBBBBBBBBB"]},
  prelim:{name:"예비심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
+ hsq:{name:"하버드 스퀘어",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGRRRRRRRRRRGGGRRRRRRRRRRGGGGGGGTGGGGGT","TGGBBBBBBBBBBGGGBBBBBBBBBBGGGGTGGGGGGGGT","TGGBBBBDBBBBBGGGBBBBDBBBBBGGGGGGGGGGTGGT","TGGGGGGPGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGT","TGGGGGGPGGGGGGGGGGGGPGGGTGGGGGGTGGGGTGGT","TGGGGGGPGGGGGGGGGGGGPGGGGGGGGGGGGGGTGGGT","TGGGGGGPPPPPPPPPPPPPPGGGGGGGGGGGGGGGGGGT","TGGGGGGGGTGGGGGGGGGGPGGGGGGGGGGGGGGGGGGT","TGTGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGT","TGGGTGGGGGGGGTGGGGGGPGGGGGGTGGGGGGGTGGGT","TGGGGGGCCGGGGGGGGGGGPGGGGGGGGGGGGGGGGTGT","TGGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGT","TPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGT","TGGGRRRGGGGGGGGGGGGGPGGGGGGGGGGCCGGGGGGT","TGGGBBBGGGCCGTGGGGGGPGGGGGTGGGGGGTGGGGGT","TGGGTGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGTGGGT","TGGGGGGGGGGGGGGGGGGGPGGGGMMGGGGGGGGGGGGT","TGGGGGGGGGGGTGGGAGGGPGGGGMMGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGPPPPPGGGGGGGRRRGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGPGGGGGGGBBBGGGGGGGGT","TGGGGGGGGGTGGGGGGGGGPGGGTGGGTGGGGGGGGGGT","TGGGGTGGGGGGGGGTGGGGPGGGGGGGGGGGGGGTGGGT","TGGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]}, yenching:{name:"옌칭연구소",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFEFFFFFFFFOFB","BFFFFCFFCFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]}, banana:{name:"바나나 라운지",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFEFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFCFFCFFCFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]}, newbury:{name:"뉴버리 스트릿",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGRRRRRRGGGGGGGGGGGGRRRRT","TGGBBBBBBGGGGWGGGGWGGBBBBT","TGGBBBBBBGGGGGGGGGGGGBBBBT","TGTGGPGGGGGGGPGGGGPGGGGGGT","TGGGGPGGGGGGGPGGGGPGGGGGGT","TGPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGTGGGGGTGGGGGTGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTT"]}, charles:{name:"찰스 리버",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TGGYGGGGYGGGGGYGGGGGYGGGGYGGGT","TPPPPPPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGRRRRRRGGEGGGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGYGGGGGGYGGGGGGGGGGT","TGGGGYGGGGGGGGGGGGGGGGGGYGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]}, mit:{name:"MIT",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGRRRRRRRRRRGGGGGGGGGGT","TGGGGGGGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGGGGGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGTGGGGGGBBBBDBBBBBGGGGGGTGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TPPPPPPPPPPPPPPPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGTGGGGGGGGGGGGGGGGGGGGTGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGTGGGGGGGGGGTGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]}, infinite:{name:"무한복도",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFFB","BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"]}, longwood:{name:"롱우드 지역",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGGRRRRRRRRRGGPGGRRRRRRRRRGT","TGGBBBBBBBBBGGPGGBBBBBBBBBGT","TGGBBBBBBBBBGGPGGBBBBBBBBBGT","TGGBBBBBBBBBGGPGGBBBBBBBBBGT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGGGPPPPPPPPPPPPPPPPPPPPPGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGTGGGGGGGGGGGGGGGGGGGGGGGTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGTGGGGGGGTGGGGGGGTGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTT"]}, jobhall:{name:"임용 심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
  hall:{name:"본관 심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
 };
 for(const id in MAPS){MAPS[id].w=MAPS[id].tiles[0].length;MAPS[id].h=MAPS[id].tiles.length;}
 let CUR='campus';
 const M=()=>MAPS[CUR];
 const TILE=16, VW=16, VH=12;
-const SOLID={T:1,B:1,W:1,D:1,L:1,R:1,K:1,C:1,V:1,X:1,J:1,O:1,Y:1,A:1,H:1,E:1};
+const SOLID={T:1,B:1,W:1,D:1,L:1,R:1,K:1,C:1,V:1,X:1,J:1,O:1,Y:1,A:1,H:1,E:1,M:1};
 const WALKP={
   campus:{'6,28':{to:'alley',x:7,y:2,d:'down'}},
   liberal:{'10,14':{to:'campus',x:7,y:8,d:'down'}},
@@ -113,6 +114,15 @@ const WALKP={
   quad:{'34,12':{to:'green',x:2,y:6,d:'right'},'8,24':{to:'cafe',x:12,y:2,d:'down'}},
   cafe:{'12,1':{to:'quad',x:8,y:23,d:'up'}},
   bookstore:{'8,9':{to:'cafe',x:19,y:6,d:'down'}},
+  hsq:{'1,14':{to:'newbury',x:23,y:7,d:'left'},'38,14':{to:'charles',x:2,y:9,d:'right'},'20,25':{to:'longwood',x:14,y:2,d:'down'}},
+  newbury:{'24,7':{to:'hsq',x:2,y:14,d:'right'}},
+  charles:{'1,9':{to:'hsq',x:37,y:14,d:'left'},'28,9':{to:'mit',x:2,y:11,d:'right'}},
+  mit:{'1,11':{to:'charles',x:27,y:9,d:'left'}},
+  infinite:{'1,3':{to:'mit',x:15,y:6,d:'down'}},
+  longwood:{'14,1':{to:'hsq',x:20,y:24,d:'up'}},
+  yenching:{'7,9':{to:'hsq',x:7,y:5,d:'down'}},
+  banana:{'7,9':{to:'infinite',x:36,y:3,d:'left'}},
+  jobhall:{'6,9':{to:'hsq',x:20,y:5,d:'down'}},
   green:{'1,6':{to:'quad',x:33,y:12,d:'left'}},
   asianlib:{'12,17':{to:'quad',x:6,y:11,d:'down'}},
   dorm:{'6,8':{to:'quad',x:11,y:19,d:'down'}},
@@ -125,22 +135,36 @@ const WALKP={
 const DOORP={
   campus:{'19,4':{to:'hall',x:6,y:8,d:'up'},'7,7':{to:'liberal',x:10,y:13,d:'up'},'31,7':{to:'library',x:12,y:18,d:'up'}},
   quad:{'17,4':{to:'prelim',x:6,y:8,d:'up'},'6,10':{to:'asianlib',x:12,y:16,d:'up'},'27,10':{to:'union1',x:7,y:8,d:'up'},'11,18':{to:'dorm',x:6,y:7,d:'up'}},
-  cafe:{'19,5':{to:'bookstore',x:8,y:8,d:'up'}}
+  cafe:{'19,5':{to:'bookstore',x:8,y:8,d:'up'}},
+  hsq:{'7,4':{to:'yenching',x:7,y:8,d:'up'},
+       '20,4':{to:'jobhall',x:6,y:8,d:'up',lock:()=>!S.paper3,msg:['임용 심사장 — 문이 굳게 닫혀 있다.','「Job Talk 일정 없음」','…초청장을 받으려면, 먼저 논문 초고가 있어야 한다.']}},
+  mit:{'15,5':{to:'infinite',x:2,y:3,d:'up'}},
+  infinite:{'37,3':{to:'banana',x:7,y:8,d:'up'}}
 };
 const NPCS={
-  campus:[{x:17,y:6,kind:'wandang'}],
-  liberal:[{x:16,y:4,kind:'ta'}],
-  library:[{x:18,y:6,kind:'librarian'}],
+  campus:[{x:17,y:6,kind:'wandang'},{x:16,y:9,kind:'flyerstu'},{x:10,y:18,kind:'oldprof'}],
+  liberal:[{x:16,y:4,kind:'ta'},{x:16,y:8,kind:'sleepgrad'}],
+  library:[{x:18,y:6,kind:'librarian'},{x:9,y:12,kind:'cramstu'}],
   stacks:[{x:1,y:17,kind:'golem',cond:()=>!S.golem}],
-  alley:[{x:4,y:3,kind:'pocha'},{x:4,y:5,kind:'hof'},{x:4,y:7,kind:'mak'},{x:12,y:4,kind:'senior'}],
+  alley:[{x:4,y:3,kind:'pocha'},{x:4,y:5,kind:'hof'},{x:4,y:7,kind:'mak'},{x:12,y:4,kind:'senior'},{x:11,y:7,kind:'regular'}],
   hall:[],
-  quad:[{x:19,y:6,kind:'wandang'},{x:6,y:21,kind:'minseo'}],
+  quad:[{x:19,y:6,kind:'wandang'},{x:6,y:21,kind:'minseo'},{x:22,y:14,kind:'frisbee'}],
   asianlib:[],
-  green:[{x:4,y:4,kind:'murphys'},{x:9,y:4,kind:'wine'},{x:14,y:4,kind:'jks'},{x:17,y:4,kind:'postdoc'}],
-  cafe:[{x:4,y:6,kind:'barista'},{x:9,y:6,kind:'mailman'},{x:14,y:6,kind:'bookkeeper'}],
+  green:[{x:4,y:4,kind:'murphys'},{x:9,y:4,kind:'wine'},{x:14,y:4,kind:'jks'},{x:17,y:4,kind:'postdoc'},{x:16,y:8,kind:'tailgate'}],
+  cafe:[{x:4,y:6,kind:'barista'},{x:9,y:6,kind:'mailman'},{x:14,y:6,kind:'bookkeeper'},{x:8,y:9,kind:'laptopper'}],
   asianlib:[{x:22,y:3,kind:'libghost',cond:()=>!S.libboss}],
+  hsq:[{x:11,y:11,kind:'lucas'},{x:24,y:11,kind:'nightshift'},{x:12,y:17,kind:'chessman'},{x:17,y:12,kind:'busker'},{x:27,y:20,kind:'tourist'}],
+  yenching:[{x:5,y:2,kind:'yenmail'},{x:9,y:3,kind:'thesis'},{x:5,y:6,kind:'archivist'}],
+  banana:[{x:10,y:2,kind:'banguide'}],
+  newbury:[{x:13,y:4,kind:'bostonliq'},{x:18,y:4,kind:'gadget'},{x:7,y:5,kind:'rock'},{x:20,y:5,kind:'shopper'}],
+  charles:[{x:10,y:12,kind:'moon'},{x:22,y:14,kind:'gooseboss',cond:()=>!S.gooseboss},{x:16,y:10,kind:'rower'}],
+  mit:[{x:16,y:13,kind:'moktree',cond:()=>!S.mok},{x:25,y:12,kind:'han'},{x:20,y:9,kind:'hacker'}],
+  infinite:[{x:19,y:2,kind:'lostfresh'}],
+  longwood:[{x:5,y:12,kind:'bwh1'},{x:9,y:12,kind:'bwh2'},{x:13,y:12,kind:'bwh3'},{x:17,y:12,kind:'bwh4'},{x:21,y:12,kind:'bwh5'},{x:13,y:15,kind:'jk3'},{x:24,y:15,kind:'tumorboss',cond:()=>!S.tumorboss},{x:7,y:11,kind:'mdfriend'}],
+  jobhall:[],
   bookstore:[],
-  union1:[{x:3,y:7,kind:'leader'}],
+  dorm:[{x:8,y:4,kind:'roommate'}],
+  union1:[{x:3,y:7,kind:'leader'},{x:9,y:5,kind:'studygrp'}],
   union2:[],union3:[],
   union4:[{x:9,y:4,kind:'vgolem',cond:()=>!S.union}],
   prelim:[]
@@ -178,6 +202,14 @@ const ENC_QUAD={rate:1/22,tiles:'G',groups:[
   {w:20,e:['corn']},{w:25,e:['corn','corn']},{w:20,e:['phantom']},{w:20,e:['corn','phantom']},{w:15,e:['snowman']}]};
 const ENC_ALIB={rate:1/18,tiles:'F',groups:[
   {w:30,e:['hanmun']},{w:25,e:['hanmun','hanmun']},{w:25,e:['mfghost']},{w:20,e:['hanmun','mfghost']}]};
+const ENC_CHARLES={rate:1/20,tiles:'G',groups:[
+  {w:20,e:['gosling','gosling']},{w:25,e:['goose']},{w:20,e:['goose','gosling']},{w:20,e:['goose','goose']},{w:15,e:['gander','gosling','gosling']}]};
+const ENC_MIT={rate:1/20,tiles:'G',groups:[
+  {w:35,e:['tackler']},{w:25,e:['striker']},{w:25,e:['tackler','striker']},{w:15,e:['striker','striker']}]};
+const ENC_INF={rate:1/16,tiles:'F',groups:[
+  {w:30,e:['tackler','tackler']},{w:30,e:['tackler','striker']},{w:25,e:['striker','striker']},{w:15,e:['tackler','tackler','striker']}]};
+const ENC_LW={rate:1/18,tiles:'G',groups:[
+  {w:30,e:['intern']},{w:25,e:['cafghost']},{w:20,e:['intern','cafghost']},{w:15,e:['resident']},{w:10,e:['resident','intern']}]};
 function encFor(){
   if(CUR==='campus')return S.night?ENC_NIGHT:ENC_DAY;
   if(CUR==='liberal')return ENC_LIB;
@@ -185,30 +217,39 @@ function encFor(){
   if(CUR==='alley')return ENC_ALLEY;
   if(CUR==='quad')return ENC_QUAD;
   if(CUR==='asianlib')return ENC_ALIB;
+  if(CUR==='charles')return ENC_CHARLES;
+  if(CUR==='mit')return ENC_MIT;
+  if(CUR==='infinite')return ENC_INF;
+  if(CUR==='longwood')return ENC_LW;
   if(ENC_UNION[CUR])return ENC_UNION[CUR];
   return null;
 }
 // ============ 게임 데이터 ============
-const NEXT_XP=[30,45,60,80,100,125,150,180,210,250,300,360,430,510,600,700,810,930,1060];
+const NEXT_XP=[30,45,60,80,100,125,150,180,210,250,300,360,430,510,600,700,810,930,1060,1200,1350,1520,1710,1920,2150,2400,2670,2960,3270,3600,3950,4320,4710,5120];
 const WEAPONS={
   pen:{name:'모나미 볼펜',atk:3},
   manyeonpil:{name:'완당 선생의 만년필',atk:8},
-  keyboard:{name:'기계식 키보드(청축)',atk:15}
+  keyboard:{name:'기계식 키보드(청축)',atk:15},
+  tablet:{name:'태블릿+펜슬',atk:24,price:80000},
+  macbook:{name:'은빛 맥북',atk:36,price:200000}
 };
 const wpn=()=>WEAPONS[P.weapon]||WEAPONS.pen;
 const ITEMS={
   soju:{name:'소주', price:2000, hp:30, short:'HP+30'},
   beer:{name:'맥주', price:3000, hp:40, short:'HP+40'},
   makgeolli:{name:'막걸리', price:4000, hp:35, mp:10, short:'HP+35 MP+10'},
-  poktanju:{name:'폭탄주', price:6000, full:true, hang:0.6, short:'완전회복·숙취60%'},
+  poktanju:{name:'폭탄주', price:12000, full:true, hang:0.6, short:'완전회복·숙취60%'},
   miller:{name:'밀러 라이트', price:5000, hp:55, short:'HP+55'},
   yuengling:{name:'잉링 라거', price:6500, hp:75, short:'HP+75'},
   barolo:{name:'바롤로', price:13000, hp:70, mp:25, short:'HP+70 MP+25'},
   barbaresco:{name:'바르바레스코', price:16000, hp:100, mp:30, short:'HP+100 MP+30'},
   buffalo:{name:'버팔로 트레이스', price:12000, mp:50, short:'MP+50'},
-  stagg:{name:'스태그 Jr.', price:28000, full:true, hang:0.1, buffAtk:3, short:'완전회복·ATK+25%(3턴)·숙취10%'},
-  wellerfp:{name:'웰러 풀프루프', price:30000, full:true, short:'완전회복·숙취 없음'},
-  banchan:{name:'어머니의 밑반찬', price:0, full:true, short:'완전회복·숙취 없음·집밥'}
+  stagg:{name:'스태그 Jr.', price:45000, full:true, hang:0.1, buffAtk:3, short:'완전회복·ATK+25%(3턴)·숙취10%'},
+  wellerfp:{name:'웰러 풀프루프', price:48000, full:true, short:'완전회복·숙취 없음'},
+  banchan:{name:'어머니의 밑반찬', price:0, full:true, short:'완전회복·숙취 없음·집밥'},
+  pappy:{name:'파피 밴 윙클 23년', price:80000, full:true, buffAtk:5, short:'완전회복·ATK+25%(5턴)·숙취없음'},
+  ramen:{name:'천상 라면', price:0, full:true, battle:true, short:'완전회복+적 전체 ATK·SPD↓(2턴)·전투 전용'},
+  nightshift:{name:'나이트 쉬프트 IPA', price:7000, hp:120, mp:20, short:'HP+120 MP+20'}
 };
 const SKILLS={
   gyeokmul:{id:'gyeokmul',name:'격물치지',mp:6,lv:2,desc:'사물을 파고든다 — 단일 ×1.8 + 약점 노출(받는 피해 +20%, 3턴)',brief:'단일 ×1.8+약점'},
@@ -222,7 +263,11 @@ const SKILLS={
   ilgwan:{id:'ilgwan',name:'일이관지(一以貫之)',mp:0,lv:13,desc:'현재 MP의 절반을 쏟아붓는 단 한 번의 관통 — 소모 MP에 비례해 강력 (배율 최대 ×4)',brief:'MP½ 비례 한방'},
   haeche:{id:'haeche',name:'해체신서(解體新書)',mp:12,lv:14,desc:'구조를 해부 — 단일 ×1.8, 방어·막기 모두 무시',brief:'×1.8 방어무시'},
   gyeongse:{id:'gyeongse',name:'경세치용(經世致用)',mp:10,lv:16,desc:'배움을 현실의 힘으로 — 논증력 +25% (3턴)',brief:'ATK +25%(3턴)'},
-  dongdo:{id:'dongdo',name:'동도서기(東道西器)',mp:18,lv:18,desc:'동서 합력의 대기술 — 전체 ×1.6 순수 화력, 회피 불가',brief:'전체 ×1.6'}
+  dongdo:{id:'dongdo',name:'동도서기(東道西器)',mp:18,lv:18,desc:'동서 합력의 대기술 — 전체 ×1.6 순수 화력, 회피 불가',brief:'전체 ×1.6'},
+  susin:{id:'susin',name:'수신제가(修身齊家)',mp:0,lv:21,desc:'먼저 나를 다스린다 — 자신의 모든 디버프 해제 + 논리(MP) +12',brief:'디버프 해제+MP12'},
+  bakhak:{id:'bakhak',name:'박학심문(博學審問)',mp:14,lv:24,desc:'넓게 배우고 깊이 따진다 — 단일 ×2.6',brief:'단일 ×2.6'},
+  beopgo:{id:'beopgo',name:'법고창신(法古創新)',mp:16,lv:27,desc:'옛것을 본받아 새것을 연다 — 전체 ×1.3 + 적 전체 약점 노출(2턴), 회피 불가',brief:'전체+약점노출'},
+  hwalyeon:{id:'hwalyeon',name:'활연관통(豁然貫通)',mp:20,lv:30,desc:'문득 모든 것이 꿰뚫린다 — 단일 ×3.0, 방어·막기 무시',brief:'×3.0 방어무시'}
 };
 const ENEMY_DB={
   slime:{key:'slime',name:'행정서류 슬라임',hp:25,atk:8,def:2,spd:6,xp:15,gold:1500},
@@ -243,6 +288,27 @@ const ENEMY_DB={
   aud1:{key:'aud1',name:'깐깐한 청중',hp:130,atk:32,def:14,spd:13,xp:110,gold:5000},
   aud2:{key:'aud2',name:'졸다 깬 청중',hp:120,atk:30,def:10,spd:11,xp:90,gold:4000},
   aud3:{key:'aud3',name:'용어 집착 청중',hp:130,atk:32,def:12,spd:14,xp:100,gold:4500,drain:6},
+  gosling:{key:'gosling',name:'거위 새끼들',hp:150,atk:46,def:12,spd:16,xp:150,gold:5000},
+  goose:{key:'goose',name:'캐나다 구스',hp:240,atk:54,def:16,spd:19,xp:260,gold:8500},
+  gander:{key:'gander',name:'성난 수컷 구스',hp:320,atk:62,def:18,spd:17,xp:330,gold:11000},
+  tackler:{key:'tackler',name:'축구망령 풀백',hp:300,atk:58,def:20,spd:15,xp:320,gold:10000,guard:0.15},
+  striker:{key:'striker',name:'축구망령 스트라이커',hp:280,atk:58,def:16,spd:21,xp:310,gold:10500},
+  intern:{key:'intern',name:'불면 인턴',hp:260,atk:56,def:16,spd:14,xp:280,gold:9000},
+  resident:{key:'resident',name:'번아웃 레지던트',hp:360,atk:60,def:22,spd:12,xp:360,gold:12000,guard:0.2},
+  cafghost:{key:'cafghost',name:'카페인 유령',hp:230,atk:58,def:12,spd:22,xp:300,gold:9500},
+  sangmok:{key:'sangmok',name:'상목(上目)',hp:480,atk:38,def:20,spd:16,xp:0,gold:0,guard:0.1},
+  jungmok:{key:'jungmok',name:'중목(中目)',hp:420,atk:72,def:16,spd:19,xp:0,gold:0},
+  hamok:{key:'hamok',name:'하목(下目)',hp:440,atk:56,def:16,spd:18,xp:0,gold:0},
+  bwh1:{key:'bwh1',name:'BWH 마취과 펠로우',hp:380,atk:56,def:16,spd:17,xp:340,gold:9000},
+  bwh2:{key:'bwh2',name:'BWH 영상의학 펠로우',hp:420,atk:58,def:18,spd:16,xp:360,gold:9500,drain:7},
+  bwh3:{key:'bwh3',name:'BWH 내과 펠로우',hp:460,atk:60,def:18,spd:17,xp:380,gold:10000},
+  bwh4:{key:'bwh4',name:'BWH 응급의학 펠로우',hp:500,atk:64,def:18,spd:20,xp:420,gold:11000},
+  bwh5:{key:'bwh5',name:'BWH 외과 과장',hp:620,atk:70,def:22,spd:18,xp:520,gold:14000,guard:0.15},
+  bossgoose:{key:'bossgoose',name:'보스 구스',hp:2200,atk:80,def:24,spd:20,xp:650,gold:25000,guard:0.12},
+  stumor:{key:'stumor',name:'스트레스 종양',hp:2300,atk:72,def:26,spd:12,xp:750,gold:28000,guard:0.12},
+  cchair:{key:'cchair',name:'검색위원장',hp:680,atk:54,def:22,spd:16,xp:0,gold:0,guard:0.12},
+  cext:{key:'cext',name:'외부 심사위원',hp:460,atk:50,def:20,spd:17,xp:0,gold:0,guard:0.1},
+  cdean:{key:'cdean',name:'학장',hp:1100,atk:58,def:24,spd:16,xp:0,gold:0,guard:0.12,fixed:45},
   libghost:{key:'libghost',name:'금서 목록의 망령',hp:560,atk:50,def:18,spd:14,xp:450,gold:18000,guard:0.15},
   vgolem:{key:'vgolem',name:'폭주 자판기 골렘',hp:280,atk:40,def:18,spd:9,xp:300,gold:12000,guard:0.2},
   judge:{key:'judge',name:'심사위원',hp:180,atk:18,def:8,spd:9,xp:0,gold:0,guard:0.12},
@@ -251,10 +317,13 @@ const ENEMY_DB={
 };
 // ============ 상태 ============
 const P={lv:1,xp:0,maxhp:50,hp:50,maxmp:20,mp:20,atk:10,def:5,spd:8,luk:5,
-  gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
-  dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,counter:false,hangover:false};
+  gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0,pappy:0,ramen:0,nightshift:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
+  dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,counter:false,hangover:false,slow:0,mpLeak:0,confuse:0,overwork:0};
 const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
-  card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0};
+  card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0,
+  mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
+  matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
+  gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0};
 let wandangIdx=0;
 let MODE='title';
 // ============ 유틸 ============
@@ -430,6 +499,14 @@ function buildTiles(){
   px(beg,2,8,12,1,'#2a5482');
   px(beg,1,3,14,1,'#a8743f');px(beg,1,13,14,1,'#5c3a22');
   t.E=be;
+  // 찰스강 물 (2프레임 물결은 정적 1장으로)
+  const wt=mkC(16,16),wg2=wt.getContext('2d');
+  px(wg2,0,0,16,16,'#2a5482');
+  px(wg2,0,0,16,2,'#346094');
+  px(wg2,2,3,4,1,'#5a8ec4');px(wg2,9,5,5,1,'#5a8ec4');
+  px(wg2,4,8,5,1,'#4a7eb4');px(wg2,11,10,4,1,'#5a8ec4');
+  px(wg2,1,12,4,1,'#4a7eb4');px(wg2,7,14,5,1,'#5a8ec4');
+  t.M=wt;
   // 심사석
   const j=mkC(16,16),jg2=j.getContext('2d');
   jg2.drawImage(t.F,0,0);
@@ -565,6 +642,28 @@ function buildNpc(){
   px(lmg,4,11,8,4,'#5c3a22');px(lmg,5,12,6,2,'#3a2516');
   lmg.fillStyle='#e8d8c0';lmg.font='bold 6px serif';lmg.fillText('禁',6,9);
   A.npc.libghost=lgm;
+  // 완당의 메일함 — 모니터 단말
+  const ym=mkC(16,16),ymg=ym.getContext('2d');
+  px(ymg,2,3,12,9,'#2b2b33');px(ymg,3,4,10,7,'#1d3a5c');
+  px(ymg,4,5,8,2,'#9cc4ea');px(ymg,4,8,6,1,'#5a8ec4');
+  ymg.fillStyle='#ffd866';ymg.font='bold 6px sans-serif';ymg.fillText('@',9,11);
+  px(ymg,6,12,4,2,'#44444f');px(ymg,4,14,8,1,'#33333c');
+  A.npc.yenmail=ym;
+  // 바나나 라운지 가이드 — 노란 셔츠 포닥
+  A.npc.banguide=mkPerson('#3a2c22','#caa53d',g=>{
+    px(g,11,8,3,5,'#e8c95a');px(g,12,7,2,2,'#caa53d');
+    px(g,5,8,6,5,'#caa53d');px(g,6,9,4,1,'#a8862f');
+  });
+  // 보틀숍 점주 — 녹색 앞치마
+  A.npc.bostonliq=mkPerson('#5a4632','#2a6e54',g=>{
+    px(g,5,8,6,5,'#1f5240');px(g,6,9,4,1,'#fff');
+    px(g,11,9,2,4,'#7a4848');
+  });
+  // 전자기기점 점원 — 파란 폴로
+  A.npc.gadget=mkPerson('#1a1a22','#3a6ea5',g=>{
+    px(g,5,8,6,5,'#2a5482');
+    px(g,11,8,3,4,'#d8d8e0');px(g,12,9,1,2,'#1d3a5c');
+  });
   // 진저캣 — 올리(둥글둥글) / 꽈이꽈이(날렵, 흰 가슴털)
   function mkCat(round){
     const c=mkC(40,34),g=c.getContext('2d');
@@ -598,6 +697,72 @@ function buildNpc(){
     }
     return c;
   }
+  // 3장 MIT: 목(目) 나무 지형물 — 외눈 나무
+  {const c=mkC(16,16),g=c.getContext('2d');
+    px(g,7,9,2,7,'#5c4326');px(g,6,12,4,2,'#5c4326');
+    px(g,3,2,10,9,'#3f7a3a');px(g,2,5,12,5,'#3f7a3a');px(g,5,0,6,4,'#4a8a44');
+    px(g,6,4,4,4,'#f4f1e6');px(g,7,5,2,2,'#9ad84a');px(g,7,5,1,1,'#0a0a0a');
+    A.npc.moktree=c;}
+  // 3장 요리 3인방: 락(셰프)·문(보트하우스)·한(식료품점)
+  A.npc.rock=mkPerson('#1a1a22','#f4f1e6',g=>{
+    px(g,4,0,8,2,'#f4f1e6');px(g,5,1,6,1,'#e8e8f0');
+    px(g,6,8,4,4,'#d8d8e0');px(g,10,9,3,2,'#caa53d');
+  });
+  A.npc.moon=mkPerson('#2b2b33','#a83040',g=>{
+    px(g,3,0,10,2,'#2a6e54');px(g,5,8,6,3,'#f4f1e6');px(g,6,9,4,1,'#d8553a');
+  });
+  A.npc.han=mkPerson('#3a2c1a','#5a7a4a',g=>{
+    px(g,5,8,6,5,'#e8dcc0');px(g,6,9,4,1,'#8a5a3a');px(g,11,9,3,3,'#d8553a');
+  });
+  // 3장 롱우드: BWH 펠로우 5인 + JK
+  const bwhBadge=(b)=>(g=>{px(g,9,9,4,3,b);px(g,4,8,2,3,'#5a8ab0');});
+  A.npc.bwh1=mkPerson('#2b2b33','#3a8a8a',bwhBadge('#56d364'));
+  A.npc.bwh2=mkPerson('#4a3a2a','#4a5a8a',bwhBadge('#ffd866'));
+  A.npc.bwh3=mkPerson('#3a2c1a','#5a7a4a',bwhBadge('#f0a0a0'));
+  A.npc.bwh4=mkPerson('#1a1a22','#a83040',bwhBadge('#ffffff'));
+  A.npc.bwh5=mkPerson('#c8c8d4','#1d3a5c',g=>{px(g,9,9,4,3,'#ffd866');px(g,3,7,10,1,'#ffd866');});
+  A.npc.jk3=mkPerson('#1a1a22','#2a2a3a',g=>{
+    px(g,4,8,8,4,'#3a2a1a');px(g,5,9,2,2,'#caa53d');px(g,8,9,2,2,'#7a3a80');px(g,6,10,3,1,'#56d364');
+  });
+  // 3장 F·G: 보스 트리거 + 루카스(고양이) + 나이트쉬프트 바텐더 + 논문 책상
+  A.npc.gooseboss=mkPerson('#1a1a22','#8a6a44',g=>{
+    px(g,4,1,8,2,'#ffd866');px(g,5,7,4,4,'#1a1a22');px(g,6,8,2,2,'#f4f1e6');px(g,9,9,3,2,'#e8923a');
+  });
+  A.npc.tumorboss=mkPerson('#5a1a2a','#6e2436',g=>{
+    px(g,5,7,6,4,'#7a2a40');px(g,6,8,2,2,'#ffd866');px(g,9,8,2,2,'#ffd866');
+  });
+  {const c=mkC(16,16),g=c.getContext('2d'); // 루카스 — 회색 턱시도 고양이
+    px(g,4,6,8,8,'#5a5a64');px(g,5,11,6,3,'#f4f1e6');
+    px(g,4,3,3,4,'#5a5a64');px(g,9,3,3,4,'#5a5a64');px(g,5,4,1,2,'#3a3a44');px(g,10,4,1,2,'#3a3a44');
+    px(g,5,7,2,2,'#9ad84a');px(g,9,7,2,2,'#9ad84a');px(g,7,9,2,1,'#e8a0b0');
+    px(g,12,8,3,5,'#5a5a64');
+    A.npc.lucas=c;}
+  A.npc.nightshift=mkPerson('#1a1a22','#2a3a4a',g=>{
+    px(g,3,7,10,2,'#caa53d');px(g,6,9,4,3,'#3a6e2a');px(g,7,9,2,1,'#fff');
+  });
+  A.npc.thesis=mkPerson('#3a2c1a','#5c5c6e',g=>{
+    px(g,4,8,8,5,'#f4f1e6');px(g,5,9,6,1,'#9aa');px(g,5,11,6,1,'#9aa');px(g,10,7,3,2,'#1d4a8c');
+  });
+  // ===== 플레이버 NPC 스프라이트 (전 맵 분위기용) =====
+  A.npc.flyerstu=mkPerson('#2b2b33','#d8553a',g=>{px(g,11,8,4,5,'#f4f1e6');px(g,12,9,2,1,'#a55');px(g,12,11,2,1,'#9aa');});
+  A.npc.oldprof=mkPerson('#c8c8d4','#4a3a5e',g=>{px(g,4,4,3,2,'rgba(80,80,120,.55)');px(g,9,4,3,2,'rgba(80,80,120,.55)');px(g,12,9,2,5,'#7a5c3a');});
+  A.npc.sleepgrad=mkPerson('#1a1a22','#5c5c6e',g=>{px(g,4,4,8,2,'#1a1a22');g.fillStyle='#9cc4ea';g.font='bold 6px sans-serif';g.fillText('z',12,5);g.fillText('Z',13,2);});
+  A.npc.cramstu=mkPerson('#3a2c1a','#8c2332',g=>{px(g,4,9,4,4,'#f4f1e6');px(g,5,10,2,1,'#9aa');px(g,5,12,2,1,'#9aa');px(g,4,4,2,1,'#553');px(g,10,4,2,1,'#553');});
+  A.npc.regular=mkPerson('#3a3a44','#3a6e2a',g=>{px(g,11,9,2,4,'#2a6e34');px(g,11,8,2,1,'#1f5226');px(g,4,5,2,1,'#a33');px(g,10,5,2,1,'#a33');});
+  A.npc.frisbee=mkPerson('#caa53d','#1d3a5c',g=>{px(g,10,8,5,2,'#e8923a');px(g,11,8,3,1,'#f0b06a');});
+  A.npc.tailgate=mkPerson('#1a1a22','#13294b',g=>{px(g,5,8,6,3,'#e84a27');g.fillStyle='#fff';g.font='bold 5px sans-serif';g.fillText('I',7,11);});
+  A.npc.laptopper=mkPerson('#4a3624','#2a2a3a',g=>{px(g,4,10,8,3,'#9a9aa8');px(g,5,11,6,1,'#3a6ea5');});
+  A.npc.roommate=mkPerson('#2b2b33','#7a5c8e',g=>{px(g,10,9,4,3,'#f4f1e6');px(g,11,10,2,1,'#e8a0b0');});
+  A.npc.studygrp=mkPerson('#1a1a22','#2a6e54',g=>{px(g,4,9,4,4,'#f4f1e6');px(g,5,10,2,1,'#9aa');px(g,10,9,3,4,'#ffd866');});
+  A.npc.chessman=mkPerson('#c8c8d4','#5c4636',g=>{px(g,11,8,2,2,'#f4f1e6');px(g,11,10,2,3,'#1a1a22');px(g,10,12,4,1,'#1a1a22');});
+  A.npc.busker=mkPerson('#8c5a2b','#2b2b33',g=>{px(g,9,7,5,6,'#b5722e');px(g,10,8,3,4,'#7a4a1e');px(g,13,5,1,4,'#553');});
+  A.npc.tourist=mkPerson('#3a2c1a','#e8923a',g=>{px(g,5,8,6,3,'#1a1a22');px(g,7,9,2,2,'#9cc4ea');px(g,3,2,10,1,'#f4f1e6');});
+  A.npc.shopper=mkPerson('#2b2b33','#d88ab0',g=>{px(g,2,9,3,4,'#caa53d');px(g,11,9,3,4,'#9ad8e8');px(g,3,8,1,1,'#7a5c3a');px(g,12,8,1,1,'#7a5c3a');});
+  A.npc.rower=mkPerson('#caa53d','#a83040',g=>{px(g,12,2,2,11,'#7a5c3a');px(g,11,12,4,2,'#9a7a4a');});
+  A.npc.hacker=mkPerson('#1a1a22','#3a3a44',g=>{px(g,4,10,8,3,'#1a1a22');px(g,5,11,6,1,'#56d364');px(g,4,5,2,1,'#a33');px(g,10,5,2,1,'#a33');});
+  A.npc.mdfriend=mkPerson('#3a2c1a','#3a8a8a',g=>{px(g,11,9,3,3,'#f4f1e6');px(g,12,8,1,1,'#7a4a2b');px(g,4,4,3,1,'#445');px(g,9,4,3,1,'#445');});
+  A.npc.archivist=mkPerson('#c8c8d4','#7a5c8e',g=>{px(g,4,9,4,4,'#e8dcc0');px(g,5,10,2,2,'#3a2516');px(g,11,8,2,2,'#f4f1e6');});
+  A.npc.lostfresh=mkPerson('#2b2b33','#caa53d',g=>{px(g,10,8,5,4,'#f4f1e6');px(g,11,9,3,1,'#a55');px(g,11,11,3,1,'#3a6ea5');});
   A.npc.olli=mkCat(true);
   A.npc.kwai=mkCat(false);
 }
@@ -717,6 +882,167 @@ function buildEnemies(){
   px(vgg,9,42,8,6,'#7a241a');px(vgg,21,42,8,6,'#7a241a');
   vgg.fillStyle='#fff';vgg.font='bold 6px sans-serif';vgg.fillText('OUT OF',9,30);vgg.fillText('ORDER',10,37);
   A.enemy.vgolem=vg;
+  // 3장: 거위 새끼들 — 노란 솜털 뭉치 셋
+  const gl=mkC(34,24),glg=gl.getContext('2d');
+  [[2,8],[12,4],[22,9]].forEach(([ox,oy])=>{
+    px(glg,ox,oy+4,10,9,'#ffe79a');px(glg,ox+1,oy+5,8,7,'#ffd866');
+    px(glg,ox+6,oy,6,6,'#ffe79a');
+    px(glg,ox+8,oy+2,2,2,'#1a1a22');
+    px(glg,ox+11,oy+3,3,2,'#e8923a');
+    px(glg,ox+2,oy+13,2,2,'#e8923a');px(glg,ox+6,oy+13,2,2,'#e8923a');
+  });
+  A.enemy.gosling=gl;
+  // 3장: 캐나다 구스 — 갈색 몸통 + 검은 목 + 흰 뺨
+  const gs=mkC(36,34),gsg=gs.getContext('2d');
+  px(gsg,6,14,24,14,'#8a6a44');px(gsg,8,16,20,10,'#a5825a');
+  px(gsg,4,18,4,8,'#6e5436');px(gsg,26,12,8,6,'#6e5436');
+  px(gsg,12,4,5,14,'#1a1a22');px(gsg,10,0,9,7,'#1a1a22');
+  px(gsg,11,3,4,3,'#f4f1e6');
+  px(gsg,12,1,2,2,'#3a3a44');
+  px(gsg,5,2,5,3,'#1a1a22');
+  px(gsg,10,28,3,5,'#3a3a44');px(gsg,20,28,3,5,'#3a3a44');
+  A.enemy.goose=gs;
+  // 3장: 성난 수컷 구스 — 날개 활짝 + 붉은 눈
+  const gd=mkC(44,38),gdg=gd.getContext('2d');
+  px(gdg,10,16,24,14,'#7a5a38');px(gdg,12,18,20,10,'#96744c');
+  px(gdg,0,8,12,12,'#6e5436');px(gdg,32,8,12,12,'#6e5436');
+  px(gdg,2,6,8,4,'#8a6a44');px(gdg,34,6,8,4,'#8a6a44');
+  px(gdg,18,2,6,16,'#1a1a22');px(gdg,15,0,10,7,'#1a1a22');
+  px(gdg,16,3,4,3,'#f4f1e6');
+  px(gdg,18,1,3,2,'#e24b4a');
+  px(gdg,11,2,5,3,'#1a1a22');
+  gdg.fillStyle='#fff';gdg.font='bold 7px sans-serif';gdg.fillText('꽥!!',30,4);
+  px(gdg,14,30,4,6,'#3a3a44');px(gdg,26,30,4,6,'#3a3a44');
+  A.enemy.gander=gd;
+  // 3장: 축구망령 풀백 — 반투명 유니폼 + 슬라이딩 자세
+  const tk=mkC(38,34),tkg=tk.getContext('2d');
+  px(tkg,8,2,16,8,'rgba(220,225,240,.85)');
+  px(tkg,11,4,3,3,'#1d2a5c');px(tkg,18,4,3,3,'#1d2a5c');
+  px(tkg,6,10,20,12,'rgba(140,30,40,.85)');px(tkg,6,10,20,3,'rgba(240,240,245,.85)');
+  tkg.fillStyle='rgba(255,255,255,.9)';tkg.font='bold 8px sans-serif';tkg.fillText('4',14,20);
+  px(tkg,2,22,28,6,'rgba(240,240,245,.75)');
+  px(tkg,28,24,8,4,'rgba(220,225,240,.5)');
+  px(tkg,4,28,10,4,'rgba(20,20,40,.6)');px(tkg,20,28,10,4,'rgba(20,20,40,.6)');
+  A.enemy.tackler=tk;
+  // 3장: 축구망령 스트라이커 — 반투명 유니폼 + 유령 공
+  const sk2=mkC(36,40),skg=sk2.getContext('2d');
+  px(skg,10,2,16,8,'rgba(220,225,240,.85)');
+  px(skg,13,4,3,3,'#5c1d2a');px(skg,20,4,3,3,'#5c1d2a');
+  px(skg,8,10,20,14,'rgba(30,60,140,.85)');px(skg,8,10,20,3,'rgba(240,240,245,.85)');
+  skg.fillStyle='rgba(255,255,255,.9)';skg.font='bold 8px sans-serif';skg.fillText('9',16,21);
+  px(skg,10,24,6,8,'rgba(240,240,245,.7)');px(skg,21,24,6,10,'rgba(240,240,245,.7)');
+  px(skg,2,30,9,9,'rgba(244,241,230,.95)');px(skg,4,32,3,3,'#1a1a22');px(skg,8,35,2,2,'#1a1a22');
+  A.enemy.striker=sk2;
+  // 3장: 불면 인턴 — 수술복 + 다크서클 + 차트
+  const it2=mkC(30,42),itg=it2.getContext('2d');
+  px(itg,8,2,14,6,'#2b2b33');px(itg,8,7,14,8,'#e8c8a8');
+  px(itg,10,9,3,2,'#333');px(itg,17,9,3,2,'#333');
+  px(itg,10,11,3,2,'#7a6a8a');px(itg,17,11,3,2,'#7a6a8a');
+  px(itg,13,13,5,1,'#a06a5a');
+  px(itg,6,15,18,14,'#3a8a8a');px(itg,4,17,3,10,'#3a8a8a');px(itg,23,17,3,10,'#3a8a8a');
+  px(itg,24,18,6,9,'#f4f1e6');px(itg,25,20,4,1,'#9aa');px(itg,25,23,4,1,'#9aa');
+  px(itg,8,29,6,4,'#2d6a6a');px(itg,16,29,6,4,'#2d6a6a');
+  px(itg,8,33,5,6,'#f4f8fc');px(itg,17,33,5,6,'#f4f8fc');
+  A.enemy.intern=it2;
+  // 3장: 번아웃 레지던트 — 구겨진 흰 가운 + 커피 얼룩
+  const rd=mkC(34,46),rdg=rd.getContext('2d');
+  px(rdg,9,2,16,7,'#4a3a2a');px(rdg,9,8,16,8,'#e8c8a8');
+  px(rdg,11,10,3,2,'#333');px(rdg,18,10,3,2,'#333');
+  px(rdg,11,12,3,2,'#6a5a7a');px(rdg,18,12,3,2,'#6a5a7a');
+  px(rdg,14,15,6,1,'#8a5a4a');
+  px(rdg,6,16,22,20,'#f0ede4');px(rdg,13,16,8,9,'#3a8a8a');
+  px(rdg,4,18,3,14,'#f0ede4');px(rdg,27,18,3,14,'#f0ede4');
+  px(rdg,9,26,4,3,'#b89a6a');px(rdg,20,30,3,2,'#b89a6a');
+  px(rdg,24,20,5,8,'#caa53d');px(rdg,25,18,3,3,'#7a5a38');
+  px(rdg,9,36,7,7,'#2b2b33');px(rdg,19,36,7,7,'#2b2b33');
+  A.enemy.resident=rd;
+  // 3장: 카페인 유령 — 커피잔에서 피어오른 갈색 유령
+  const cf=mkC(32,40),cfg=cf.getContext('2d');
+  px(cfg,8,2,16,16,'rgba(122,74,43,.85)');px(cfg,5,7,22,9,'rgba(122,74,43,.8)');
+  px(cfg,11,7,3,3,'#ffd866');px(cfg,19,7,3,3,'#ffd866');
+  px(cfg,13,13,7,2,'#3a2516');
+  px(cfg,7,18,4,4,'rgba(122,74,43,.5)');px(cfg,15,19,4,4,'rgba(122,74,43,.45)');px(cfg,22,18,4,4,'rgba(122,74,43,.5)');
+  px(cfg,9,26,14,10,'#f4f1e6');px(cfg,10,27,12,2,'#5c3a22');
+  px(cfg,23,28,5,5,'#f4f1e6');px(cfg,24,29,3,3,'rgba(0,0,0,0)');
+  px(cfg,12,22,2,4,'rgba(230,230,240,.6)');px(cfg,18,21,2,5,'rgba(230,230,240,.6)');
+  A.enemy.cafghost=cf;
+  // 3장 중간보스: 목(目) 삼형제 — 외눈 나무괴물 + 축구 유니폼
+  function mkMok(bark,leaf,jersey,iris,num){
+    const c=mkC(40,52),g=c.getContext('2d');
+    px(g,16,30,8,20,bark);px(g,14,34,12,4,bark);              // 줄기
+    px(g,10,46,8,5,bark);px(g,22,46,8,5,bark);                // 뿌리 다리
+    px(g,8,4,24,26,leaf);px(g,5,10,30,16,leaf);px(g,12,0,16,8,leaf); // 수관(머리)
+    px(g,10,16,20,12,jersey);px(g,10,16,20,3,'#f4f1e6');      // 유니폼
+    g.fillStyle='#fff';g.font='bold 9px sans-serif';g.fillText(num,17,26);
+    px(g,15,8,10,8,'#f4f1e6');px(g,18,10,5,5,iris);px(g,19,11,2,2,'#0a0a0a'); // 외눈(目)
+    px(g,16,9,8,1,'rgba(0,0,0,.3)');
+    return c;
+  }
+  A.enemy.sangmok=mkMok('#5c4326','#3f7a3a','#2a6e34','#9ad84a','1'); // 上目 녹색 힐러
+  A.enemy.jungmok=mkMok('#5c3a26','#7a3a3a','#a83040','#f0d040','2'); // 中目 적색 딜러
+  A.enemy.hamok=mkMok('#4a3a26','#5a3a6a','#5a2a7a','#c87af0','3');   // 下目 보라 상태이상
+  // 3장 BWH 펠로우 5종 — 병원 가운/스크럽 + 청진기
+  function mkDoc(scrub,hair,badge,extra){
+    const c=mkC(34,46),g=c.getContext('2d');
+    px(g,9,2,16,7,hair);px(g,9,8,16,8,'#f0c8a0');
+    px(g,12,10,3,2,'#333');px(g,19,10,3,2,'#333');px(g,14,13,6,1,'#a06a5a');
+    px(g,7,16,20,22,scrub);px(g,5,18,3,14,scrub);px(g,26,18,3,14,scrub);
+    px(g,13,16,8,14,'#eef2f6');                                // 가운 앞섶
+    px(g,15,18,4,10,'#5a8ab0');px(g,14,27,2,4,'#5a8ab0');px(g,19,27,2,4,'#5a8ab0'); // 청진기
+    px(g,15,30,4,3,'#c0c0c8');
+    px(g,21,17,5,4,badge);                                     // 명찰
+    if(extra)extra(g);
+    px(g,9,38,6,7,'#2b2b33');px(g,19,38,6,7,'#2b2b33');
+    return c;
+  }
+  A.enemy.bwh1=mkDoc('#3a8a8a','#2b2b33','#56d364',g=>{px(g,2,20,5,3,'#9ad8e8');}); // 마취과
+  A.enemy.bwh2=mkDoc('#4a5a8a','#4a3a2a','#ffd866',g=>{px(g,1,18,6,8,'#1a1a22');px(g,2,20,4,4,'#3a6ea5');}); // 영상의학
+  A.enemy.bwh3=mkDoc('#5a7a4a','#3a2c1a','#f0a0a0',g=>{px(g,1,22,6,9,'#f4f1e6');px(g,2,24,4,1,'#9aa');}); // 내과
+  A.enemy.bwh4=mkDoc('#a83040','#1a1a22','#ffffff',g=>{px(g,0,17,7,5,'#e24b4a');g.fillStyle='#fff';g.font='bold 7px sans-serif';g.fillText('+',2,21);}); // 응급의학
+  const b5=mkDoc('#1d3a5c','#c8c8d4','#ffd866',g=>{px(g,7,16,20,2,'#ffd866');px(g,1,20,6,4,'#caa53d');});
+  const b5g=b5.getContext('2d');b5g.fillStyle='#ffd866';b5g.font='bold 6px sans-serif';b5g.fillText('과장',9,44);
+  A.enemy.bwh5=b5; // 외과 과장
+  // 3장 필드보스: 보스 구스 — 거대 캐나다 구스 + 왕관
+  const bg2=mkC(56,52),bgg=bg2.getContext('2d');
+  px(bgg,10,22,36,22,'#8a6a44');px(bgg,14,26,28,14,'#a5825a');
+  px(bgg,4,26,8,12,'#6e5436');px(bgg,42,18,12,10,'#6e5436');
+  px(bgg,18,6,8,20,'#1a1a22');px(bgg,15,0,14,9,'#1a1a22');
+  px(bgg,16,4,6,4,'#f4f1e6');px(bgg,18,1,3,3,'#e24b4a');
+  px(bgg,12,0,18,4,'#ffd866');px(bgg,13,-2,2,4,'#ffd866');px(bgg,21,-2,2,4,'#ffd866');px(bgg,29,-2,2,4,'#ffd866'); // 왕관
+  px(bgg,7,2,8,4,'#1a1a22');
+  px(bgg,16,44,5,7,'#3a3a44');px(bgg,30,44,5,7,'#3a3a44');
+  A.enemy.bossgoose=bg2;
+  // 3장 필드보스: 스트레스 종양 — 검붉은 덩어리 + 의료 모니터
+  const tm=mkC(50,50),tmg=tm.getContext('2d');
+  px(tmg,8,12,34,32,'#5a1a2a');px(tmg,5,18,40,22,'#6e2436');px(tmg,12,8,26,10,'#7a2a40');
+  for(let i=0;i<6;i++)px(tmg,10+i*6,16+(i%3)*8,5,5,'#8c3a50');
+  px(tmg,14,22,5,5,'#ffd866');px(tmg,30,22,5,5,'#ffd866');px(tmg,15,23,2,2,'#a82828');px(tmg,31,23,2,2,'#a82828');
+  px(tmg,18,32,14,3,'#3a0a14');
+  tmg.strokeStyle='#56d364';tmg.lineWidth=1;tmg.beginPath();tmg.moveTo(2,46);tmg.lineTo(8,46);tmg.lineTo(11,40);tmg.lineTo(14,48);tmg.lineTo(17,46);tmg.lineTo(48,46);tmg.stroke();
+  A.enemy.stumor=tm;
+  // 3장 최종보스: 임용 커미티 3인 — 검색위원장/외부심사/학장
+  function mkProf(robe,hair,collar,extra){
+    const c=mkC(40,50),g=c.getContext('2d');
+    px(g,7,18,26,30,robe);px(g,4,20,4,16,robe);px(g,32,20,4,16,robe);
+    px(g,16,18,8,14,collar);
+    px(g,10,2,20,8,hair);px(g,10,9,20,9,'#e8c8a8');
+    px(g,13,12,4,2,'#333');px(g,23,12,4,2,'#333');px(g,17,16,6,1,'#a06a5a');
+    if(extra)extra(g);
+    px(g,11,46,7,4,'#101018');px(g,22,46,7,4,'#101018');
+    return c;
+  }
+  A.enemy.cchair=mkProf('#2a2a3a','#3a3a44','#a83040',g=>{ // 검색위원장 (안경+서류)
+    px(g,12,11,5,3,'rgba(80,80,120,.6)');px(g,23,11,5,3,'rgba(80,80,120,.6)');px(g,17,12,6,1,'#445');
+    px(g,30,24,8,12,'#f4f1e6');px(g,31,26,6,1,'#9aa');px(g,31,29,6,1,'#9aa');
+  });
+  A.enemy.cext=mkProf('#1d3a5c','#1a1a22','#d8d8e0',g=>{ // 외부심사 (넥타이)
+    px(g,18,18,3,12,'#a82828');
+  });
+  const cd=mkProf('#5a1020','#c8c8d4','#ffd866',g=>{ // 학장 (금장 + 위엄)
+    px(g,7,18,26,2,'#ffd866');px(g,12,11,16,1,'#caa53d');
+  });
+  const cdg=cd.getContext('2d');cdg.fillStyle='#ffd866';cdg.font='bold 6px sans-serif';cdg.fillText('$',4,30);cdg.fillText('$',33,30);
+  A.enemy.cdean=cd;
   // 청중 3종 — 착석한 사람들
   function mkAud(hair,top,extra){
     const c=mkC(32,40),g=c.getContext('2d');
@@ -956,7 +1282,77 @@ const WANDANG_IL=[
   ['그린 스트리트의 JK 가게엔 가끔 귀한 물건이 들어온다더군.','스태그… 웰러… 이름만 들어도 목이 마르군.'],
   ['잔디밭의 주황 털뭉치들? 올리와 꽈이꽈이라네.','녀석들과 자주 마주치면 좋은 일이 생긴다는 소문이야.']
 ];
+let yenMailIdx=0;
+// ===== 플레이버 NPC (기능 없음 — 순환 대사) =====
+const FLAVOR={
+  flyerstu:{n:'전단지 학부생',d:[
+    ['저기… 밴드 동아리 공연 보러 오세요! 금요일! 학생회관!','…대학원생이세요? 아, 죄송합니다. 바쁘시죠.'],
+    ['전단지 200장 중에 190장 남았어요.','대학원 가면 이런 거 안 해도 되나요? …네? 더 한다고요?']]},
+  oldprof:{n:'산책하는 노교수',d:[
+    ['요즘 젊은 연구자들은 말이야, 걷지를 않아.','걸어야 생각이 나는 법인데. …자네는 좀 걷나?'],
+    ['내 박사논문은 타자기로 썼다네. 세 번을 다시 쳤지.','그에 비하면 요즘은… 아니, 힘든 건 똑같으려나.']]},
+  sleepgrad:{n:'엎드린 대학원생',d:[
+    ['…Zzz… 각주… 각주가 모자라…','(깨우지 않는 게 좋겠다.)'],
+    ['…Zzz… 교수님 그건 제 가설이… Zzz…','(꿈에서도 디펜스 중이다.)']]},
+  cramstu:{n:'벼락치기 학부생',d:[
+    ['중간고사가 내일인데 진도는 3주 전에 멈춰 있어요.','기출! 기출 어디 없나요?!'],
+    ['선배는 시험 안 보죠? 부럽다…','네? 평생이 시험이라고요? 에이, 농담도.']]},
+  regular:{n:'골목 단골',d:[
+    ['이 골목 막걸리집, 30년 됐어. 내가 29년 단골이고.','젊은 친구도 한 잔 하고 가. 인생 별거 없어.'],
+    ['요즘 대학원생들이 술이 늘었다? 다 이유가 있는 거야.','…건강은 챙기고.']]},
+  frisbee:{n:'원반 던지는 학부생',d:[
+    ['Heads up! …아 미안해요, 원반이 자꾸 그쪽으로.','쿼드는 원반이 국룰이에요. 한 번 던져볼래요?'],
+    ['겨울엔 영하 21도라 이것도 못 해요.','지금 던질 수 있을 때 던져야죠. 인생도 원반도.']]},
+  tailgate:{n:'풋볼 팬',d:[
+    ['I-L-L! …받아줘야죠. V-I-N-I 하고.','오늘 경기 이기면 그린 스트리트가 뒤집어질 거예요.'],
+    ['일리노이가 또 졌냐고요? …그 얘긴 하지 맙시다.','맥주나 마셔요. 그게 풋볼이에요.']]},
+  laptopper:{n:'카페 죽돌이',d:[
+    ['이 자리, 콘센트 있는 유일한 자리예요. 양보 못 해요.','아침 9시부터 있었어요. 커피 세 잔째.'],
+    ['논문요? 아뇨, 소설 써요. 대학원 배경 호러물.','…네? 그건 본인 얘기 아니냐고요?']]},
+  roommate:{n:'룸메이트',d:[
+    ['한국에서 왔죠? 라면 끓이는 냄새로 알았어요.','다음엔 저도 한 입만…'],
+    ['새벽 3시에 타자 소리가 나던데… 마감이었어요?','전 새벽 3시에 게임 소리. 우린 좋은 룸메죠.']]},
+  studygrp:{n:'스터디 그룹장',d:[
+    ['475 스터디 하실 분! …아, 대학원생이시구나.','그럼 혹시 과외… 아뇨, 아닙니다.'],
+    ['유니언 스터디룸은 2주 전에 예약해야 해요.','대학원생은 연구실이 있죠? …부럽다.']]},
+  chessman:{n:'체스 두는 노인',d:[
+    ['앉게. 한 판 두지. …시간 없다고? 다들 그래.','체스는 말이야, 폰도 끝까지 가면 퀸이 돼.'],
+    ['40년째 여기서 두고 있어. 하버드 교수도 여럿 이겼지.','자네 눈빛이 폰이군. …아직은.']]},
+  busker:{n:'버스커',d:[
+    ['(기타 소리가 광장에 퍼진다.)','「이 노래는 10년째 졸업 못 한 친구를 위한 곡입니다.」'],
+    ['보스턴 길거리 공연 면허, 따는 데 3주 걸렸어요.','박사는 몇 년 걸려요? …농담이에요, 화이팅.']]},
+  tourist:{n:'관광객',d:[
+    ['저기요, 하버드 동상이 어디죠? 발 만지면 합격한다던데!','…당신처럼요? 와, 만졌어요? 효과 있어요?'],
+    ['여기가 그 하버드… 공기부터 다르네요.','(공기는 똑같다. 월세가 다를 뿐.)']]},
+  shopper:{n:'쇼핑백 든 사람',d:[
+    ['뉴버리는 구경만 해도 돈이 나가는 기분이에요.','이 백? …세일이었어요. 진짜예요.'],
+    ['저 부티크, 양말 한 켤레가 40달러예요.','보스턴 물가는 미쳤어. 그래도 사게 돼.']]},
+  rower:{n:'조정 선수',d:[
+    ['새벽 5시 강은 우리 거예요. 6시부터는 거위 거고.','HEAD OF THE CHARLES 나가요. 응원 와요!'],
+    ['거위요? 노로 막아요. …농담이고, 그냥 도망쳐요.','그놈들은 페어플레이를 몰라요.']]},
+  hacker:{n:'밤샘 공대생',d:[
+    ['36시간째 깨어 있어요. 컴파일이 안 끝나서.','…눈에서 코드가 보여요. 폭포처럼.'],
+    ['무한복도요? 밤에 공 차는 소리 들려도 절대 돌아보지 마요.','돌아본 선배는… 아직 졸업 못 했어요.']]},
+  mdfriend:{n:'번아웃 의대 친구',d:[
+    ['당직 끝나고 36시간 잤어. 그래도 피곤해.','대학원도 비슷하다며? 우리 둘 다 왜 이러고 살까.'],
+    ['커피가 안 들어. 이젠 에스프레소를 링거로 맞아야 하나.','…농담이야. 근데 여기선 농담 같지가 않지?']]},
+  archivist:{n:'옌칭 사서',d:[
+    ['이 서고엔 명나라 지방지가 3만 권 있어요.','…네, 다 정리하는 건 제 평생 과업이고요.'],
+    ['희귀본 열람은 장갑 끼고요. 연필만 돼요.','잉크요? 잉크 들고 오면 제가 막아설 거예요. 몸으로.']]},
+  lostfresh:{n:'길 잃은 신입생',d:[
+    ['저기… 26-100 강의실이 어디예요? 30분째 같은 복도인데.','이 복도, 진짜 무한한 거 아니죠…?'],
+    ['아까 지나간 기둥을 또 지나간 것 같아요.','…발소리가 따라와요. 제 거겠죠? 제 거라고 해줘요.']]}
+};
+const flavorIdx={};
+function flavorTalk(kind){
+  sfx.ok();
+  const f=FLAVOR[kind];
+  flavorIdx[kind]=flavorIdx[kind]||0;
+  showDialog(f.n,f.d[flavorIdx[kind]%f.d.length]);
+  flavorIdx[kind]++;
+}
 function npcTalk(kind){
+  if(kind==='flyerstu'||kind==='oldprof'||kind==='sleepgrad'||kind==='cramstu'||kind==='regular'||kind==='frisbee'||kind==='tailgate'||kind==='laptopper'||kind==='roommate'||kind==='studygrp'||kind==='chessman'||kind==='busker'||kind==='tourist'||kind==='shopper'||kind==='rower'||kind==='hacker'||kind==='mdfriend'||kind==='archivist'||kind==='lostfresh'){flavorTalk(kind);return;}
   if(kind==='wandang'){
     sfx.ok();S.talked++;
     const pool=CUR==='quad'?WANDANG_IL:(S.boss1?WANDANG_AFTER:WANDANG_LINES);
@@ -1008,6 +1404,241 @@ function npcTalk(kind){
   if(kind==='murphys'){openShopWith(['miller','yuengling'],"Murphy's Pub",'Hey! 늘 마시던 걸로?');return;}
   if(kind==='wine'){openShopWith(['barolo','barbaresco'],'와인샵','네비올로의 해는 좋았지. 공부엔 피에몬테만 한 게 없어.');return;}
   if(kind==='jks'){jksShop();return;}
+  if(kind==='yenmail'){
+    sfx.ok();
+    if(S.boss3){showDialog('완당 선생의 메일',['「조교수 임용을 축하하네.」','「이제 자네가 누군가의 완당이 될 차례야.」','「…내가 하와이에 있을 때도, 이만큼 기쁘진 않았네.」']);return;}
+    if(S.paper3){showDialog('완당 선생의 메일',['「초고를 읽었네. 3장의 각주 17번은 다시 보게.」','「Job Talk에서는 첫 5분이 전부야. 숨 쉬는 것 잊지 말고.」','「건투를 비네. 자네는 내 마지막 제자이자, 가장 나은 제자였어.」']);return;}
+    const mails=[
+      ['「보스턴은 어떤가. 옌칭의 서고는 동양학의 보고일세.」','「포닥은 마라톤이야. 단행본 초고를 완성하는 것이 첫 관문이지.」','「…내가 하와이에 있을 때는 코코넛 아래서 초고를 썼다네. 보스턴은 춥겠군.」'],
+      ['「찰스 강변은 산책하기 좋지. 단, 거위는 학자를 존중하지 않아.」','「MIT 쪽은 밤에 가지 말게. …이상한 소문이 있어.」'],
+      ['「뉴버리의 물가에 놀라지 말게. 보스턴이 원래 그래.」','「몸이 재산일세. 바나나라도 챙겨 먹게.」'],
+      ['「답장은 안 해도 되네. 어차피 또 보낼 테니.」','「연구는 잘 되어가나? …재촉은 아닐세. 정말로.」']
+    ];
+    const m=mails[yenMailIdx%mails.length];yenMailIdx++;
+    showDialog('완당 선생의 메일',m);
+    return;
+  }
+  if(kind==='banguide'){
+    sfx.ok();
+    showDialog('라운지 죽돌이 포닥',['…어떻게 여기까지? 아, 어쨌든 환영해요. 여기 바나나는 공짜예요. 커피도.','무한복도 끝까지 걸어온 사람만 아는 곳이죠. 포닥들의 비밀 휴게실.','소파에서 쉬면 거짓말처럼 회복돼요. 축구망령들도 여긴 안 들어와요.','복도는 위험하지만… 그래서 더 달콤하달까. 올 때마다 들러요.','참, 잔디밭의 그 검은 나무는 건드리지 마요. …아직은.']);
+    return;
+  }
+  if(kind==='bostonliq'){
+    openShopWith(['miller','yuengling','barolo','barbaresco','wellerfp'],
+      '<b style="color:#ffd866">백베이 보틀숍</b>','보스턴 물가에 놀라지 마시고. 와인은 피에몬테 직수입입니다.');
+    return;
+  }
+  if(kind==='gadget'){
+    sfx.ok();
+    const GLIST=['tablet','macbook'];
+    const build=msg=>openMenu('<b style="color:#ffd866">하버드 스퀘어 가젯</b> — '+msg+'<br><span style="color:#aab;font-size:12px">현재 장비: '+wpn().name+' (ATK+'+wpn().atk+') · '+fmt(P.gold)+'</span>',
+      GLIST.map(k=>({label:WEAPONS[k].name+' ('+fmt(WEAPONS[k].price)+') <small>ATK+'+WEAPONS[k].atk+'</small>',
+        disabled:P.weapon===k||P.gold<WEAPONS[k].price,
+        fn:()=>{P.gold-=WEAPONS[k].price;P.weapon=k;updateHud();sfx.lvl();build('탁월한 선택. 논문이 빨라질 겁니다.');}}))
+      .concat([{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
+      ()=>{closeMenu();MODE='map';});
+    build('학자의 무기를 팝니다.');
+    return;
+  }
+  // ===== 3장 요리 3인방: 락(재료A)·문(라면/재료B)·한(합체요리) =====
+  if(kind==='rock'){
+    sfx.ok();
+    const give=k=>{
+      P.inv[k]--;S.matA++;updateHud();sfx.lvl();
+      showDialog('락 (Rock)',['받았어. '+ITEMS[k].name+'라… 역시 너야.','(락이 술을 냄비에 통째로 붓는다. 주방에 깊은 향이 퍼진다.)','자, <b>재료A 「숙성 육수」</b> 완성. (보유: '+S.matA+'개)','이거랑 문이 만드는 <b>재료B</b>를 모아서 한에게 가져가. MIT 쪽에 있어.']);
+    };
+    openMenu('<b>락 (Rock)</b> — 뉴버리 레스토랑의 셰프<br><span style="color:#aab;font-size:12px">「좋은 육수엔 좋은 술이 들어가. <b>스태그</b>나 <b>웰러</b> 한 병 주면 <b style="color:#f0d080">재료A 숙성 육수</b>를 만들어 주지.」<br>재료A 보유: '+S.matA+'개 · 재료B 보유: '+S.matB+'개</span>',[
+      {label:'스태그 Jr.를 건넨다 (보유 '+(P.inv.stagg||0)+')',disabled:!(P.inv.stagg>0),fn:()=>{closeMenu();give('stagg');}},
+      {label:'웰러 풀프루프를 건넨다 (보유 '+(P.inv.wellerfp||0)+')',disabled:!(P.inv.wellerfp>0),fn:()=>{closeMenu();give('wellerfp');}},
+      {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
+  if(kind==='moon'){
+    sfx.ok();
+    if(S.moonRamen){
+      if(P.inv.ramen>=1){showDialog('문 (Moon)',['라면은 끓여놨는데… 너 아직 한 그릇 있잖아.','<b>불기 전에 그것부터 먹어.</b> 새 건 그다음이야.','(천상 라면은 한 번에 한 그릇까지만 들고 다닐 수 있다.)']);return;}
+      S.moonRamen=0;P.inv.ramen=1;updateHud();sfx.lvl();
+      showDialog('문 (Moon)',['수고했어. 약속한 <b style="color:#ffd866">천상 라면</b>이야.','김 위에 계란, 그 위에 파… 보스턴 거위도 이 냄새엔 무릎 꿇지.','(전투 중 사용: HP·MP 완전 회복 + 적 전체 논증력·속도 대폭 약화!)','다 먹으면 또 와. 의뢰는 얼마든지 있으니까.']);
+      return;
+    }
+    if(S.moonQ>0){showDialog('문 (Moon)',['강변 거위들, 아직 <b>'+S.moonQ+'마리</b> 남았어.','(찰스 리버에서 전투 승리로 처치 수를 채우자.)']);return;}
+    const giveB=k=>{
+      P.inv[k]--;S.matB++;updateHud();sfx.lvl();
+      showDialog('문 (Moon)',['오… '+ITEMS[k].name+'. 피에몬테의 자존심이지.','(문이 와인을 졸이기 시작한다. 보트하우스가 달콤한 향으로 가득 찬다.)','<b>재료B 「와인 졸임 소스」</b> 완성! (보유: '+S.matB+'개)','한에게 가져가. 재료A랑 같이.']);
+    };
+    openMenu('<b>문 (Moon)</b> — 보트하우스의 라면 장인<br><span style="color:#aab;font-size:12px">「①거위 좀 쫓아주면 <b style="color:#f0d080">천상 라면</b>을 끓여주지. ②<b>바롤로</b>·<b>바르바레스코</b>를 주면 <b style="color:#f0d080">재료B 와인 졸임 소스</b>를 만들어 줄게.」<br>재료A 보유: '+S.matA+'개 · 재료B 보유: '+S.matB+'개</span>',[
+      {label:'거위 퇴치 의뢰를 받는다 (찰스 리버 몹 4마리)',fn:()=>{closeMenu();S.moonQ=4;
+        showDialog('문 (Moon)',['고마워! 보트 위에까지 올라온다니까, 걔네.','강변에서 <b>4마리</b>만 쫓아줘. 라면은 끓여놓을게.']);}},
+      {label:'바롤로를 건넨다 (보유 '+(P.inv.barolo||0)+')',disabled:!(P.inv.barolo>0),fn:()=>{closeMenu();giveB('barolo');}},
+      {label:'바르바레스코를 건넨다 (보유 '+(P.inv.barbaresco||0)+')',disabled:!(P.inv.barbaresco>0),fn:()=>{closeMenu();giveB('barbaresco');}},
+      {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
+  if(kind==='han'){
+    sfx.ok();
+    const HAN_DISHES=[
+      {n:'뼈해장 라구 파스타',f:()=>{P.maxhp+=30;P.hp+=30;},txt:'최대 HP가 영구히 +30'},
+      {n:'부야베스 김치찌개',f:()=>{P.atk+=3;},txt:'논증력(ATK)이 영구히 +3'},
+      {n:'비프 웰링턴 수육',f:()=>{P.def+=3;},txt:'철면피(DEF)가 영구히 +3'},
+      {n:'랍스터 비빔국수',f:()=>{P.spd+=2;},txt:'마감력(SPD)이 영구히 +2'},
+      {n:'클램차우더 순두부',f:()=>{P.luk+=3;},txt:'통찰(LUK)이 영구히 +3'}
+    ];
+    if(S.matA>0&&S.matB>0){
+      const dish=HAN_DISHES[S.hanIdx%HAN_DISHES.length];
+      openMenu('<b>한 (Han)</b> — MIT 옆 한인 식료품점<br><span style="color:#aab;font-size:12px">「재료A·B 다 있네? 오늘의 합체요리는 <b style="color:#f0d080">'+dish.n+'</b> — '+dish.txt+'.」<br>재료A: '+S.matA+'개 · 재료B: '+S.matB+'개 · 지금까지 '+S.hanCooked+'그릇</span>',[
+        {label:dish.n+'을(를) 만들어 먹는다 (재료A·B 각 1개 소모)',fn:()=>{
+          closeMenu();S.matA--;S.matB--;dish.f();S.hanIdx++;S.hanCooked++;sfx.lvl();updateHud();
+          showDialog('한 (Han)',['(셋이서 냄비를 둘러싸고 한 그릇씩 나눠 먹는다.)','…말이 필요 없네. 보스턴의 밤이 든든해진다.','<b style="color:#ffd866">'+dish.n+'</b> — '+dish.txt+'!','(다음 요리는 「'+HAN_DISHES[(S.hanIdx)%HAN_DISHES.length].n+'」 — 재료를 또 모아 와.)']);
+        }},
+        {label:'다음에 먹을게',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+      return;
+    }
+    showDialog('한 (Han)',['어서 와. 여기는 없는 게 없는 한인 식료품점.','<b>재료A 숙성 육수</b>(락 — 뉴버리)와 <b>재료B 와인 졸임 소스</b>(문 — 보트하우스)를 모아 오면','<b style="color:#ffd866">합체요리</b>를 만들어 주지. 먹는 즉시 몸에 배는, 영구 스펙업이야.','현재 — 재료A: '+S.matA+'개 · 재료B: '+S.matB+'개','다음 요리는 「'+HAN_DISHES[S.hanIdx%HAN_DISHES.length].n+'」 ('+HAN_DISHES[S.hanIdx%HAN_DISHES.length].txt+')']);
+    return;
+  }
+  // ===== 3장 MIT 중간보스: 목(目) 나무 지형물 =====
+  if(kind==='moktree'){
+    sfx.ok();
+    showDialog('???',['MIT 잔디밭 한복판, 유독 검은 나무 한 그루가 서 있다.','가까이 다가가자 줄기 한가운데에서 커다란 <b>외눈</b>이 번쩍 뜬다.','「…우리 셋을 이기면, BWH로 가는 길을 알려주지. 도망칠 생각은 말고.」'],()=>{
+      openMenu('나무괴물 <b>목(目) 삼형제</b>가 깨어난다. 도전하시겠습니까?<br><span style="color:#aab;font-size:12px">상목·중목·하목 동시전 · 도주 불가 · 중간 회복 없음 · <b style="color:#f0d080">권장 Lv 27+ · 술/요리 필수</b><br>주의: 상목이 살아 있는 동안 마시는 술은 가로채인다!</span>',[
+        {label:'도전한다',fn:()=>{closeMenu();startEventBattle({
+          waves:[['sangmok','jungmok','hamok']],
+          noRun:true,noRunMsg:'세 그루가 가지로 길을 막았다 — 도망칠 수 없다!',
+          intro:'상목·중목·하목이 가지를 뻗으며 일어섰다! 세 개의 눈이 일제히 이쪽을 노려본다!',
+          onWin:()=>{
+            S.mok=1;S.bwhCoupon=1;
+            showDialog('목(目)',['세 그루가 천천히 쓰러지며 잎을 떨군다.','「…인정하지. 자네는 우리 팀이 아니라, 더 높은 곳으로 갈 사람이야.」','쓰러진 자리에서 <b style="color:#ffd866">BWH 쿠폰</b>이 떨어졌다!','「롱우드의 BWH 펠로우들에게 보여주게. …그들도 한 술 하거든.」']);
+          }
+        });}},
+        {label:'아직 이르다',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
+  // ===== 3장 롱우드: BWH 펠로우 5인 =====
+  const BWH={
+    bwh1:{drink:'buffalo', win:'마취과는 늘 침착하지. …자네가 더 침착했지만.'},
+    bwh2:{drink:'barolo',  win:'영상의학은 다 꿰뚫어 보거든. 자네 빼고.'},
+    bwh3:{drink:'barbaresco', win:'감별진단은 내 특기인데. …자네가 더 빨랐어.'},
+    bwh4:{drink:'stagg',   win:'응급의학은 속도야. 자네가 더 빨랐다는 게 분할 뿐.'},
+    bwh5:{drink:'wellerfp', win:'외과 과장으로서 인정하네. 손이 좋아, 자네.'}
+  };
+  if(kind==='bwh1'||kind==='bwh2'||kind==='bwh3'||kind==='bwh4'||kind==='bwh5'){
+    sfx.ok();
+    const b=BWH[kind],dn=ENEMY_DB[kind].name;
+    if(S[kind]){showDialog(dn,['좋은 승부였어. JK한테 내 얘기 잘 좀 해줘.']);return;}
+    if(!S.bwhCoupon){showDialog(dn,['BWH 회원만 상대해. 쿠폰 없으면 얘기 안 통해.','MIT 잔디밭의 그 검은 나무, 봤어? …삼형제를 꺾고 다시 와.']);return;}
+    showDialog(dn,['오, BWH 쿠폰? 진짜네. 목(目) 삼형제를 이겼다고?','우리 과 자존심이 있지. 한 판 붙고, 이기면 내 셀러에서 한 병 줄게.'],()=>{
+      openMenu(dn+'와(과) 대결한다?<br><span style="color:#aab;font-size:12px">1:1 · 도주 불가 · 이기면 <b style="color:#f0d080">레어 술 1병</b></span>',[
+        {label:'대결한다',fn:()=>{closeMenu();startEventBattle({
+          waves:[[kind]],noRun:true,noRunMsg:'의사는 차트를 덮지 않는다 — 도주 불가!',
+          intro:dn+'이(가) 가운을 펄럭이며 일어섰다!',
+          onWin:()=>{
+            S[kind]=1;P.inv[b.drink]=(P.inv[b.drink]||0)+1;
+            const all=S.bwh1&&S.bwh2&&S.bwh3&&S.bwh4&&S.bwh5;
+            showDialog(dn,['…졌네. 인정.','약속한 거. <b>'+ITEMS[b.drink].name+'</b> 한 병이야.',b.win,
+              all?'다섯 다 이겼군. 그럼 이제 <b>JK</b>가 자넬 손님으로 받을 거야.':'나머지 멤버도 찾아봐. 다 이기면 JK가 기다린다.']);
+          }
+        });}},
+        {label:'다음에',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
+  if(kind==='jk3'){
+    const all=S.bwh1&&S.bwh2&&S.bwh3&&S.bwh4&&S.bwh5;
+    if(!all){sfx.ok();showDialog('JK',['JK 리커 보스턴 지점에 온 걸 환영하네. …지만,','내 단골은 <b>BWH 펠로우 다섯</b>을 전부 꺾은 사람만 받아.','자존심이지. 다섯 다 이기고 오게.']);return;}
+    jk3Shop();return;
+  }
+  // ===== 3장 F: 필드보스 트리거 =====
+  if(kind==='gooseboss'){
+    sfx.ok();
+    showDialog('???',['찰스 강변의 갈대밭이 거칠게 흔들린다.','왕관 같은 볏을 단 거대한 거위 — <b>보스 구스</b>가 날개를 활짝 편다!','「꽈아아악!」 (이 강의 주인은 나다, 라고 말하는 듯하다.)'],()=>{
+      openMenu('<b>보스 구스</b>에게 도전한다?<br><span style="color:#aab;font-size:12px">필드보스 · 도주 불가 · <b style="color:#f0d080">권장 Lv 30+ · 요리/라면 권장</b> · 광역 둔화 + 반격 주의</span>',[
+        {label:'도전한다',fn:()=>{closeMenu();startEventBattle({
+          waves:[['bossgoose']],noRun:true,noRunMsg:'강변이 거위떼로 막혔다 — 도주 불가!',
+          intro:'보스 구스가 물보라를 일으키며 돌진해 온다!',
+          onWin:()=>{S.gooseboss=1;showDialog('보스 구스',['거대한 거위가 깃털을 흩뿌리며 강물 속으로 사라진다.','강변에 <b style="color:#ffd866">루카스의 보물 조각</b>이 반짝인다! (찰스 리버 제패)','문(Moon)이 좋아하겠는걸 — 이제 강변이 조용해졌다.']);}
+        });}},
+        {label:'아직 이르다',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
+  if(kind==='tumorboss'){
+    sfx.ok();
+    showDialog('???',['롱우드 병원가 깊은 곳, 공기가 무겁게 가라앉는다.','검붉은 덩어리가 의료 모니터를 휘감고 맥동한다 — <b>스트레스 종양</b>.','「…쉬어. 쉬라고. 쉴 수 없잖아?」 끈적한 목소리가 머릿속에 울린다.'],()=>{
+      openMenu('<b>스트레스 종양</b>에게 도전한다?<br><span style="color:#aab;font-size:12px">필드보스 · 도주 불가 · <b style="color:#f0d080">권장 Lv 30+ · 요리/라면 권장</b> · 과로 스택 압박(수신제가로 해제)</span>',[
+        {label:'도전한다',fn:()=>{closeMenu();startEventBattle({
+          waves:[['stumor']],noRun:true,noRunMsg:'무거운 공기가 발을 붙든다 — 도주 불가!',
+          intro:'스트레스 종양이 맥동하며 검은 그림자를 뻗친다!',
+          onWin:()=>{S.tumorboss=1;showDialog('스트레스 종양',['덩어리가 푸시식 쪼그라들며 한 줄기 연기로 흩어진다.','「…잠깐은, 쉬어도… 돼.」 마지막 말과 함께 공기가 가벼워진다.','<b style="color:#ffd866">루카스의 보물 조각</b>을 얻었다! (롱우드 제패)']);}
+        });}},
+        {label:'아직 이르다',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
+  // ===== 3장 F: 루카스 수집 퀘스트 =====
+  if(kind==='lucas'){
+    sfx.ok();
+    if(S.bell){showDialog('루카스',['(루카스가 골골거리며 다리에 머리를 비빈다.)','목의 방울이 딸랑— 디버프가 한결 가볍다. 고마워, 친구.']);return;}
+    const got=[S.gooseboss,S.tumorboss,S.mok,S.jk3open,S.nightfirst];
+    const cnt=got.filter(Boolean).length;
+    if(cnt>=5){S.bell=1;sfx.lvl();
+      showDialog('루카스',['(루카스가 다섯 보물을 모두 확인하더니, 만족스럽게 눈을 감는다.)','목에서 작은 <b style="color:#ffd866">루카스의 방울</b>을 풀어 건넨다.','<b>디버프 저항</b> — 상태이상(둔화·혼란·침묵·MP누수)의 지속이 절반으로 줄어든다!','보스턴을 누비며 모은 인연의 증표다.']);
+      return;
+    }
+    const names=['찰스 보스 구스','롱우드 스트레스 종양','MIT 목(目)','BWH·JK 커뮤니티','나이트 쉬프트 현상금'];
+    const list=names.map((n,i)=>(got[i]?'✔ ':'… ')+n).join('<br>');
+    showDialog('루카스',['(하버드 스퀘어의 마스코트 고양이, 루카스.)','보스턴 다섯 구역의 보물을 모아오면 — <b>루카스의 방울</b>(디버프 저항)을 주지.','현재 '+cnt+'/5:<br>'+list]);
+    return;
+  }
+  // ===== 3장 F: 나이트 쉬프트 맥주바 (현상금) =====
+  if(kind==='nightshift'){
+    sfx.ok();
+    const ready=Math.floor((S.bountyKills||0)/5);
+    const build=msg=>{
+      const opts=[];
+      if(ready>0)opts.push({label:'현상금 수령 ('+ready+'건 가능) — ₩15,000 + 나이트 쉬프트 IPA',fn:()=>{
+        S.bountyKills-=5;P.gold+=15000;P.inv.nightshift=(P.inv.nightshift||0)+1;S.bountyClaims++;
+        const first=!S.nightfirst;if(first)S.nightfirst=1;
+        updateHud();sfx.lvl();closeMenu();MODE='map';
+        showDialog('나이트 쉬프트',first?['좋은 사냥이었어! 첫 현상금이군 — 이건 <b style="color:#ffd866">루카스의 보물 조각</b>도 같이야.','자, 시원한 IPA 한 잔과 ₩15,000.']:['수고했어. ₩15,000과 IPA 한 잔. 또 부탁해.']);
+      }});
+      opts.push({label:'맥주를 산다 (IPA·잉링)',fn:()=>{closeMenu();openShopWith(['nightshift','yuengling'],'나이트 쉬프트','밤샘엔 IPA지. 단골 환영.');}});
+      opts.push({label:'나간다',fn:()=>{closeMenu();MODE='map';}});
+      openMenu('<b style="color:#ffd866">나이트 쉬프트 (현상금 게시판)</b> — '+msg+'<br><span style="color:#aab;font-size:12px">3장 전투 누적: '+(S.bountyKills||0)+' · 5승마다 현상금 1건 · 수령 '+(S.bountyClaims||0)+'건</span>',opts,()=>{closeMenu();MODE='map';});
+    };
+    build(ready>0?'현상금이 쌓였군. 받아가.':'몹 좀 잡아오면 현상금을 주지.');
+    return;
+  }
+  // ===== 3장 G: 옌칭 논문 집필 책상 =====
+  if(kind==='thesis'){
+    sfx.ok();
+    if(S.paper3){showDialog('집필 책상',['책상 위에 완성된 단행본 초고가 놓여 있다.','「Job Talk」 초청장도 함께 — 임용 심사장의 문이 열렸다.','하버드 스퀘어 북쪽, 잠겨 있던 그 문이다.']);return;}
+    const done=[S.mok,S.gooseboss,S.tumorboss];
+    const names=['MIT 목(目) — 무한복도 사례 연구','찰스 보스 구스 — 도시생태 챕터','롱우드 스트레스 종양 — 의료인류학 챕터'];
+    const list=names.map((n,i)=>(done[i]?'✔ ':'… ')+n).join('<br>');
+    if(!S.thesisStarted){S.thesisStarted=1;
+      showDialog('집필 책상',['옌칭연구소의 책상 — 단행본(book manuscript) 집필의 거점이다.','완당 선생의 마지막 추천서가 압정으로 꽂혀 있다.','초고를 완성하려면, 보스턴 곳곳의 <b>핵심 사례(필드보스)</b>를 직접 겪고','충분한 내공(Lv 30+)을 쌓아야 한다.','현재 진행:<br>'+list]);
+      return;
+    }
+    if(done.every(Boolean)&&P.lv>=30){
+      openMenu('<b>단행본 초고</b> — 모든 자료가 모였다. 마지막 밤샘으로 초고를 완성한다?<br><span style="color:#aab;font-size:12px">완성 시 임용 심사장(Job Talk) 개방</span>',[
+        {label:'초고를 완성한다',fn:()=>{closeMenu();S.paper3=1;sfx.lvl();
+          showDialog('',['…밤이 깊도록 키보드 소리가 멈추지 않았다.','새벽, 마지막 각주를 찍는다. <b style="color:#ffd866">단행본 초고 완성!</b>','완당 선생의 답장: 「드디어. …내가 하와이에 있을 때처럼, 이제부터가 진짜야.」','<b>임용 심사장의 문이 열렸다.</b> (하버드 스퀘어 북쪽)']);
+        }},
+        {label:'아직 다듬을 게 있다',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+      return;
+    }
+    showDialog('집필 책상',['아직 자료가 부족하다. 핵심 사례를 더 겪어야 한다.','(권장 Lv 30+ · 세 필드보스 격파 필요)','현재 진행:<br>'+list+'<br>내공: Lv '+P.lv+'/30']);
+    return;
+  }
   if(kind==='leader'){
     sfx.ok();
     if(S.union){showDialog('유학생회장',['덕분에 유니언이 조용해졌어. 고마워!','4층 상자의 보온 텀블러, 회장단 공식 사례품이야.','겨울 디펜스엔 따뜻한 커피가 보약이지.']);return;}
@@ -1159,24 +1790,34 @@ function tryInteract(){
   if(npc){npcTalk(npc.kind);return;}
   const dp=(DOORP[CUR]||{})[f.x+','+f.y];
   const t=tileAt(f.x,f.y);
-  if(dp&&t==='D'){sfx.ok();goMap(dp.to,dp.x,dp.y,dp.d);return;}
+  if(dp&&t==='D'){
+    if(dp.lock&&dp.lock()){sfx.ok();showDialog('',dp.msg||['잠겨 있다.']);return;}
+    sfx.ok();goMap(dp.to,dp.x,dp.y,dp.d);return;
+  }
   if(t==='L'){labMenu();return;}
   if(t==='E'){dormMenu();return;}
   if(t==='W'){sfx.ok();showDialog('',['좌판에 술병이 가지런히 놓여 있다.','점주에게 말을 걸자.']);return;}
   if(t==='A'){travelMenu();return;}
   if(t==='H'){hiddenPagoda(f.x,f.y);return;}
-  if(t==='V'){vendingShop(CUR==='prelim'?['miller','yuengling']:['soju','beer']);return;}
+  if(t==='V'){vendingShop(CUR==='prelim'?['miller','yuengling']:(CUR==='jobhall'?['yuengling','barbaresco','nightshift']:['soju','beer']));return;}
   if(t==='O'){sfx.heal();openFieldMenu();fmView('save');return;}
   if(t==='X'){openChest(f.x,f.y);return;}
-  if(t==='J'){if(CUR==='prelim')prelimJudge();else hallJudge();return;}
+  if(t==='J'){if(CUR==='prelim')prelimJudge();else if(CUR==='jobhall')jobhallCommittee();else hallJudge();return;}
   if(t==='S'){sfx.ok();showDialog('',['계단이다. 밟으면 이동한다.']);return;}
 }
 function dormMenu(){
   sfx.ok();
-  const cafe=CUR==='cafe';
-  openMenu(cafe?'카페 야외 좌석 — 잠깐 쉬어갈까?':'기숙사 침대 — 시차 적응엔 잠이 최고다.',[
-    {label:cafe?'커피 한잔 한다 (HP·MP 완전 회복)':'푹 잔다 (HP·MP 완전 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();
-      showDialog('',cafe?['따뜻한 커피 한 잔에 숨을 돌렸다.','HP와 MP가 모두 회복되었다!']:['옥수수밭 너머로 해가 지고, 뜬다…','HP와 MP가 모두 회복되었다!']);}},
+  const SPOT={
+    dorm:    {t:'기숙사 침대 — 시차 적응엔 잠이 최고다.',a:'푹 잔다',m:['옥수수밭 너머로 해가 지고, 뜬다…','HP와 MP가 모두 회복되었다!']},
+    cafe:    {t:'카페 야외 좌석 — 잠깐 쉬어갈까?',a:'커피 한잔 한다',m:['따뜻한 커피 한 잔에 숨을 돌렸다.','HP와 MP가 모두 회복되었다!']},
+    yenching:{t:'연구실 간이침대 — 포닥의 필수 가구.',a:'쪽잠을 잔다',m:['옌칭 서가의 종이 냄새 속에서 깜빡 잠들었다…','HP와 MP가 모두 회복되었다!']},
+    banana:  {t:'라운지 소파 — 공짜 바나나와 커피가 있다.',a:'바나나를 먹으며 늘어진다',m:['바나나 두 개와 커피 한 잔. 무한복도 끝의 오아시스.','HP와 MP가 모두 회복되었다!']},
+    charles: {t:'강변 벤치 — 찰스강이 반짝인다.',a:'강바람을 쐰다',m:['조정 보트가 미끄러져 간다. …거위만 조심하자.','HP와 MP가 모두 회복되었다!']}
+  };
+  const sp=SPOT[CUR]||SPOT.dorm;
+  openMenu(sp.t,[
+    {label:sp.a+' (HP·MP 완전 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();
+      showDialog('',sp.m);}},
     {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
   ],()=>{closeMenu();MODE='map';});
 }
@@ -1228,40 +1869,53 @@ function vendingShop(stock){
 }
 function travelMenu(){
   sfx.ok();
-  if(CUR==='campus'){
-    if(!S.boss1){showDialog('',['공항버스 정류장이다.','…아직 떠날 이유가 없다. (석사 디펜스 후 개방)']);return;}
-    openMenu('<b style="color:#ffd866">공항버스</b> — 인천 → 시카고 오헤어 → 샴페인.<br><span style="color:#aab;font-size:12px">박사과정의 땅, 일리노이로 간다. (언제든 왕복 가능)</span>',[
-      {label:'출국한다 ✈',fn:()=>{closeMenu();
-        if(!S.ch2first){S.ch2first=1;
-          goMap('quad',17,20,'up').then(()=>{
-            showDialog('',['…14시간의 비행과 2시간의 버스.','끝없는 옥수수밭 한가운데, UIUC 메인 쿼드에 도착했다.','겨울엔 영하 21도까지 떨어진다고 한다. 술이 필요하다.','동쪽 길 끝엔 그린 스트리트(상점가), 서쪽엔 아시아도서관.','남서쪽으로 내려가면 카페 거리, 거기서 만날 사람이 많다.','…그리고 잔디밭 어딘가에 주황 털뭉치들이 산다는 소문이.']);
+  const here=CUR==='campus'?'seoul':(CUR==='hsq'?'boston':'illinois');
+  const DEST={
+    seoul:   {label:'서울 (안암 캠퍼스)',go:()=>goMap('campus',10,21,'down')},
+    illinois:{label:'일리노이 (UIUC 쿼드)',go:()=>{
+      if(!S.ch2first){S.ch2first=1;
+        goMap('quad',17,20,'up').then(()=>{
+          showDialog('',['…14시간의 비행과 2시간의 버스.','끝없는 옥수수밭 한가운데, UIUC 메인 쿼드에 도착했다.','겨울엔 영하 21도까지 떨어진다고 한다. 술이 필요하다.','동쪽 길 끝엔 그린 스트리트(상점가), 서쪽엔 아시아도서관.','남서쪽으로 내려가면 카페 거리, 거기서 만날 사람이 많다.','…그리고 잔디밭 어딘가에 주황 털뭉치들이 산다는 소문이.']);
+        });
+      }else goMap('quad',17,20,'up');
+    }},
+    boston:  {label:'보스턴 (하버드 스퀘어)',go:()=>{
+      if(!S.ch3first){S.ch3first=1;
+        goMap('hsq',20,14,'up').then(()=>{
+          showDialog('',['보스턴 로건 공항 — 그리고 빨간 벽돌의 하버드 스퀘어.','일리노이의 박사모를 쓰고, 이번엔 <b>하버드-옌칭연구소 포닥</b>으로 왔다.','완당 선생은 한국에 남으셨다. 「메일은 자주 보내겠네. 내가 하와이에 있을 때처럼.」','…메일이 더 무섭다.'],()=>{
+            showDialog('',['북서쪽 건물이 옌칭연구소 — 내 책상과 간이침대가 있다.','서쪽은 뉴버리 스트릿, 동쪽은 찰스 리버. 강 건너엔 MIT.','MIT 무한복도 끝엔 포닥들의 비밀 휴게실이 있다는 소문이.','남쪽 길은 롱우드 병원가로 이어진다.','목표는 하나 — <b>단행본 논문을 완성하고, 교수가 되는 것.</b>']);
           });
-        }else goMap('quad',17,20,'up');
-      }},
-      {label:'다음에',fn:()=>{closeMenu();MODE='map';}}
-    ],()=>{closeMenu();MODE='map';});
-  }else{
-    openMenu('<b style="color:#ffd866">공항버스</b> — 샴페인 → 시카고 → 인천.<br><span style="color:#aab;font-size:12px">잠시 서울로 돌아간다.</span>',[
-      {label:'귀국한다 ✈',fn:()=>{closeMenu();goMap('campus',10,21,'down');}},
-      {label:'다음에',fn:()=>{closeMenu();MODE='map';}}
-    ],()=>{closeMenu();MODE='map';});
+        });
+      }else goMap('hsq',20,14,'up');
+    }}
+  };
+  const dests=[];
+  if(here!=='seoul')dests.push(DEST.seoul);
+  if(here!=='illinois'&&S.boss1)dests.push(DEST.illinois);
+  if(here!=='boston'){
+    if(S.boss2)dests.push(DEST.boston);
+    else if(here==='illinois')dests.push({label:'보스턴 <small>(Prelim 통과 후 개방)</small>',disabled:true,go:null});
   }
+  if(!dests.length){showDialog('',['공항버스 정류장이다.','…아직 떠날 이유가 없다. (석사 디펜스 후 개방)']);return;}
+  const head=here==='boston'
+    ?'<b style="color:#ffd866">MBTA + 로건 공항</b> — 어디로 갈까?<br><span style="color:#aab;font-size:12px">언제든 왕복 가능. 연구자는 떠돌이다.</span>'
+    :'<b style="color:#ffd866">공항버스</b> — 어디로 갈까?<br><span style="color:#aab;font-size:12px">언제든 왕복 가능. 연구자는 떠돌이다.</span>';
+  openMenu(head,
+    dests.map(d=>({label:d.disabled?d.label:d.label+' ✈',disabled:!!d.disabled,fn:()=>{closeMenu();d.go();}}))
+      .concat([{label:'다음에',fn:()=>{closeMenu();MODE='map';}}]),
+    ()=>{closeMenu();MODE='map';});
 }
 function hiddenPagoda(x,y){
-  // [DEBUG] 디버그용 만렙 돌탑 — 완성본에서는 히든 아이템박스 1개 드랍으로 교체할 것
+  // 히든: 소원 돌탑 — 1회성 보상 (구 디버그 돌탑 자리)
   sfx.crash();
-  if(S.debugMax){showDialog('',['돌탑은 고요하다.','이미 모든 것을 주었다.']);return;}
-  showDialog('',['수풀 속, 정체불명의 돌탑이 서 있다.','…만지면 안 될 것 같은 기운이 감돈다.'],()=>{
-    openMenu('돌탑에 손을 댄다? <span style="color:#aab;font-size:12px">[DEBUG]</span>',[
-      {label:'손을 댄다',fn:()=>{closeMenu();
+  if(S.debugMax){showDialog('',['돌탑은 고요하다.','소원은 한 번뿐이다.']);return;}
+  showDialog('',['수풀 속, 오래된 소원 돌탑이 서 있다.','졸업을 빌었던 손길들이 돌마다 눌러 담겨 있다.'],()=>{
+    openMenu('돌 하나를 얹고 소원을 빈다?',[
+      {label:'소원을 빈다',fn:()=>{closeMenu();
         S.debugMax=1;
-        P.lv=20;P.xp=0;
-        P.maxhp=50+12*19+1000;P.maxmp=20+4*19+1000;
-        P.atk=10+2*19+1000;P.def=Math.floor(5+1.5*19)+1000;P.spd=8+19+1000;P.luk=Math.floor(5+0.5*19)+1000;
-        P.hp=P.maxhp;P.mp=P.maxmp;
-        P.skills=Object.keys(SKILLS);
+        P.luk+=5;P.inv.makgeolli=(P.inv.makgeolli||0)+3;
         sfx.lvl();updateHud();
-        showDialog('',['돌탑에서 엄청난 기운이 흘러들어온다…!','<b>[DEBUG] Lv 20 (만렙) + 전 스탯 +1000! 전 스킬 습득!</b>','이제 무엇이든 한 방이다. …이 돌탑은 출시 전에 반드시 치워야 한다.']);}},
+        showDialog('',['돌탑이 희미하게 빛났다…','<b>통찰(LUK)이 영구히 +5!</b>','돌탑 아래에서 <b>막걸리 3병</b>도 나왔다.','…먼저 졸업한 누군가가 두고 간 걸지도.']);}},
       {label:'물러난다',fn:()=>{closeMenu();MODE='map';}}
     ],()=>{closeMenu();MODE='map';});
   });
@@ -1273,6 +1927,14 @@ function prelimJudge(){
   openMenu('<b style="color:#ffd866">박사 예비심사 (Prelim)</b> — 착석하면 3차 심사가 연속 진행된다.<br><span style="color:#aab;font-size:12px">중간 회복 없음 · 도주 불가 · <b style="color:#f0d080">권장 Lv 18+ · 위스키 없이는 못 버틴다</b> · 자판기·세이브는 등 뒤에</span>',[
     {label:'심사를 시작한다',fn:()=>{closeMenu();startBoss('phd');}},
     {label:'…마음의 준비가 필요하다',fn:()=>{closeMenu();MODE='map';}}
+  ],()=>{closeMenu();MODE='map';});
+}
+function jobhallCommittee(){
+  if(S.boss3){sfx.ok();showDialog('',['임용 심사는 끝났다.','명패에 「Assistant Professor」라고 적혀 있다. …길었다.']);return;}
+  sfx.ok();
+  openMenu('<b style="color:#ffd866">교수 임용 커미티 (Job Talk)</b> — 착석하면 3부 심사가 연속 진행된다.<br><span style="color:#aab;font-size:12px">중간 회복 없음 · 도주 불가 · <b style="color:#f0d080">권장 Lv 32+ · 요리 누적 필수</b> · 자판기·세이브는 등 뒤에<br>학장의 「예산이 없어요」는 고정 데미지+침묵 — 부동심으론 못 막는다</span>',[
+    {label:'발표를 시작한다',fn:()=>{closeMenu();startBoss('committee');}},
+    {label:'…한 번 더 가다듬는다',fn:()=>{closeMenu();MODE='map';}}
   ],()=>{closeMenu();MODE='map';});
 }
 function hallJudge(){
@@ -1314,6 +1976,36 @@ function jksShop(){
       ()=>{closeMenu();MODE='map';});
   };
   build('어서 와. 캠퍼스가 시끄러워야(전투) 좋은 물건이 흘러들어오지.');
+}
+function jk3Shop(){
+  sfx.ok();
+  S.jk3open=1;
+  if(!S.jk3free){
+    S.jk3free=1;
+    const pool=['stagg','wellerfp','barbaresco','barolo','buffalo'];
+    const free=pool[Math.floor(Math.random()*pool.length)];
+    P.inv[free]=(P.inv[free]||0)+1;updateHud();sfx.lvl();
+    showDialog('JK',['다섯을 다 꺾었다고? …허, 보스턴 와서 이런 손님은 처음이야.','환영 선물이야. <b>'+ITEMS[free].name+'</b> 한 병. 마셔.','내 진짜 물건은 <b>파피 밴 윙클 23년</b>이지. 전설이야.','단, 아무한테나 안 팔아. 자네가 <b>사냥(전투 5승)</b>할 때마다 한 병씩 빼주지.'],()=>jk3Build('자, 둘러보게.'));
+    return;
+  }
+  jk3Build('또 왔군. 사냥은 좀 했나?');
+}
+function jk3Build(msg){
+  // 입고: 3장 전투 5승마다 파피 1병
+  const chances=Math.floor((S.jk3kills||0)/5);
+  S.jk3kills=(S.jk3kills||0)-chances*5;
+  S.jk3stock=(S.jk3stock||0)+chances;
+  const reg=['stagg','wellerfp','barbaresco','buffalo'];
+  const head='<b style="color:#ffd866">JK&#39;s Liquor · 보스턴</b> — '+msg+'<br><span style="color:#aab;font-size:12px">'+
+    (S.jk3stock>0?'<b style="color:#f0d080">★ 파피 밴 윙클 23년: '+S.jk3stock+'병 입고</b>':'파피 선반이 비었다. <span style="color:#888">(전투 5승마다 1병 입고)</span>')+
+    ' · '+fmt(P.gold)+'</span>';
+  const opts=[];
+  if(S.jk3stock>0)opts.push({label:'<b style="color:#ffd866">'+ITEMS.pappy.name+'</b> ('+fmt(shopPrice('pappy'))+') <small>'+ITEMS.pappy.short+'</small>',disabled:P.gold<shopPrice('pappy'),
+    fn:()=>{P.gold-=shopPrice('pappy');P.inv.pappy++;S.jk3stock--;S.bought++;updateHud();sfx.lvl();jk3Build('…그걸 알아보다니. 좋은 혀야.');}});
+  reg.forEach(k=>opts.push({label:ITEMS[k].name+' ('+fmt(shopPrice(k))+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k),
+    fn:()=>{P.gold-=shopPrice(k);P.inv[k]++;S.bought++;updateHud();jk3Build('Cheers.');}}));
+  opts.push({label:'나가기',fn:()=>{closeMenu();MODE='map';}});
+  openMenu(head,opts,()=>{closeMenu();MODE='map';});
 }
 function shopPrice(k){return S.cafeStamp?Math.round(ITEMS[k].price*0.9):ITEMS[k].price;}
 function openShopWith(stock,title,greet){
@@ -1359,7 +2051,18 @@ const QUESTS=[
   {name:'[2장] 절판된 사료',desc:'헌책방 안쪽 서가의 절판 사료 회수 → 돋보기 안경',prog:()=>S.scanboost?'1/1':'0/1',done:()=>S.scanboost>=1,ch2:true},
   {name:'[2장] 같이 졸업하자',desc:'쿼드 벤치의 동기 민서와 끝까지 대화 → 동기의 USB',prog:()=>Math.min(S.minseo,3)+'/3',done:()=>S.minseo>=3,ch2:true},
   {name:'[2장] 금서 목록의 망령',desc:'아시아도서관 가장 깊은 곳의 필드보스 격파 → 최대 MP +30 (권장 Lv 14+)',prog:()=>S.libboss?'1/1':'0/1',done:()=>S.libboss>=1,ch2:true},
-  {name:'[2장] 박사 디펜스 (Prelim)',desc:'예비심사장에서 위원회 격파 (권장 Lv 18+ · 위스키 필수)',prog:()=>S.boss2?'1/1':'0/1',done:()=>S.boss2>=1,ch2:true}
+  {name:'[2장] 박사 디펜스 (Prelim)',desc:'예비심사장에서 위원회 격파 (권장 Lv 18+ · 위스키 필수)',prog:()=>S.boss2?'1/1':'0/1',done:()=>S.boss2>=1,ch2:true},
+  {name:'[3장] 보스턴 입성',desc:'공항에서 하버드 스퀘어로 — 옌칭연구소 포닥 부임',prog:()=>S.ch3first?'1/1':'0/1',done:()=>!!S.ch3first,ch3:true},
+  {name:'[3장] 요리 3인방',desc:'락(뉴버리)·문(보트하우스)·한(MIT)의 합체요리 맛보기 (영구 스탯업)',prog:()=>Math.min(S.hanCooked||0,1)+'/1',done:()=>S.hanCooked>=1,ch3:true},
+  {name:'[3장] 천상 라면',desc:'문의 거위 의뢰를 완수하고 라면 받기 (전투용 비장의 한 그릇)',prog:()=>(S.moonRamen||P.inv.ramen>=1||S.moonQ>0)?(P.inv.ramen>=1?'1/1':'진행 중'):'0/1',done:()=>P.inv.ramen>=1,ch3:true},
+  {name:'[3장] 목(目) 삼형제',desc:'MIT 잔디밭의 검은 나무 — 상목·중목·하목 동시전 (권장 Lv27+ · 술은 가로채인다!)',prog:()=>S.mok?'1/1':'0/1',done:()=>S.mok>=1,ch3:true},
+  {name:'[3장] BWH 건틀릿',desc:'BWH 쿠폰을 들고 롱우드 펠로우 5인과 1:1 대결 (승리마다 레어 술)',prog:()=>((S.bwh1?1:0)+(S.bwh2?1:0)+(S.bwh3?1:0)+(S.bwh4?1:0)+(S.bwh5?1:0))+'/5',done:()=>!!(S.bwh1&&S.bwh2&&S.bwh3&&S.bwh4&&S.bwh5),ch3:true},
+  {name:"[3장] JK 리커 보스턴",desc:'5인 전승 후 JK의 상점 입장 — 파피 밴 윙클은 전투 5승마다 입고',prog:()=>S.jk3open?'1/1':'0/1',done:()=>S.jk3open>=1,ch3:true},
+  {name:'[3장] 보스 구스',desc:'찰스 강변의 주인 격파 (권장 Lv30+ · 반격 주의)',prog:()=>S.gooseboss?'1/1':'0/1',done:()=>S.gooseboss>=1,ch3:true},
+  {name:'[3장] 스트레스 종양',desc:'롱우드 깊은 곳의 필드보스 격파 (권장 Lv30+ · 과로는 수신제가로)',prog:()=>S.tumorboss?'1/1':'0/1',done:()=>S.tumorboss>=1,ch3:true},
+  {name:'[3장] 루카스의 방울',desc:'보스턴 5구역의 보물을 모아 하버드 스퀘어의 루카스에게',prog:()=>((S.gooseboss?1:0)+(S.tumorboss?1:0)+(S.mok?1:0)+(S.jk3open?1:0)+(S.nightfirst?1:0))+'/5',done:()=>S.bell>=1,ch3:true},
+  {name:'[3장] 단행본 초고',desc:'세 필드보스의 사례를 모아 옌칭에서 초고 완성 (Lv30+) → 임용장 개방',prog:()=>S.paper3?'1/1':'0/1',done:()=>S.paper3>=1,ch3:true},
+  {name:'[3장] 교수 임용 커미티',desc:'Job Talk 최종 심사 — 조교수가 되는 것 (권장 Lv32+ · 요리 누적 필수)',prog:()=>S.boss3?'1/1':'0/1',done:()=>S.boss3>=1,ch3:true}
 ];
 function openFieldMenu(){sfx.ok();MODE='fieldmenu';fmView('main');FM.style.display='block';}
 function closeFieldMenu(){FM.style.display='none';menuBtns=[];menuCancel=null;MODE='map';}
@@ -1376,7 +2079,7 @@ function fmView(view){
       '<button class="gbtn" data-act="close">닫기 (X)</button></div>';
   }
   else if(view==='stat'){
-    const need=P.lv<20?NEXT_XP[P.lv-1]-P.xp:'—';
+    const need=P.lv<35?NEXT_XP[P.lv-1]-P.xp:'—';
     html='<h3>스탯 — 연구 ('+(S.boss2?'철학박사 Ph.D.':(S.boss1?'문학석사 · 박사과정':'석사과정 1년차'))+')</h3><table>'+
       '<tr><td>레벨</td><td>Lv '+P.lv+' <span style="color:#aab">(다음까지 EXP '+need+')</span></td></tr>'+
       '<tr><td>멘탈 (HP)</td><td>'+P.hp+' / '+P.maxhp+'</td></tr>'+
@@ -1396,7 +2099,7 @@ function fmView(view){
       const it=ITEMS[k];
       const full=P.hp>=P.maxhp&&(!it.mp||P.mp>=P.maxmp)&&!it.full;
       const fullAll=it.full&&P.hp>=P.maxhp&&P.mp>=P.maxmp;
-      return '<button class="gbtn" data-act="use-'+k+'" '+(P.inv[k]<1||full||fullAll?'disabled':'')+'>'+it.name+' ×'+P.inv[k]+' <small>'+it.short+'</small></button>';
+      return '<button class="gbtn" data-act="use-'+k+'" '+(P.inv[k]<1||full||fullAll||it.battle?'disabled':'')+'>'+it.name+' ×'+P.inv[k]+' <small>'+it.short+'</small></button>';
     }).join('');
     html='<h3>아이템</h3><div class="btnrow">'+rows+'</div>'+
     '<p style="color:#aab;font-size:12px;margin-top:8px">장비: '+wpn().name+' (ATK+'+wpn().atk+') · 『주자어류』(스킬북)'+(S.chests['stacks:1,18']?' · 고문헌 노트(ATK+3)':'')+(S.chests['dorm:9,2']?' · 프로틴 셰이커(HP+20)':'')+(S.chests['union2:12,7']?' · 롱패딩 점퍼(DEF+5)':'')+(S.chests['union4:11,4']?' · 일리니 보온 텀블러(턴당 MP+5)':'')+(S.charm?' · 주황 털뭉치 부적(LUK+10·SPD+3)':'')+(S.encDown?' · 학회 명찰(인카운터↓)':'')+(S.cafeStamp?' · 단골 도장 카드(술값 10%↓)':'')+(S.scanboost?' · 돋보기 안경(약점+1턴)':'')+(S.usbSave?' · 동기의 USB(필드 세이브)':'')+(P.hangover?'<br><span style="color:#f0d080">⚠ 숙취 — 다음 전투 첫 행동 불가</span>':'')+'</p><br><div class="btnrow">'+back+'</div>';
@@ -1408,7 +2111,7 @@ function fmView(view){
       '<div class="btnrow">'+back+'</div>';
   }
   else if(view==='quest'){
-    html='<h3>미션</h3><table>'+QUESTS.filter(q=>!q.ch2||S.boss1).map(q=>{
+    html='<h3>미션</h3><table>'+QUESTS.filter(q=>(!q.ch2||S.boss1)&&(!q.ch3||S.boss2)).map(q=>{
       const d=q.done();
       return '<tr><td class="'+(d?'qdone':'qing')+'">'+(d?'✔':'▶')+' '+q.name+'</td><td>'+q.desc+' <span style="color:#aab">['+q.prog()+']</span></td></tr>';
     }).join('')+'</table><br><div class="btnrow">'+back+'</div>';
@@ -1454,7 +2157,7 @@ function drawMini(){
   const m=M(),mc=$('mini'),g=mc.getContext('2d');
   const sc=Math.max(3,Math.min(7,Math.floor(220/m.w)));
   const col={G:'#3f7d3a',P:'#c9b07e',T:'#244c22',B:'#8d8d99',R:'#8c3030',D:'#ffd866',L:'#58a6ff',W:'#f08080',
-    F:'#b08a5a',K:'#5c3a22',C:'#6b4226',S:'#58a6ff',V:'#d8553a',X:'#ffd866',O:'#58e0ff',J:'#8c3030',Y:'#caa53d',A:'#58a6ff',H:'#3f7d3a',E:'#9cc4ea'};
+    F:'#b08a5a',K:'#5c3a22',C:'#6b4226',S:'#58a6ff',V:'#d8553a',X:'#ffd866',O:'#58e0ff',J:'#8c3030',Y:'#caa53d',A:'#58a6ff',H:'#3f7d3a',E:'#9cc4ea',M:'#2a5482'};
   for(let y=0;y<m.h;y++)for(let x=0;x<m.w;x++){g.fillStyle=col[m.tiles[y][x]]||'#000';g.fillRect(x*sc,y*sc,sc,sc);}
   (NPCS[CUR]||[]).forEach(n=>{if(!n.cond||n.cond()){g.fillStyle='#fff';g.fillRect(n.x*sc+1,n.y*sc+1,Math.max(1,sc-2),Math.max(1,sc-2));}});
   g.fillStyle='#e24b4a';g.beginPath();g.arc(P.x*sc+sc/2,P.y*sc+sc/2,Math.max(2,sc*0.6),0,Math.PI*2);g.fill();
@@ -1480,10 +2183,13 @@ function snapshot(){
 }
 function applySnapshot(d){
   Object.assign(P,d.P);P.skills=[...d.P.skills];P.weapon=d.P.weapon||'pen';
-  P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},d.P.inv);
+  P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0,pappy:0,ramen:0,nightshift:0},d.P.inv);
   P.tx=P.x;P.ty=P.y;P.fx=P.x*TILE;P.fy=P.y*TILE;P.moving=false;
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;
-  const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0};
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
+  const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0,
+    mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
+    matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
+    gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
   wandangIdx=d.w||0;updateHud();
@@ -1518,7 +2224,7 @@ function weightedGroup(groups){
 let flashOn=false,flashColor='rgba(255,255,255,.85)';
 function mkE(key,suffix){
   const d=ENEMY_DB[key];
-  return {...d,name:d.name+(suffix||''),maxhp:d.hp,hp:d.hp,weak:0,noGuard:0,debAtk:0,shake:0,flash:0,sx:0,sy:0,tc:0};
+  return {...d,name:d.name+(suffix||''),maxhp:d.hp,hp:d.hp,weak:0,noGuard:0,debAtk:0,debSpd:0,shake:0,flash:0,sx:0,sy:0,tc:0};
 }
 function mkGroup(keysE){
   const cnt={};
@@ -1565,6 +2271,14 @@ const BOSS_DEF={
     phase:n=>n===1?[mkE2('judge','이론 심사위원',{hp:450,atk:40,def:18,spd:14})]
       :n===2?[mkE2('judge2','사료 심사위원 A',{hp:380,atk:46,def:18,spd:15}),mkE2('judge2','사료 심사위원 B',{hp:380,atk:46,def:18,spd:15})]
       :[mkE2('chair','외부 심사위원장',{hp:850,atk:58,def:22,spd:16,fixed:55})]
+  },
+  committee:{
+    intro:['<b>— Job Talk: 교수 임용 커미티 —</b>','강당의 불이 꺼지고 스포트라이트가 켜진다. 「그럼, 발표 시작하시죠.」'],
+    p2msg:['검색위원장이 자료를 덮는다. 「…일단, 통과.」','<b>— 2부: 외부 심사 Q&A —</b> 외부 심사위원 두 명이 동시에 손을 든다!'],
+    p3msg:['질문이 잦아든다…','<b>— 최종: 학장 면담 —</b> 학장이 천천히 입을 연다. 「예산이라는 게 말이죠…」'],
+    phase:n=>n===1?[mkE('cchair')]
+      :n===2?[mkE('cext',' A'),mkE('cext',' B')]
+      :[mkE('cdean')]
   }
 };
 async function startBoss(kind){
@@ -1606,15 +2320,15 @@ async function battleLoop(){
     const act=await playerCommand();
     if(act.type==='run'){
       if(B.noRun){await bmsg(B.noRunMsg||'도망칠 수 없다!');continue;}
-      const ms=Math.max(...alive().map(e=>e.spd));
-      const rc=Math.min(1,0.7+Math.max(0,P.spd-ms)*0.05);
+      const ms=Math.max(...alive().map(e=>eSpdNow(e)));
+      const rc=Math.min(1,0.7+Math.max(0,pSpdNow()-ms)*0.05);
       if(Math.random()<rc){
         await bmsg(rc>=1?'압도적인 마감력 — 여유롭게 읽씹하고 자리를 떴다.':'읽씹하고 자리를 떴다…');
         return endBattle();
       }
       await bmsg('도망칠 수 없다! 알림은 어디든 따라온다!');
     }
-    const order=[{p:true,spd:P.spd},...alive().map(e=>({e,spd:e.spd}))].sort((a,b)=>b.spd-a.spd);
+    const order=[{p:true,spd:pSpdNow()},...alive().map(e=>({e,spd:eSpdNow(e)}))].sort((a,b)=>b.spd-a.spd);
     for(const o of order){
       if(B.over)break;
       if(o.p){if(act.type!=='run')await playerAct(act);}
@@ -1640,10 +2354,14 @@ function roundEnd(){
   if(P.buffAtk>0)P.buffAtk--;
   if(P.debuffAtk>0)P.debuffAtk--;
   if(P.silence>0)P.silence--;
+  if(P.slow>0)P.slow--;
+  if(P.confuse>0)P.confuse--;
+  if(P.mpLeak>0){P.mp=Math.max(0,P.mp-6);P.mpLeak--;updateHud();}
+  if(S.bell){if(P.slow>0)P.slow--;if(P.confuse>0)P.confuse--;if(P.silence>0)P.silence--;if(P.mpLeak>0)P.mpLeak--;} // 루카스의 방울: 디버프 지속 절반
   P.counter=false;
   if(B){
     B.spiked=false;
-    B.enemies.forEach(e=>{if(e.weak>0)e.weak--;if(e.noGuard>0)e.noGuard--;if(e.debAtk>0)e.debAtk--;});
+    B.enemies.forEach(e=>{if(e.weak>0)e.weak--;if(e.noGuard>0)e.noGuard--;if(e.debAtk>0)e.debAtk--;if(e.debSpd>0)e.debSpd--;});
   }
 }
 async function bossLoop(){
@@ -1653,7 +2371,7 @@ async function bossLoop(){
   while(true){
     const act=await playerCommand();
     if(act.type==='run'){await bmsg('「앉으세요.」 — 심사 중에는 도망칠 수 없다!');continue;}
-    const order=[{p:true,spd:P.spd},...alive().map(e=>({e,spd:e.spd}))].sort((a,b)=>b.spd-a.spd);
+    const order=[{p:true,spd:pSpdNow()},...alive().map(e=>({e,spd:eSpdNow(e)}))].sort((a,b)=>b.spd-a.spd);
     for(const o of order){
       if(B.over)break;
       if(o.p)await playerAct(act);
@@ -1672,7 +2390,7 @@ async function bossLoop(){
         await bmsg(BD.p3msg[1],950);
         B.enemies=BD.phase(3);
       }else{
-        return B.bossKind==='phd'?phdVictory():bossVictory();
+        return B.bossKind==='phd'?phdVictory():(B.bossKind==='committee'?committeeVictory():bossVictory());
       }
     }
     roundEnd();
@@ -1686,13 +2404,17 @@ async function playerCommand(){
     if(P.debuffAtk>0)tags.push('<span style="color:#f0a0a0">기죽음 ATK↓</span>');
     if(P.buffAtk>0)tags.push('<span style="color:#ffd866">경세 ATK↑ '+P.buffAtk+'턴</span>');
     if(P.silence>0)tags.push('<span style="color:#f0d080">침묵(스킬 불가)</span>');
+    if(P.slow>0)tags.push('<span style="color:#9cc4ea">둔화 SPD↓ '+P.slow+'턴</span>');
+    if(P.mpLeak>0)tags.push('<span style="color:#c8a0f0">MP누수 −6/턴 '+P.mpLeak+'턴</span>');
+    if(P.confuse>0)tags.push('<span style="color:#f0c060">혼란 '+P.confuse+'턴</span>');
+    if(P.overwork>0)tags.push('<span style="color:#f09595">과로 ×'+P.overwork+' (피해 +'+(P.overwork*8)+'%)</span>');
     const status='<span style="color:#aab;font-size:12px">HP '+P.hp+'/'+P.maxhp+' · MP '+P.mp+'/'+P.maxmp+(tags.length?' · '+tags.join(' · '):'')+'</span>';
     const top=await bchoice('어떻게 할까? '+status,[
       {label:'액션',value:'action'},{label:'아이템',value:'item'},{label:'도주',value:'run'}
     ]);
     if(top==='run')return{type:'run'};
     if(top==='action'){
-      const MULT={gyeokmul:[1.8],jihaeng:[2.2],haeche:[1.8,true],sadan:[0.55,false,'×4'],igi:[1.0,false,'전체'],dongdo:[1.6,false,'전체']};
+      const MULT={gyeokmul:[1.8],jihaeng:[2.2],haeche:[1.8,true],sadan:[0.55,false,'×4'],igi:[1.0,false,'전체'],dongdo:[1.6,false,'전체'],bakhak:[2.6],beopgo:[1.3,false,'전체'],hwalyeon:[3.0,true]};
       const info=id=>{
         const s=SKILLS[id];
         if(id==='ilgwan'){
@@ -1710,14 +2432,14 @@ async function playerCommand(){
         const s=SKILLS[id];
         const mute=P.silence>0;
         const noMp=id==='ilgwan'?ilgwanSpend()<5:P.mp<s.mp;
-        acts.push({label:s.name+' <small>'+(mute?'침묵':info(id))+'</small>',value:'sk_'+id,disabled:mute||noMp});
+        acts.push({label:s.name+' <small>'+(mute&&id!=='susin'?'침묵 <span style="color:#56d364">(수신제가로 해제 가능)</span>':info(id))+'</small>',value:'sk_'+id,disabled:id==='susin'?false:(mute||noMp)});
       });
       acts.push({label:'← 뒤로',value:'__cancel__'});
       const c=await bchoice('어떤 수로 갈까? <span style="color:#aab;font-size:11px">(예상뎀은 첫 번째 적 기준 · 크리티컬 제외)</span>',acts,true);
       if(c==='__cancel__')continue;
-      const targeted={attack:'attack',sk_gyeokmul:'gyeokmul',sk_gungri:'gungri',sk_jihaeng:'jihaeng',sk_silsa:'silsa',sk_haeche:'haeche',sk_ilgwan:'ilgwan'};
+      const targeted={attack:'attack',sk_gyeokmul:'gyeokmul',sk_gungri:'gungri',sk_jihaeng:'jihaeng',sk_silsa:'silsa',sk_haeche:'haeche',sk_ilgwan:'ilgwan',sk_bakhak:'bakhak',sk_hwalyeon:'hwalyeon'};
       if(targeted[c]){
-        const TM={attack:[1],gyeokmul:[1.8],jihaeng:[2.2],haeche:[1.8,true],ilgwan:[ilgwanMult()],silsa:null,gungri:null};
+        const TM={attack:[1],gyeokmul:[1.8],jihaeng:[2.2],haeche:[1.8,true],ilgwan:[ilgwanMult()],silsa:null,gungri:null,bakhak:[2.6],hwalyeon:[3.0,true]};
         const t=await pickTarget(TM[targeted[c]]);if(t==='__cancel__')continue;
         return {type:targeted[c],target:t};
       }
@@ -1727,6 +2449,8 @@ async function playerCommand(){
       if(c==='sk_sadan')return{type:'sadan'};
       if(c==='sk_igi')return{type:'igi'};
       if(c==='sk_dongdo')return{type:'dongdo'};
+      if(c==='sk_susin')return{type:'susin'};
+      if(c==='sk_beopgo')return{type:'beopgo'};
     }
     if(top==='item'){
       const its=[];
@@ -1760,8 +2484,10 @@ function dmgRange(mult,ig,tgt){
 function ilgwanSpend(){return Math.floor(P.mp/2);}
 function ilgwanMult(){return Math.min(4,1+ilgwanSpend()*0.07);}
 function hitChance(aspd,dspd){return Math.max(0.75,Math.min(0.98,0.92+(aspd-dspd)*0.012));}
-function pMiss(t){return Math.random()>hitChance(P.spd,t.spd);}
-function eMiss(e){return Math.random()>hitChance(e.spd,P.spd);}
+function pSpdNow(){return P.slow>0?Math.max(1,P.spd-6):P.spd;}
+function eSpdNow(e){return e.debSpd>0?Math.max(1,Math.floor(e.spd*0.75)):e.spd;}
+function pMiss(t){return Math.random()>hitChance(pSpdNow(),t.spd);}
+function eMiss(e){return Math.random()>hitChance(eSpdNow(e),pSpdNow());}
 function lukGuard(d){if(Math.random()*100<P.luk)return{d:Math.max(1,Math.floor(d/2)),g:true};return{d,g:false};}
 function enemyGuard(t,d){if(t.noGuard>0)return{d,g:false};if(t.guard&&Math.random()<t.guard)return{d:Math.max(1,Math.floor(d/2)),g:true};return{d,g:false};}
 async function playerAct(act){
@@ -1770,9 +2496,19 @@ async function playerAct(act){
     await bmsg('<b>숙취</b>로 머리가 띵하다… 아무것도 할 수 없었다!');
     return;
   }
-  if(act.type==='attack'||act.type==='gyeokmul'||act.type==='jihaeng'||act.type==='haeche'||act.type==='ilgwan'){
+  if(P.confuse>0&&act.type!=='item'&&Math.random()<0.35){
+    sfx.crash();
+    if(Math.random()<0.5)await bmsg('<b>혼란</b> — 머릿속이 빙빙 돈다! 논점을 잃고 헛손질을 하고 말았다!');
+    else{
+      const sd=Math.max(5,Math.floor(P.maxhp*0.05));
+      P.hp=Math.max(1,P.hp-sd);updateHud();
+      await bmsg('<b>혼란</b> — 허우적대다 스스로 넘어졌다! '+sd+'의 데미지…');
+    }
+    return;
+  }
+  if(act.type==='attack'||act.type==='gyeokmul'||act.type==='jihaeng'||act.type==='haeche'||act.type==='ilgwan'||act.type==='bakhak'||act.type==='hwalyeon'){
     let t=act.target;if(!t||t.hp<=0)t=alive()[0];if(!t)return;
-    const CFG={attack:{mult:1.0},gyeokmul:{mult:1.8,mp:6},jihaeng:{mult:2.2,mp:10},haeche:{mult:1.8,mp:12,pierce:true},ilgwan:{}};
+    const CFG={attack:{mult:1.0},gyeokmul:{mult:1.8,mp:6},jihaeng:{mult:2.2,mp:10},haeche:{mult:1.8,mp:12,pierce:true},ilgwan:{},bakhak:{mult:2.6,mp:14},hwalyeon:{mult:3.0,mp:20,pierce:true}};
     const cfg=CFG[act.type];
     if(act.type==='ilgwan'){const sp=ilgwanSpend();cfg.mult=ilgwanMult();P.mp-=sp;cfg.spent=sp;updateHud();}
     else if(cfg.mp){P.mp-=cfg.mp;updateHud();}
@@ -1788,6 +2524,12 @@ async function playerAct(act){
     }else if(act.type==='ilgwan'){
       bmsg('<b>일이관지(一以貫之)!</b> 논리 '+cfg.spent+'을(를) 한 점에 꿰뚫는다!',1);
       fxAdd('book',t);fxAdd('slash',t);fxAdd('wave',null);sfx.book();sfx.slash();await sleep(700);
+    }else if(act.type==='bakhak'){
+      bmsg('<b>박학심문(博學審問)!</b> 넓게 배운 것으로 깊이 찌른다!',1);
+      fxAdd('book',t);fxAdd('slash',t);sfx.slash();await sleep(560);
+    }else if(act.type==='hwalyeon'){
+      bmsg('<b>활연관통(豁然貫通)!</b> 모든 것이 한 줄로 꿰뚫린다!',1);
+      fxAdd('scan',t);fxAdd('slash',t);fxAdd('wave',null);sfx.book();sfx.slash();await sleep(700);
     }else{
       bmsg('연구의 논박! 펜이 번뜩인다!',1);
       fxAdd('slash',t);sfx.slash();await sleep(380);
@@ -1812,6 +2554,38 @@ async function playerAct(act){
     fxAdd('scan',t);sfx.shield();
     await bmsg('<b>온고지신(溫故知新)</b> — 옛 기록을 더듬자 논리(MP)가 8 회복되었다.');
     if(t)await bmsg('[스캔] '+t.name+' — HP '+t.hp+'/'+t.maxhp+' · ATK '+t.atk+' · DEF '+t.def+(t.weak>0?' · <span style="color:#ffd866">약점 노출 중</span>':''),1000);
+  }
+  else if(act.type==='susin'){
+    fxAdd('shield',null);sfx.heal();
+    const cured=[];
+    if(P.silence>0){P.silence=0;cured.push('침묵');}
+    if(P.debuffAtk>0){P.debuffAtk=0;cured.push('기력 저하');}
+    if(P.hangover){P.hangover=false;cured.push('숙취');}
+    if(P.slow>0){P.slow=0;cured.push('둔화');}
+    if(P.mpLeak>0){P.mpLeak=0;cured.push('MP 누수');}
+    if(P.confuse>0){P.confuse=0;cured.push('혼란');}
+    if(P.overwork>0){P.overwork=0;cured.push('과로');}
+    P.mp=Math.min(P.maxmp,P.mp+12);updateHud();
+    await bmsg('<b>수신제가(修身齊家)!</b> 호흡을 고르고 자세를 바로잡는다.');
+    await bmsg(cured.length?('<span style="color:#56d364">'+cured.join('·')+'이(가) 해제되었다!</span> 논리(MP)도 12 회복.'):'몸과 마음이 정돈되었다. 논리(MP) 12 회복.');
+  }
+  else if(act.type==='beopgo'){
+    P.mp-=SKILLS.beopgo.mp;updateHud();
+    bmsg('<b>법고창신(法古創新)!</b> 옛 지혜가 새 칼날이 된다!',1);
+    fxAdd('wave',null);fxAdd('book',null);sfx.book();await sleep(600);
+    const kills=[];
+    for(const t of alive()){
+      let r=calcDmg(atkNow(),1.3,t.def,P.luk);let d=r.d;
+      if(t.weak>0)d=Math.floor(d*1.2);
+      const gq=enemyGuard(t,d);d=gq.d;
+      t.hp=Math.max(0,t.hp-d);t.shake=8;t.flash=5;
+      if(t.hp<=0){fxAdd('pop',t);kills.push(t.name);}
+      else t.weak=Math.max(t.weak,2);
+    }
+    sfx.hit();
+    await bmsg('피할 수 없는 일격 — 적 전체에 데미지!');
+    await bmsg('살아남은 적 전체의 <span style="color:#ffd866">약점이 드러났다</span>! (2턴)');
+    if(kills.length)await bmsg(kills.join(', ')+'을(를) 해치웠다!');
   }
   else if(act.type==='silsa'){
     let t=act.target;if(!t||t.hp<=0)t=alive()[0];if(!t)return;
@@ -1885,12 +2659,33 @@ async function playerAct(act){
   }
   else if(act.type==='item'){
     const key=act.item,it=ITEMS[key];P.inv[key]--;
+    // 천상 라면 — 완전회복 + 적 전체 약화 (음식이라 상목도 못 뺏는다)
+    if(key==='ramen'){
+      P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();fxAdd('drink',null);
+      await bmsg('<b>천상 라면</b>을 후루룩 비웠다! 온몸에서 김이 오른다 — HP·MP 완전 회복!');
+      alive().forEach(t=>{t.debAtk=Math.max(t.debAtk,2);t.debSpd=Math.max(t.debSpd||0,2);t.shake=6;});
+      await bmsg('압도적인 국물 냄새에 적들이 동요한다… <span style="color:#7fc4ff">적 전체 논증력 −15%·속도 −25% (2턴)</span>');
+      return;
+    }
+    // 상목(上目): 살아 있는 동안 주인공의 술을 가로채 자가 회복 (음식은 제외)
+    const thief=key!=='banchan'&&B&&B.enemies&&B.enemies.find(e=>e.key==='sangmok'&&e.hp>0);
+    if(thief){
+      sfx.crash();fxAdd('drink',null);thief.flash=6;thief.shake=8;
+      let healed=0;
+      if(it.full){healed=thief.maxhp-thief.hp;thief.hp=thief.maxhp;}
+      else if(it.hp){healed=Math.min(it.hp,thief.maxhp-thief.hp);thief.hp=Math.min(thief.maxhp,thief.hp+it.hp);}
+      if(it.debAtk||thief.debAtk>0)thief.debAtk=0;
+      updateHud();
+      await bmsg('<b>상목(上目)</b>이 가지를 쭉 뻗어 '+it.name+'을(를) 낚아챘다! 「그건 내가 마시지.」');
+      await bmsg(healed>0?'상목이 <b>'+healed+'</b> 회복했다… 술이 헛되이 사라졌다!':'상목이 꿀꺽 삼켰다. 효과는 없었지만, 술만 날렸다…');
+      return;
+    }
     if(it.full){P.hp=P.maxhp;P.mp=P.maxmp;}
     else{if(it.hp)P.hp=Math.min(P.maxhp,P.hp+it.hp);if(it.mp)P.mp=Math.min(P.maxmp,P.mp+it.mp);}
     if(it.buffAtk){P.buffAtk=Math.max(P.buffAtk,it.buffAtk);}
     sfx.heal();updateHud();fxAdd('drink',null);
     const parts=[];if(it.hp)parts.push('HP +'+it.hp);if(it.mp)parts.push('MP +'+it.mp);
-    const eff=(it.full?'HP·MP 완전 회복!':parts.join(' · '))+(it.buffAtk?' <b style="color:#ffd866">투지가 끓는다! (ATK +25%, 3턴)</b>':'');
+    const eff=(it.full?'HP·MP 완전 회복!':parts.join(' · '))+(it.buffAtk?' <b style="color:#ffd866">투지가 끓는다! (ATK +25%, '+it.buffAtk+'턴)</b>':'');
     await bmsg(it.name+'을(를) 들이켰다! '+eff+' 크—');
     if(it.hang&&Math.random()<it.hang){
       P.hangover=true;
@@ -1914,6 +2709,7 @@ async function eHitP(e,mult,prefix,noDodge,noGuard){
   if(!noDodge&&eMiss(e)){await bmsg(e.name+'의 공격 — 연구는 마감력으로 회피했다!');return null;}
   const ea=e.debAtk>0?Math.floor(e.atk*0.85):e.atk;
   const r=calcDmg(ea,mult,defNow(),3);let d=r.d;let g=false;
+  if(P.overwork>0)d=Math.floor(d*(1+0.08*P.overwork));
   if(!noGuard){const lg=lukGuard(d);d=lg.d;g=lg.g;}
   P.hp=Math.max(0,P.hp-d);sfx.hit();updateHud();
   await bmsg(prefix+' '+d+'의 데미지!'+(g?' <span style="color:#7fc4ff">(통찰로 흘려냈다 — 절반)</span>':'')+(r.crit?' 아프다!':''));
@@ -1952,6 +2748,47 @@ async function enemyAct(e){
     }
     if(await tryCounter(e))return;
     await eHitP(e,1.0,e.name+'의 날카로운 질문!');
+    return;
+  }
+  // ===== 3장 최종보스: 임용 커미티 =====
+  if(e.key==='cchair'){
+    if(e.tc%2===0){
+      sfx.crash();P.debuffAtk=Math.max(P.debuffAtk,2);
+      await bmsg('검색위원장: 「우리 학과와 <b>fit</b>이 안 맞는데요?」');
+      await eHitP(e,1.0,'냉랭한 평가가 날아든다!');
+      await bmsg('기가 꺾였다… (논증력 −15%, 2턴)');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.2,'검색위원장의 날카로운 검증!');
+    return;
+  }
+  if(e.key==='cext'){
+    if(Math.random()<0.4){
+      if(await tryCounter(e))return;
+      const hit=await eHitP(e,0.8,'외부 심사위원의 <b>예봉 질문</b>!');
+      if(hit!==null){
+        if(Math.random()<0.5){P.silence=Math.max(P.silence,2);await bmsg('말문이 막혔다 — <b>침묵</b>! (2턴)');}
+        else{P.confuse=Math.max(P.confuse,2);await bmsg('머릿속이 헝클어진다 — <span style="color:#f0c060"><b>혼란</b></span>! (2턴)');}
+      }
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.1,'외부 심사위원이 논거를 파고든다!');
+    return;
+  }
+  if(e.key==='cdean'){
+    if(!e.enraged&&e.hp<e.maxhp/2){e.enraged=1;e.atk=Math.floor(e.atk*1.25);
+      await bmsg('학장의 표정이 굳는다. <b>「…이건 예산 문제가 아니라, 원칙입니다.」</b> (격노 — 공격력 상승)');
+    }
+    if(e.tc%3===0){
+      sfx.crash();const fx=e.fixed||45;P.hp=Math.max(0,P.hp-fx);P.silence=Math.max(P.silence,2);updateHud();
+      await bmsg('학장: <b>「…예산이 없어요.」</b>',900);
+      await bmsg('피할 수 없는 한마디 — <b>'+fx+'</b>의 고정 데미지 + <b>침묵</b>(다음 턴 스킬 불가)!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.2,'학장의 위엄 어린 일갈!');
     return;
   }
   // ===== 미니보스: 골렘 — 스킬 위주(낭독 회복 + 묵직한 일격) =====
@@ -2088,6 +2925,161 @@ async function enemyAct(e){
     await bmsg('<b>침묵</b>! (다음 턴 스킬 불가)');
     return;
   }
+  // ===== 3장 찰스 리버: 거위 — 둔화·혼란 =====
+  if(e.key==='gosling'&&Math.random()<0.25){
+    await bmsg(e.name+'은(는) 빵 부스러기를 발견하고 한눈을 팔았다. 꽥.');
+    return;
+  }
+  if(e.key==='goose'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,1.1,'구스의 <b>날개치기</b>! 강변의 바람이 몰아친다!');
+    if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('길이 막혀 걸음이 무거워졌다… <span style="color:#9cc4ea"><b>둔화</b></span>! (SPD 저하, 2턴)');}
+    return;
+  }
+  if(e.key==='gander'){
+    const roll=Math.random();
+    if(roll<0.25){
+      sfx.crash();P.confuse=Math.max(P.confuse,2);
+      await bmsg('수컷 구스가 목을 길게 빼고 <b>꽥꽥거린다</b>! 위협음이 머릿속을 휘젓는다!');
+      await bmsg('<span style="color:#f0c060"><b>혼란</b></span>! (행동 실패 확률, 2턴)');
+      return;
+    }
+    if(roll<0.5){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.4,'수컷 구스의 <b>부리 쪼기</b>! 사정없이 쪼아댄다!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'수컷 구스가 날개를 퍼덕이며 달려들었다!');
+    return;
+  }
+  // ===== 3장 MIT: 축구망령 — 둔화·침묵 =====
+  if(e.key==='tackler'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,1.2,'축구망령의 <b>슬라이딩 태클</b>! 정강이가 저릿하다!');
+    if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('다리가 풀렸다… <span style="color:#9cc4ea"><b>둔화</b></span>! (SPD 저하, 2턴)');}
+    return;
+  }
+  if(e.key==='striker'){
+    const roll=Math.random();
+    if(roll<0.25){
+      sfx.crash();P.silence=Math.max(P.silence,2);
+      await bmsg('축구망령이 손을 번쩍 들었다 — <b>「오프사이드!」</b> 항의가 그치지 않는다!');
+      await bmsg('<b>침묵</b>! (다음 턴 스킬 불가)');
+      return;
+    }
+    if(roll<0.5){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.5,'축구망령의 <b>중거리 슛</b>! 유령 공이 가슴팍에 꽂힌다!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'축구망령이 어깨싸움을 걸어왔다!');
+    return;
+  }
+  // ===== 3장 롱우드: 의료가 — 과로 스택·MP 누수 =====
+  if(e.key==='intern'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.9,'불면 인턴의 <b>차트 떠넘기기</b>! 서류가 쏟아진다!');
+    if(hit!==null&&P.overwork<5){P.overwork++;await bmsg('일이 또 늘었다… <span style="color:#f09595"><b>과로 +1</b></span> (받는 피해 +8%/스택, 현재 ×'+P.overwork+')');}
+    return;
+  }
+  if(e.key==='resident'){
+    const roll=Math.random();
+    if(roll<0.3){
+      sfx.crash();
+      if(P.overwork<5)P.overwork++;
+      await bmsg('레지던트가 <b>당직을 인계한다</b>… 「이것만 좀 부탁해요.」 거절하지 못했다.');
+      await bmsg('<span style="color:#f09595"><b>과로 +1</b></span>! (받는 피해 +8%/스택, 현재 ×'+P.overwork+')');
+      return;
+    }
+    if(roll<0.5){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.4,'레지던트의 <b>한숨 섞인 일격</b>! 36시간 근무의 무게가 실려 있다!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'레지던트가 비틀거리며 부딪쳐 왔다!');
+    return;
+  }
+  if(e.key==='cafghost'&&Math.random()<0.35){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.7,'카페인 유령의 <b>에스프레소 증기</b>! 향만 맡아도 심장이 뛴다!');
+    if(hit!==null){P.mpLeak=Math.max(P.mpLeak,3);await bmsg('각성이 풀리지 않는다… <span style="color:#c8a0f0"><b>MP 누수</b></span>! (매턴 논리 −6, 3턴)');}
+    return;
+  }
+  // ===== 3장 중간보스: 목(目) 삼형제 =====
+  if(e.key==='sangmok'){
+    if(e.tc%3===0){
+      const al=alive();al.forEach(x=>{x.hp=Math.min(x.maxhp,x.hp+45);x.flash=4;});sfx.shield();
+      await bmsg('<b>상목(上目)</b>이 잎을 활짝 펼친다 — 광합성! 동료 전체 HP <b>45</b> 회복!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,0.8,'상목이 가느다란 가지로 툭 건드렸다.');
+    return;
+  }
+  if(e.key==='jungmok'){
+    if(Math.random()<0.35){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.6,'<b>중목(中目)</b>의 풀스윙 발리슛! 묵직한 한 방!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'중목이 굵은 가지를 휘둘렀다!');
+    return;
+  }
+  if(e.key==='hamok'){
+    if(Math.random()<0.5){
+      const roll=Math.random();
+      if(await tryCounter(e))return;
+      const hit=await eHitP(e,0.6,'<b>하목(下目)</b>의 포자 살포! 알록달록한 가루가 퍼진다…');
+      if(hit!==null){
+        if(roll<0.25){P.slow=Math.max(P.slow,2);await bmsg('<span style="color:#9cc4ea"><b>둔화</b></span>! 발이 뿌리에 얽혔다. (2턴)');}
+        else if(roll<0.5){P.confuse=Math.max(P.confuse,2);await bmsg('<span style="color:#f0c060"><b>혼란</b></span>! 환각 포자에 시야가 일렁인다. (2턴)');}
+        else if(roll<0.75){P.silence=Math.max(P.silence,2);await bmsg('<b>침묵</b>! 목이 뻣뻣하게 굳었다. (2턴)');}
+        else{P.mpLeak=Math.max(P.mpLeak,3);await bmsg('<span style="color:#c8a0f0"><b>MP 누수</b></span>! 정신이 산만하다. (3턴)');}
+      }
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.1,'하목이 가지 끝으로 후려쳤다!');
+    return;
+  }
+  // ===== 3장 롱우드: BWH 펠로우 5인 =====
+  if(e.key==='bwh1'&&Math.random()<0.35){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.9,'마취과 펠로우의 <b>프로포폴 한 방</b>… 나른해진다.');
+    if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('<span style="color:#9cc4ea"><b>둔화</b></span>! 몸이 무겁다. (2턴)');}
+    return;
+  }
+  if(e.key==='bwh3'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.9,'내과 펠로우의 <b>감별진단 폭격</b>! 머리가 핑 돈다!');
+    if(hit!==null){P.confuse=Math.max(P.confuse,2);await bmsg('<span style="color:#f0c060"><b>혼란</b></span>! (2턴)');}
+    return;
+  }
+  if(e.key==='bwh4'&&Math.random()<0.35){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,1.0,'응급의학 펠로우의 <b>코드블루 콜</b>! 끝없는 당직!');
+    if(hit!==null&&P.overwork<5){P.overwork++;await bmsg('<span style="color:#f09595"><b>과로 +1</b></span>! (받는 피해 +8%/스택, 현재 ×'+P.overwork+')');}
+    return;
+  }
+  if(e.key==='bwh5'){
+    if(e.tc%4===0){
+      e.hp=Math.min(e.maxhp,e.hp+50);e.flash=4;sfx.shield();
+      await bmsg('외과 과장이 <b>수술용 장갑을 고쳐 낀다</b> — 자가 봉합! HP <b>50</b> 회복!');
+      return;
+    }
+    if(Math.random()<0.3){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.6,'외과 과장의 <b>메스 일섬</b>! 정밀한 일격!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'외과 과장이 권위로 압박해 왔다!');
+    return;
+  }
   // ===== 잡몹 특성 =====
   if(e.key==='student'&&Math.random()<0.15){
     await bmsg(e.name+'은(는) 크게 하품만 했다. …zZ');
@@ -2112,11 +3104,11 @@ async function enemyAct(e){
     return;
   }
   if(await tryCounter(e))return;
-  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!'};
+  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!',bwh1:'주사기를 들이밀었다!',bwh2:'영상으로 약점을 짚었다!',bwh3:'청진기로 후려쳤다!',bwh4:'제세동 패들을 들이댔다!',bwh5:'메스를 휘둘렀다!'};
   await eHitP(e,1.0,e.name+'이(가) '+(verbs[e.key]||'들이받았다!'));
 }
 async function gainLevels(){
-  while(P.lv<20&&P.xp>=NEXT_XP[P.lv-1]){
+  while(P.lv<35&&P.xp>=NEXT_XP[P.lv-1]){
     P.xp-=NEXT_XP[P.lv-1];P.lv++;
     P.maxhp+=12;P.maxmp+=4;P.atk+=2;P.def=Math.floor(P.def+1.5);P.spd+=1;P.luk=Math.floor(P.luk+0.5);
     P.hp=P.maxhp;P.mp=P.maxmp;sfx.lvl();updateHud();
@@ -2132,6 +3124,12 @@ async function gainLevels(){
 async function victoryFinal(){
   B.over=true;sfx.win();
   if(CUR==='quad'||CUR==='asianlib'||CUR.startsWith('union'))S.jkkills=(S.jkkills||0)+1;
+  if(CUR==='charles'||CUR==='mit'||CUR==='infinite'||CUR==='longwood'){S.jk3kills=(S.jk3kills||0)+1;S.bountyKills=(S.bountyKills||0)+1;}
+  if(CUR==='charles'&&S.moonQ>0){
+    S.moonQ=Math.max(0,S.moonQ-B.enemies.length);
+    if(S.moonQ===0){S.moonRamen=1;await bmsg('<b>문(Moon)의 의뢰 완료!</b> 보트하우스로 돌아가 천상 라면을 받자.');}
+    else await bmsg('문(Moon)의 의뢰 — 남은 거위: <b>'+S.moonQ+'마리</b>');
+  }
   if(B._saryoDrop){await bmsg('<사료 조각>을 '+B._saryoDrop+'개 주웠다! (현재 '+S.saryo+'/3)');}
   await bmsg('승리했다! 경험치 '+B.bank.xp+' · '+fmt(B.bank.gold)+' 획득!');
   P.gold+=B.bank.gold;P.xp+=B.bank.xp;updateHud();
@@ -2158,6 +3156,25 @@ async function bossVictory(){
     '이제 더 넓은 들판으로 갈 차례야. 일리노이라고… 옥수수가 사람보다 많은 곳이지.',
     '내가 하와이에 있을 때도 그런 막막함이… 아니, 이 얘긴 추천서에 다 써뒀네.',
     '— 제1장 클리어! 2장 일리노이 편은 본편 빌드에서 계속됩니다 —'
+  ]);
+}
+async function committeeVictory(){
+  B.over=true;sfx.win();
+  await bmsg('학장이 한참을 침묵하더니, 안경을 고쳐 쓴다…',1100);
+  await bmsg('<b style="color:#ffd866">「…환영합니다, 조교수님.」</b>',1300);
+  S.boss3=1;
+  await bmsg('칭호 <b>[조교수 Assistant Professor]</b>를 획득했다!');
+  await bmsg('경험치 <b>3000</b> 획득!');
+  P.xp+=3000;updateHud();
+  await gainLevels();
+  endBattle();
+  P.hp=P.maxhp;P.mp=P.maxmp;updateHud();
+  showDialog('완당 선생의 메일',[
+    '「자네가 조교수가 되었다는 소식, 방금 들었네.」',
+    '「…내가 하와이에 있을 때, 처음 강단에 섰던 그 날이 떠오르는군.」',
+    '「이제 자네가 누군가의 완당이 될 차례야.」',
+    '「축하하네. 자네는 내 마지막 제자이자, 가장 나은 제자였어.」',
+    '— 제3장 클리어! 《격물치지》 본편 완결, 수고 많았습니다 —'
   ]);
 }
 async function phdVictory(){
@@ -2193,7 +3210,7 @@ async function defeat(){
     if(br>0){P.inv[k]-=br;broken[k]=br;}
   }
   P.hp=P.maxhp;P.mp=P.maxmp;
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   CUR='campus';
   P.x=29;P.y=16;P.tx=29;P.ty=16;P.fx=29*TILE;P.fy=16*TILE;P.dir='up';P.moving=false;
   updateHud();closeMenu();B=null;BFX.length=0;MODE='map';
@@ -2205,7 +3222,7 @@ async function defeat(){
   showDialog('',lines);
 }
 function endBattle(){
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   closeMenu();B=null;BFX.length=0;MODE='map';
 }
 // ============ 렌더 ============
@@ -2268,6 +3285,20 @@ function battleBg(){
     ctx.fillStyle='#3a3540';ctx.fillRect(16,126,224,16);
     ctx.fillStyle='#4a4452';ctx.fillRect(16,126,224,3);
     return '예비심사장 · 제'+B.phase+'차 심사';
+  }
+  if(B&&B.boss&&B.bossKind==='committee'){
+    ctx.fillStyle='#1d2030';ctx.fillRect(0,0,256,110);
+    ctx.fillStyle='#2a2e44';for(let x=0;x<256;x+=32)ctx.fillRect(x,0,2,110);
+    ctx.fillStyle='#f4f8fc';ctx.fillRect(64,14,128,56);
+    ctx.fillStyle='#1d3a5c';ctx.font='9px sans-serif';ctx.textAlign='center';
+    ctx.fillText('Job Talk',128,34);
+    ctx.font='8px sans-serif';ctx.fillText('Candidate: Yeongu, Ph.D.',128,50);ctx.textAlign='left';
+    ctx.fillStyle='#ffd866';ctx.fillRect(120,76,16,4);
+    ctx.fillStyle='#23252e';ctx.fillRect(0,110,256,82);
+    ctx.fillStyle='#2c2e38';for(let i=0;i<6;i++)ctx.fillRect(0,116+i*13,256,1);
+    ctx.fillStyle='#3a3540';ctx.fillRect(16,126,224,16);
+    ctx.fillStyle='#4a4452';ctx.fillRect(16,126,224,3);
+    return '임용 심사장 · '+B.phase+'부';
   }
   if(B&&B.boss){
     ctx.fillStyle='#4a3c30';ctx.fillRect(0,0,256,110);
@@ -2372,6 +3403,49 @@ function battleBg(){
     ctx.fillStyle='#3a3530';ctx.fillRect(0,104,256,88);
     ctx.fillStyle='#2c2825';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
     return '안암 술집 골목 · 취객 출몰';
+  }
+  if(CUR==='charles'){
+    const grd=ctx.createLinearGradient(0,0,0,120);
+    grd.addColorStop(0,'#a8c8e8');grd.addColorStop(1,'#d8e8f5');
+    ctx.fillStyle=grd;ctx.fillRect(0,0,256,70);
+    ctx.fillStyle='#2a5482';ctx.fillRect(0,70,256,34);
+    ctx.fillStyle='#3a6492';for(let x=0;x<256;x+=24)ctx.fillRect(x+(x%48?6:0),78,12,2);
+    ctx.fillStyle='#e8e4d8';ctx.fillRect(40,58,30,6);ctx.fillRect(46,50,4,8);
+    ctx.fillStyle='#caa53d';for(let x=8;x<250;x+=30)ctx.fillRect(x,94,3,12);
+    ctx.fillStyle='#4a7a3c';ctx.fillRect(0,104,256,88);
+    ctx.fillStyle='#3f6e34';ctx.beginPath();ctx.ellipse(128,132,104,16,0,0,Math.PI*2);ctx.fill();
+    return '찰스 리버 · 거위 출몰';
+  }
+  if(CUR==='mit'){
+    const grd=ctx.createLinearGradient(0,0,0,120);
+    grd.addColorStop(0,'#c8d4e0');grd.addColorStop(1,'#e8eef5');
+    ctx.fillStyle=grd;ctx.fillRect(0,0,256,110);
+    ctx.fillStyle='#9aa4b0';ctx.beginPath();ctx.arc(128,70,46,Math.PI,0);ctx.fill();
+    ctx.fillStyle='#7a8490';ctx.fillRect(82,70,92,12);
+    ctx.fillStyle='#b8c2cc';for(let x=90;x<170;x+=14)ctx.fillRect(x,44,6,26);
+    ctx.fillStyle='#5a8a4a';ctx.fillRect(0,104,256,88);
+    ctx.fillStyle='#4a7a3c';ctx.beginPath();ctx.ellipse(128,132,104,16,0,0,Math.PI*2);ctx.fill();
+    return 'MIT 잔디밭';
+  }
+  if(CUR==='infinite'){
+    ctx.fillStyle='#3a3a44';ctx.fillRect(0,0,256,110);
+    ctx.fillStyle='#4a4a56';ctx.fillRect(0,0,256,8);
+    for(let i=0;i<5;i++){const w=200-i*36;ctx.fillStyle=i%2?'#34343e':'#3e3e4a';ctx.fillRect(128-w/2,10+i*16,w,14);}
+    ctx.fillStyle='#ffd866';ctx.fillRect(124,40,8,4);
+    ctx.fillStyle='#5a5a64';for(let x=8;x<256;x+=48)ctx.fillRect(x,12,8,92);
+    ctx.fillStyle='#2c2c34';ctx.fillRect(0,104,256,88);
+    ctx.fillStyle='#26262e';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
+    return '무한복도 · 축구망령 출몰';
+  }
+  if(CUR==='longwood'){
+    ctx.fillStyle='#6a7480';ctx.fillRect(0,0,256,110);
+    ctx.fillStyle='#d8dde4';ctx.fillRect(16,30,90,74);ctx.fillRect(150,24,90,80);
+    ctx.fillStyle='#9cc4ea';for(const bx of [16,150])for(let y=38;y<96;y+=16)for(let x=bx+8;x<bx+82;x+=18)ctx.fillRect(x,y,10,8);
+    ctx.fillStyle='#e24b4a';ctx.fillRect(190,10,12,12);
+    ctx.fillStyle='#fff';ctx.fillRect(195,12,2,8);ctx.fillRect(192,15,8,2);
+    ctx.fillStyle='#4a5258';ctx.fillRect(0,104,256,88);
+    ctx.fillStyle='#3e464c';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
+    return '롱우드 병원가';
   }
   if(S.night){
     ctx.fillStyle='#101436';ctx.fillRect(0,0,256,120);

@@ -2,7 +2,7 @@
 
 > 대학원생 성장 RPG. 쯔꾸루 감성, **단일 index.html**(바닐라 JS + Canvas, 외부 에셋 0).
 > 이 문서 하나로 아키텍처·컨벤션·완료 내역·남은 작업·함정을 모두 파악할 수 있게 작성했다.
-> 함께 인계되는 파일: `gradschool_rpg_v12dev_ch3_ABCD.html`(작업본, 3장 A~E 완료), `index.html`(배포본 v1.1), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `grad_school_rpg_balancing.xlsx`(밸런스 시트), `README.md`/`CHANGELOG.md`(배포 리포용).
+> 함께 인계되는 파일: `gradschool_rpg_v12dev_ch3_ABCD.html`(작업본, 3장 A~G 완료 = 엔딩까지 플레이 가능, H 마감만 남음), `index.html`(배포본 v1.1), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `grad_school_rpg_balancing.xlsx`(밸런스 시트), `README.md`/`CHANGELOG.md`(배포 리포용).
 
 ---
 
@@ -31,7 +31,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 
 - **배포**: GitHub Pages — 리포 `JK-BCH/woohoo`, main 브랜치 root. URL `https://JK-BCH.github.io/woohoo/`
 - **배포본**: v1.1 (1장 안암 + 2장 일리노이 완결). 리포에는 `index.html` + `README.md` + `CHANGELOG.md` 3개만 올라감.
-- **작업본**: 3장 보스턴 A~E단계(+D+ 목/BWH/JK)가 반영된 v1.2-dev (`gradschool_rpg_v12dev_ch3_ABCD.html`). **배포본과 분리 관리** — 3장이 H단계(마감)까지 끝나기 전엔 라이브 `index.html`을 덮어쓰지 말 것.
+- **작업본**: 3장 보스턴 A~G단계가 반영된 v1.2-dev (`gradschool_rpg_v12dev_ch3_ABCD.html`) — **엔딩(조교수 임용)까지 플레이 가능**, H단계(마감/배포)만 남음. **배포본과 분리 관리** — H단계 전엔 라이브 `index.html`을 덮어쓰지 말 것.
 - **절대 금지**: 리포 이름/도메인 변경. localStorage는 origin 단위라 **모든 플레이어의 세이브가 증발**한다 (세이브 코드로만 이주 가능).
 - 업데이트 절차: `index.html` 덮어쓰기 + CHANGELOG 한 줄 + git tag. GH Pages 캐시 ~10분, 캐시버스팅 불필요.
 
@@ -151,32 +151,30 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 - **2장 일리노이**: 쿼드(고양이 올리·꽈이꽈이 1/40 조우, 부적), 아시아도서관(+필드보스 금서 목록의 망령 → 최대 MP+30), 그린 스트리트(JK's 히든재고 = 전투 5승마다 입고·구매 소진, 포닥 리허설→학회 명찰), 카페 거리+헌책방(바리스타 도장카드 할인 / 우체국 밑반찬 / 돋보기 / 민서 USB), 유니언 4층 던전(자판기 골렘 → 롱패딩 DEF+5·보온 텀블러 턴당 MP+5), Prelim 보스.
 - 시스템: 스킬 12종 역할 분리 + 예상뎀 표시, 도주 SPD 가산, **세이브 포인트 제한**(O/E/L 인접 또는 USB), 인카운터율 하향, 숙취(폭탄주 60%/스태그 10%).
 
-### 3장 진행분 (v1.2-dev, A~E 완료 + D+ 목/BWH/JK)
+### 3장 진행분 (v1.2-dev, A~G 완료 — 엔딩 도달 가능)
 - **A 골격**: 9맵 — hsq(허브 40×28)·yenching·banana·newbury·charles(물 타일 M 신설)·mit·infinite(무한복도)·longwood·jobhall. 포털 46개 왕복 검증. travelMenu 3지점(서울↔일리노이↔보스턴, S.boss2 게이트) + 첫 도착 컷신(S.ch3first). **DOORP lock 기능 신설** — jobhall은 `lock:()=>!S.paper3`로 봉인.
 - **B 거점**: 완당 메일함(순환 4종 + paper3/boss3 진행 분기 — 엔딩 메일까지 이미 작성됨), 바나나 라운지 가이드(지역 떡밥), 백베이 보틀숍(바롤로·웰러 현지 조달 = E단계 재료 공급선), 가젯 무기상점. 휴식처(E) 문구 6종 분기.
 - **C 성장**: Lv캡 35(NEXT_XP 34개), 신규 스킬 4종 — 수신제가(Lv21, **자기 디버프 전해제+MP12, 침묵 중에도 사용 가능** — D단계 디버프 메타의 해답), 박학심문(Lv24 ×2.6), 법고창신(Lv27 전체×1.3+전체 약점), 활연관통(Lv30 ×3.0 방어·막기무시). 무기: 태블릿(ATK24/8만)·맥북(ATK36/20만). 디버그 돌탑 Lv35 상향.
 - **D 몹·디버프 엔진**: 신규 디버프 4축 — **둔화**(`P.slow`: 실효 SPD−6, `pSpdNow()`가 명중·턴순서·도주에 일괄 반영), **MP 누수**(`P.mpLeak`: roundEnd서 매턴 MP−6), **혼란**(`P.confuse`: 행동 35% 실패, 그중 절반은 maxhp 5% 자해(비치명) — **아이템 사용은 혼란 면제**), **과로 스택**(`P.overwork`: 스택당 받는 피해 +8%, 최대 5스택, **턴 감소 없음** — 전투 종료·수신제가로만 해제, eHitP에서 증폭). 수신제가 해제 목록에 4축 전부 추가, 전투 상태 태그 4종, 리셋 4지점(P init/applySnapshot/defeat/endBattle) 동기화. 지역 몹 8종 — 거위 3종(gosling/goose/gander: 둔화·혼란, 떼 인카운터), 축구망령 2종(tackler/striker: 둔화·침묵), 롱우드 3종(intern/resident/cafghost: 과로·MP누수). ENC 4테이블 + encFor 분기(charles 1/20 · mit 1/20 · infinite 1/16 · longwood 1/18). **시뮬(4,000회, 무보급+텀블러·태블릿)**: charles Lv20 100% / mit 99% / infinite Lv20 88%→Lv24 98%(엘리트 3팩 tackler×2+striker는 도주 권장 — 이 레벨대 도주율 100%) / longwood 100%(과로 압박은 F단계 보스에서 본격화).
 - **D+ 목(目)·BWH·보스턴 JK (F단계 선행분)**: ① **목(目) 중간보스** — MIT 잔디밭의 나무 지형물 NPC `moktree`(cond `!S.mok`)에 말 걸면 **상목/중목/하목 동시전**(`startEventBattle` waves 1개, noRun). 上目=3턴마다 적 전체 HP+45 힐·평타 약함·**주인공의 술을 가로챔**(item 분기에서 `B.enemies`에 sangmok 생존 시 효과 무효+상목 자가회복, **라면·밑반찬 등 음식은 제외**), 中目=고화력(35% ×1.6), 下目=상태이상 4종 랜덤(둔화/혼란/침묵/MP누수). 격파 시 `S.mok=1`+`S.bwhCoupon=1`. **시뮬: 무보급 Lv28 96% / 라면1개 Lv26 95%**(권장 Lv27+·술/요리 필수, 단 상목 탈취 때문에 회복템이 함정). ② **BWH 펠로우 5인**(롱우드, `bwh1~5` NPC=enemy 동명) — `S.bwhCoupon` 있으면 1:1 전투, 승리 시 `S.bwhN=1` + 레어 술 1병(buffalo/barolo/barbaresco/stagg/wellerfp). bwh2는 `drain`, bwh5(외과 과장)는 4턴마다 자가힐+강타. 단일전이라 Lv25+ 거의 100%. ③ **보스턴 JK** — NPC `jk3`, 5인 전부 격파(`S.bwh1~5`) 후 `jk3Shop` 개방. 첫 방문 시 레어 술 1병 무료(`S.jk3free`). 최상위 술 **파피 밴 윙클 23년**(`pappy`: 완전회복+ATK25%(5턴)+숙취없음, ₩55,000) 판매 — **3장 전투 5승마다 1병 입고**(`S.jk3kills`→`S.jk3stock`, jksShop의 jkkills 패턴 복제). victoryFinal에서 charles/mit/infinite/longwood 승리 시 jk3kills++. 신규 적 8종(sangmok/jungmok/hamok/bwh1~5)·NPC 7종(moktree/bwh1~5/jk3)·S플래그 11개·아이템 pappy 추가.
 - **E 요리 시스템**: ① **락**(rock, 뉴버리 7,5) — 스태그/웰러 1병 → `S.matA`(숙성 육수). ② **문**(moon, 찰스 보트하우스 10,12) — 거위 의뢰(`S.moonQ=4`, victoryFinal서 charles 승리 시 적 마릿수만큼 차감, 0이 되면 `S.moonRamen=1`) → **천상 라면**(`P.inv.ramen`, **항상 최대 1개** — 보유 시 수령 거절, 함정 #12), 바롤로/바르바레스코 → `S.matB`(와인 졸임 소스). ③ **한**(han, MIT 25,12) — A+B 각 1개 소모 → **즉시 사용·영구 스탯업**(`S.hanIdx` 순환: HP+30/ATK+3/DEF+3/SPD+2/LUK+3, `S.hanCooked` 누적). ④ **적 SPD 디버프 축 신설**: `e.debSpd`(실효 SPD ×0.75) — `eSpdNow(e)`가 eMiss·턴순서(양 루프)·도주 ms에 일괄 반영, 감소는 roundEnd에만(함정 #8), mkE 초기화 포함. ⑤ **천상 라면 전투 사용**: 완전회복 + 적 전체 `debAtk=2`(−15%)·`debSpd=2`(−25%) — ATK 축은 기존 −15% 재사용(설계서의 −25%에서 의도적 완화), **필드 사용 불가**(`battle:true`, fmView서 disabled). **시뮬(4,000회, 목 기준)**: Lv24 무보급 28%→라면1 77% / Lv26 무보급 77%→요리3회+라면 99.6% — "요리 미사용 빠듯, 사용 쾌적" 달성. F·G 시뮬은 요리 K회 변수 필수.
+- **F 필드보스·수집·바**: ① **보스 구스**(찰스, NPC `gooseboss` cond `!S.gooseboss`) — `bossgoose`(hp2200): 3턴마다 둔화 강타·30% 둔화·**피격 시 45% 반격(×1.2)**. ② **스트레스 종양**(롱우드, NPC `tumorboss`) — `stumor`(hp2300): 매턴급 과로 스택·4턴마다 고정뎀38+과로·반피 격노. 격파 시 각각 `S.gooseboss/S.tumorboss`. **시뮬(무보급)**: 둘 다 Lv30 ~36% / Lv32 ~73% (요리 시 100%, 권장 Lv30-32). ③ **루카스**(hsq 고양이 NPC `lucas`) — 5구역 보물(`S.gooseboss·tumorboss·mok·jk3open·nightfirst`) 전부 모으면 **루카스의 방울**(`S.bell`: roundEnd서 디버프 4축 추가 −1틱 = 지속 절반). ④ **나이트 쉬프트 맥주바**(hsq NPC `nightshift`) — 3장 전투 누적(`S.bountyKills`, victoryFinal서 ++) 5승마다 현상금(₩15,000+IPA), 첫 수령 시 `S.nightfirst`(루카스 보물#5). 신규 맥주 `nightshift`(HP+120 MP+20).
+- **G 최종보스·엔딩**: ① **논문 집필**(옌칭 NPC `thesis`) — 세 필드보스(mok·gooseboss·tumorboss) 격파 + Lv30 충족 시 초고 완성 → **`S.paper3=1`** → jobhall 잠금 해제(DOORP hsq 20,4 `lock:()=>!S.paper3`). ② **임용 커미티**(jobhall J타일 → `jobhallCommittee()` → `startBoss('committee')`) — BOSS_DEF.committee 3페이즈: 검색위원장 `cchair`(2턴마다 기력소진) → 외부심사 `cext`×2(40% 침묵/혼란) → 학장 `cdean`(3턴마다 고정뎀45+침묵 "예산이 없어요"·반피 격노). **bossLoop 종료 분기에 committee 추가**, `committeeVictory()` → `S.boss3=1` + [조교수] + 완당 최종 메일(yenmail에도 분기 기존). **시뮬**: 무보급 Lv32 32%(요리 필수) / 요리3회+라면 Lv30 98%·Lv32 100% (권장 Lv32-34). ③ **jobhall J타일 라우팅 수정** — `CUR==='jobhall'`이면 hallJudge가 아니라 jobhallCommittee(함정 #9 해소). 자판기 stock도 jobhall 분기(yuengling/barbaresco/nightshift) 추가. 신규 적 5종(bossgoose/stumor/cchair/cext/cdean)·NPC 5종(gooseboss/tumorboss/lucas/nightshift/thesis)·S플래그 7개·아이템 nightshift.
 
 ---
 
-## 7. 남은 단계 (F → H) — 설계서(chapter3_boston_design.md)와 함께 읽을 것
+## 7. 남은 단계 (H만 남음) — 설계서(chapter3_boston_design.md)와 함께 읽을 것
 
-### F. 필드보스·수집·바 ★다음 작업
-- ✅(선행 완료) **목(目)** — D+단계에서 MIT 나무 지형물 트리거 + 상목/중목/하목 동시전으로 구현됨(설계 원안의 infinite 2페이즈와는 다른 형태). + **BWH 펠로우 5인 건틀릿 + 보스턴 JK 상점**(파피 밴 윙클)도 함께 구현. §6 D+ 참조.
-- (남음) 보스 구스(찰스, 광역 둔화·반격), 스트레스 종양(롱우드, 과로 스택 압박). 골렘 게이트 패턴 재사용. infinite 끝의 추가 보스는 선택.
-- 루카스(hsq 고정 NPC): 5개 지역 보물 수집(상자/보스 보상에 flag) → 루카스의 방울(디버프 저항: 지속턴 −1 또는 확률 무효).
-- 나이트 쉬프트 맥주바: 현상금 게시판(반복 토벌 퀘) + 3장 맥주.
+### F. 필드보스·수집·바 ✅ 완료 (§6 F 참조)
+- 목(目)/BWH/JK(D+) + 보스 구스(찰스)·스트레스 종양(롱우드)·루카스 수집(방울=S.bell)·나이트 쉬프트 현상금까지 모두 구현. (설계의 "infinite 끝 추가 보스"는 선택 사항으로 미구현 — 필요 시 ENC_INF 지역에 골렘 게이트 패턴으로 추가 가능.)
 
-### G. 최종보스·엔딩
-- **논문 작성 진행**: 옌칭에서 집필 단계 → 자료 퀘스트(주요 필드보스 격파와 연동) → `S.paper3=1` → jobhall 잠금 해제.
-- **jobhall의 J 타일이 현재 hallJudge(1장 보스!)로 라우팅됨** — 반드시 3장 커미티 핸들러로 교체. (지금은 문이 잠겨 있어 도달 불가라 안전.)
-- 교수 임용 커미티: 검색위원장(광역 기력소진) → 외부심사 2인(침묵+혼란) → 학장(고정뎀 "예산이 없어요" + 격노). `S.boss3=1` → [조교수] 엔딩 + 완당 최종 메일(yenmail에 이미 구현돼 있음).
-- jobhall 자판기 stock도 prelim 분기에 추가.
+### G. 최종보스·엔딩 ✅ 완료 (§6 G 참조)
+- 옌칭 `thesis` 집필 → `S.paper3` → jobhall 개방 → 임용 커미티 3페이즈 → `committeeVictory`(S.boss3=1, [조교수] 엔딩). jobhall J타일 라우팅·자판기 stock 처리 완료. **함정 #9(jobhall J=hallJudge) 해소됨.**
 
-### H. 마감
-- 미션 탭 3장 항목(ch3:true 게이트 — §4-3), 전투 배경 (hsq/charles/mit/infinite/longwood/newbury), 미니맵 확인, README·CHANGELOG 갱신, **verify.js 0건 + 전 보스 시뮬 재확인** 후 라이브 index.html 교체 배포. 버전 v2.0 권장.
+### H. 마감 ★다음 작업 (배포 전 필수)
+- **미션 탭 3장 항목**: QUESTS에 ch3 미션 추가 + 필터를 `q=>(!q.ch2||S.boss1)&&(!q.ch3||S.boss2)`로 확장(§4-3). 후보: 목(目)·보스구스·스트레스종양·BWH건틀릿·루카스방울·천상라면·임용커미티 등.
+- **전투 배경**: 현재 phd(prelim)만 battleBg 전용 배경. hsq/charles/mit/infinite/longwood/newbury + committee(강당) 배경 추가(선택이지만 권장).
+- **디버그 돌탑 제거/교체**(함정 #13), 미니맵 색 확인, README·CHANGELOG 갱신, **verify.js 0건 + 전 보스 시뮬 재확인** 후 라이브 index.html 교체 배포. 버전 v2.0 권장.
 
 ---
 
@@ -188,7 +186,10 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 | 2장 리허설 | 잉링 2병 Lv12 84% / Lv13 99% |
 | 금서 망령 | 무보급 Lv13 81% / Lv14 97% (권장 Lv14+ 라벨) |
 | 2장 Prelim | 맨몸 Lv18 71%, **+보온 텀블러 Lv17 82% / Lv18 97%** (유니언 던전=준비 코스) |
-| 3장 목표 곡선 | 잡몹 Lv20~26 / 목(目) 권장 Lv26~28 / 커미티 권장 Lv32~34 + 요리 누적. 단독전은 **무보급 기준**으로 측정 |
+| 3장 목표 곡선 | 잡몹 Lv20~26 / 목(目) 권장 Lv26~28 / 필드보스(구스·종양) 권장 Lv30~32 / 커미티 권장 Lv32~34 + 요리 누적. 단독전은 **무보급 기준**으로 측정 |
+| 3장 보스 구스 | 무보급 Lv30 36% / Lv32 77% (반격·둔화, 요리 시 100%) |
+| 3장 스트레스 종양 | 무보급 Lv30 37% / Lv32 70% (과로 압박, 요리 시 100%) |
+| 3장 임용 커미티 | **무보급 Lv32 32%(요리 사실상 필수)** / 요리3회+라면 Lv30 98% · Lv32 100% (최종보스, 요리 누적 설계) |
 
 **시뮬 방법론**: node 몬테카를로 2,500~4,000회. 플레이어 AI는 "실전형 로테이션" — 부동심 유지, 격물 스팸(약점 갱신), MP 60%↑일 때 실사→일이관지 콤보, 치국은 다수전 1회, 회복 임계(HP<40% 잉링, 위기 시 풀회복템). **유틸기를 쿨마다 재시전하는 AI는 금지**(v0.7에서 전 구간 0% 오판 사례). 아이템 소지 시 단독전은 거의 다 이기므로 **난이도 비교는 무보급 기준**.
 
@@ -204,7 +205,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 6. **포맷 컨벤션 파괴** → verify.js 정규식이 못 읽어 "검증 통과처럼 보이는 침묵". §4-2 포맷 유지.
 7. **jksShop은 openShopWith와 별개** — 가격/할인 로직 수정 시 양쪽 모두 (shopPrice 사용처 grep).
 8. **적 상태 감소를 battleLoop/bossLoop에서 직접** → 이중 감소. roundEnd에만.
-9. **jobhall J = hallJudge 라우팅** (G단계에서 교체할 때까지 잠금 유지).
+9. ~~jobhall J = hallJudge 라우팅~~ **G단계에서 해소됨** — `CUR==='jobhall'`이면 jobhallCommittee()로 분기. (prelim→prelimJudge, 그 외→hallJudge 유지.)
 10. **gen_maps의 골렘 게이트** — 의도된 차단을 검증기가 오류로 봄 → CHECK doors에서 빼고 전용 검사.
 11. **maps.js splice 시 정규식 범위 과탐** — 한 번 아시아도서관·그린 블록을 통째로 삼킨 사고. 블록 단위 추출은 `( mapid:\{name:"…",tiles:\[[^\]]+\]\},)` 패턴으로 좁게.
 12. 천상 라면 "2개 미만" = **항상 최대 1개**로 확정 해석 (사용자 승인됨).

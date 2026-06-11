@@ -2,7 +2,7 @@
 
 > 대학원생 성장 RPG. 쯔꾸루 감성, **단일 index.html**(바닐라 JS + Canvas, 외부 에셋 0).
 > 이 문서 하나로 아키텍처·컨벤션·완료 내역·남은 작업·함정을 모두 파악할 수 있게 작성했다.
-> 함께 인계되는 파일: `gradschool_rpg_v12dev_ch3_ABCD.html`(작업본, 3장 A~G 완료 = 엔딩까지 플레이 가능, H 마감만 남음), `index.html`(배포본 v1.1), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `grad_school_rpg_balancing.xlsx`(밸런스 시트), `README.md`/`CHANGELOG.md`(배포 리포용).
+> 함께 인계되는 파일: `index.html`(**배포본 v2.0 — 1·2·3장 본편 완결**, 작업본 통합 완료), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `grad_school_rpg_balancing.xlsx`(밸런스 시트), `README.md`/`CHANGELOG.md`(배포 리포용).
 
 ---
 
@@ -20,7 +20,8 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 # 이후 maps.js에서 해당 맵 블록을 정규식으로 추출해 index.html에 splice
 
 # 4) 플레이 테스트: index.html을 브라우저로 열기 (서버 불필요)
-#    빠른 테스트: 안암 캠퍼스 남동쪽 수풀의 [DEBUG] 돌탑 → Lv35 + 전 스탯 +1000
+#    빠른 테스트: 콘솔에서 P.lv=35;P.atk=1000;… 직접 세팅 (전역 노출 — §10 참조.
+#    구 디버그 돌탑은 v2.0에서 소원 돌탑(1회 LUK+5)으로 교체됨)
 ```
 
 **모든 패치 후 1) → 2) 순서로 무조건 실행.** 이 두 단계가 지금까지 투명 NPC, 막힌 포털, 라우팅 누락 등 실제 버그를 전부 잡아왔다.
@@ -30,8 +31,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 ## 1. 제품·배포 상태
 
 - **배포**: GitHub Pages — 리포 `JK-BCH/woohoo`, main 브랜치 root. URL `https://JK-BCH.github.io/woohoo/`
-- **배포본**: v1.1 (1장 안암 + 2장 일리노이 완결). 리포에는 `index.html` + `README.md` + `CHANGELOG.md` 3개만 올라감.
-- **작업본**: 3장 보스턴 A~G단계가 반영된 v1.2-dev (`gradschool_rpg_v12dev_ch3_ABCD.html`) — **엔딩(조교수 임용)까지 플레이 가능**, H단계(마감/배포)만 남음. **배포본과 분리 관리** — H단계 전엔 라이브 `index.html`을 덮어쓰지 말 것.
+- **배포본**: **v2.0 (1·2·3장 본편 완결 — [조교수] 엔딩까지)**. H단계(마감) 완료로 작업본이 `index.html`에 통합됨 — 별도 작업본 파일 없음. (주의: 현재 변경은 feature 브랜치에 있음 — **main에 머지되어야 GH Pages에 반영**된다.)
 - **절대 금지**: 리포 이름/도메인 변경. localStorage는 origin 단위라 **모든 플레이어의 세이브가 증발**한다 (세이브 코드로만 이주 가능).
 - 업데이트 절차: `index.html` 덮어쓰기 + CHANGELOG 한 줄 + git tag. GH Pages 캐시 ~10분, 캐시버스팅 불필요.
 
@@ -166,7 +166,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 
 ---
 
-## 7. 남은 단계 (H만 남음) — 설계서(chapter3_boston_design.md)와 함께 읽을 것
+## 7. 남은 단계 — 본편 완결, 전 단계(A~H) 완료 ✅
 
 ### F. 필드보스·수집·바 ✅ 완료 (§6 F 참조)
 - 목(目)/BWH/JK(D+) + 보스 구스(찰스)·스트레스 종양(롱우드)·루카스 수집(방울=S.bell)·나이트 쉬프트 현상금까지 모두 구현. (설계의 "infinite 끝 추가 보스"는 선택 사항으로 미구현 — 필요 시 ENC_INF 지역에 골렘 게이트 패턴으로 추가 가능.)
@@ -174,10 +174,15 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 ### G. 최종보스·엔딩 ✅ 완료 (§6 G 참조)
 - 옌칭 `thesis` 집필 → `S.paper3` → jobhall 개방 → 임용 커미티 3페이즈 → `committeeVictory`(S.boss3=1, [조교수] 엔딩). jobhall J타일 라우팅·자판기 stock 처리 완료. **함정 #9(jobhall J=hallJudge) 해소됨.**
 
-### H. 마감 ★다음 작업 (배포 전 필수)
-- **미션 탭 3장 항목**: QUESTS에 ch3 미션 추가 + 필터를 `q=>(!q.ch2||S.boss1)&&(!q.ch3||S.boss2)`로 확장(§4-3). 후보: 목(目)·보스구스·스트레스종양·BWH건틀릿·루카스방울·천상라면·임용커미티 등.
-- **전투 배경**: 현재 phd(prelim)만 battleBg 전용 배경. hsq/charles/mit/infinite/longwood/newbury + committee(강당) 배경 추가(선택이지만 권장).
-- **디버그 돌탑 제거/교체**(함정 #13), 미니맵 색 확인, README·CHANGELOG 갱신, **verify.js 0건 + 전 보스 시뮬 재확인** 후 라이브 index.html 교체 배포. 버전 v2.0 권장.
+### H. 마감 ✅ 완료 (v2.0 배포)
+- 미션 탭 3장 항목 11개 + 필터 `(!q.ch2||S.boss1)&&(!q.ch3||S.boss2)` 적용. **S.jk3open 미설정 버그 수정**(jk3Shop 진입 시 set — 루카스 보물 #4가 이것에 의존).
+- 전투 배경 5종 추가: committee(Job Talk 강당)·charles(강+돛단배)·mit(그레이트 돔)·infinite(원근 복도)·longwood(병원 2동). 미니맵 M 색 확인 완료.
+- **디버그 돌탑 → 소원 돌탑**(1회 LUK+5 + 막걸리 3병)으로 정식 교체 — 함정 #13 해소. README·CHANGELOG v2.0 갱신, verify 0건 + 전 보스 시뮬 재확인 후 index.html 교체.
+
+### 다음 작업 후보 (선택)
+- (떡밥) 종신심사 Tenure 편 — 진엔딩/DLC. 설계서 엔딩 절 참조.
+- 캐릭터 성별 선택 · 외부 스프라이트시트 (README 로드맵).
+- infinite 끝 추가 보스(선택 — 골렘 게이트 패턴).
 
 ---
 
@@ -214,7 +219,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 10. **gen_maps의 골렘 게이트** — 의도된 차단을 검증기가 오류로 봄 → CHECK doors에서 빼고 전용 검사.
 11. **maps.js splice 시 정규식 범위 과탐** — 한 번 아시아도서관·그린 블록을 통째로 삼킨 사고. 블록 단위 추출은 `( mapid:\{name:"…",tiles:\[[^\]]+\]\},)` 패턴으로 좁게.
 12. 천상 라면 "2개 미만" = **항상 최대 1개**로 확정 해석 (사용자 승인됨).
-13. **디버그 돌탑은 출시 전 제거/교체** (코드에 주석 있음). H단계 배포 체크리스트에 포함.
+13. ~~디버그 돌탑은 출시 전 제거/교체~~ **H단계에서 해소됨** — 소원 돌탑(1회 LUK+5 + 막걸리 3병, `S.debugMax` 플래그 재사용)으로 교체.
 14. 인카운터율·고양이 조우율은 한 차례 대폭 하향된 값이 현행 — 새 지역도 1/15~1/26 대역에서 시작할 것.
 15. 적 enemyAct 고정 데미지 기믹은 회피 불가로 설계됨(`P.hp-=N` 직접) — 부동심 무력화 수단이므로 남발 금지(보스당 1기믹).
 
@@ -222,7 +227,8 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 
 ## 10. 디버그 수단
 
-- **돌탑**(campus 남동 수풀, H 타일 38,28): Lv35 + 전 스탯 +1000 + 전 스킬. 모든 콘텐츠 한 방 확인용.
-- 진행 플래그 강제: 콘솔에서 `S.boss2=1` 등 직접 세팅 가능 (전역 노출).
-- 3장 빠른 진입: 돌탑 → 캠퍼스 A(공항) → 일리노이 → Prelim 1트 → 공항 → 보스턴.
+- ~~디버그 돌탑~~ v2.0에서 **소원 돌탑**(1회 LUK+5)으로 교체됨 — 만렙 치트 기능 없음.
+- 만렙 치트(콘솔, 전역 노출): `P.lv=35;P.maxhp=1458;P.maxmp=156;P.atk=1078;P.def=1055;P.spd=1042;P.luk=1022;P.hp=P.maxhp;P.mp=P.maxmp;P.skills=Object.keys(SKILLS);updateHud();`
+- 진행 플래그 강제: 콘솔에서 `S.boss2=1` 등 직접 세팅 가능.
+- 3장 빠른 진입: 콘솔 치트 → 캠퍼스 A(공항) → 일리노이 → Prelim 1트 → 공항 → 보스턴.
 - 세이브 코드는 base64(JSON) — 디코드해서 상태 직접 편집 가능.

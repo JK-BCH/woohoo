@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — v1.2-dev (3장 D단계)</title>
+<title>격물치지 — v1.2-dev (3장 D+ 목/BWH)</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -157,7 +157,11 @@ const NPCS={
   yenching:[{x:5,y:2,kind:'yenmail'}],
   banana:[{x:10,y:2,kind:'banguide'}],
   newbury:[{x:13,y:4,kind:'bostonliq'},{x:18,y:4,kind:'gadget'}],
-  charles:[],mit:[],infinite:[],longwood:[],jobhall:[],
+  charles:[],
+  mit:[{x:16,y:13,kind:'moktree',cond:()=>!S.mok}],
+  infinite:[],
+  longwood:[{x:5,y:12,kind:'bwh1'},{x:9,y:12,kind:'bwh2'},{x:13,y:12,kind:'bwh3'},{x:17,y:12,kind:'bwh4'},{x:21,y:12,kind:'bwh5'},{x:13,y:15,kind:'jk3'}],
+  jobhall:[],
   bookstore:[],
   union1:[{x:3,y:7,kind:'leader'}],
   union2:[],union3:[],
@@ -241,7 +245,8 @@ const ITEMS={
   buffalo:{name:'버팔로 트레이스', price:12000, mp:50, short:'MP+50'},
   stagg:{name:'스태그 Jr.', price:28000, full:true, hang:0.1, buffAtk:3, short:'완전회복·ATK+25%(3턴)·숙취10%'},
   wellerfp:{name:'웰러 풀프루프', price:30000, full:true, short:'완전회복·숙취 없음'},
-  banchan:{name:'어머니의 밑반찬', price:0, full:true, short:'완전회복·숙취 없음·집밥'}
+  banchan:{name:'어머니의 밑반찬', price:0, full:true, short:'완전회복·숙취 없음·집밥'},
+  pappy:{name:'파피 밴 윙클 23년', price:55000, full:true, buffAtk:5, short:'완전회복·ATK+25%(5턴)·숙취없음'}
 };
 const SKILLS={
   gyeokmul:{id:'gyeokmul',name:'격물치지',mp:6,lv:2,desc:'사물을 파고든다 — 단일 ×1.8 + 약점 노출(받는 피해 +20%, 3턴)',brief:'단일 ×1.8+약점'},
@@ -288,6 +293,14 @@ const ENEMY_DB={
   intern:{key:'intern',name:'불면 인턴',hp:260,atk:56,def:16,spd:14,xp:280,gold:9000},
   resident:{key:'resident',name:'번아웃 레지던트',hp:360,atk:60,def:22,spd:12,xp:360,gold:12000,guard:0.2},
   cafghost:{key:'cafghost',name:'카페인 유령',hp:230,atk:58,def:12,spd:22,xp:300,gold:9500},
+  sangmok:{key:'sangmok',name:'상목(上目)',hp:480,atk:38,def:20,spd:16,xp:0,gold:0,guard:0.1},
+  jungmok:{key:'jungmok',name:'중목(中目)',hp:420,atk:72,def:16,spd:19,xp:0,gold:0},
+  hamok:{key:'hamok',name:'하목(下目)',hp:440,atk:56,def:16,spd:18,xp:0,gold:0},
+  bwh1:{key:'bwh1',name:'BWH 마취과 펠로우',hp:380,atk:56,def:16,spd:17,xp:340,gold:9000},
+  bwh2:{key:'bwh2',name:'BWH 영상의학 펠로우',hp:420,atk:58,def:18,spd:16,xp:360,gold:9500,drain:7},
+  bwh3:{key:'bwh3',name:'BWH 내과 펠로우',hp:460,atk:60,def:18,spd:17,xp:380,gold:10000},
+  bwh4:{key:'bwh4',name:'BWH 응급의학 펠로우',hp:500,atk:64,def:18,spd:20,xp:420,gold:11000},
+  bwh5:{key:'bwh5',name:'BWH 외과 과장',hp:620,atk:70,def:22,spd:18,xp:520,gold:14000,guard:0.15},
   libghost:{key:'libghost',name:'금서 목록의 망령',hp:560,atk:50,def:18,spd:14,xp:450,gold:18000,guard:0.15},
   vgolem:{key:'vgolem',name:'폭주 자판기 골렘',hp:280,atk:40,def:18,spd:9,xp:300,gold:12000,guard:0.2},
   judge:{key:'judge',name:'심사위원',hp:180,atk:18,def:8,spd:9,xp:0,gold:0,guard:0.12},
@@ -296,10 +309,11 @@ const ENEMY_DB={
 };
 // ============ 상태 ============
 const P={lv:1,xp:0,maxhp:50,hp:50,maxmp:20,mp:20,atk:10,def:5,spd:8,luk:5,
-  gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
+  gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0,pappy:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
   dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,counter:false,hangover:false,slow:0,mpLeak:0,confuse:0,overwork:0};
 const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
-  card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0};
+  card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0,
+  mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0};
 let wandangIdx=0;
 let MODE='title';
 // ============ 유틸 ============
@@ -673,6 +687,22 @@ function buildNpc(){
     }
     return c;
   }
+  // 3장 MIT: 목(目) 나무 지형물 — 외눈 나무
+  {const c=mkC(16,16),g=c.getContext('2d');
+    px(g,7,9,2,7,'#5c4326');px(g,6,12,4,2,'#5c4326');
+    px(g,3,2,10,9,'#3f7a3a');px(g,2,5,12,5,'#3f7a3a');px(g,5,0,6,4,'#4a8a44');
+    px(g,6,4,4,4,'#f4f1e6');px(g,7,5,2,2,'#9ad84a');px(g,7,5,1,1,'#0a0a0a');
+    A.npc.moktree=c;}
+  // 3장 롱우드: BWH 펠로우 5인 + JK
+  const bwhBadge=(b)=>(g=>{px(g,9,9,4,3,b);px(g,4,8,2,3,'#5a8ab0');});
+  A.npc.bwh1=mkPerson('#2b2b33','#3a8a8a',bwhBadge('#56d364'));
+  A.npc.bwh2=mkPerson('#4a3a2a','#4a5a8a',bwhBadge('#ffd866'));
+  A.npc.bwh3=mkPerson('#3a2c1a','#5a7a4a',bwhBadge('#f0a0a0'));
+  A.npc.bwh4=mkPerson('#1a1a22','#a83040',bwhBadge('#ffffff'));
+  A.npc.bwh5=mkPerson('#c8c8d4','#1d3a5c',g=>{px(g,9,9,4,3,'#ffd866');px(g,3,7,10,1,'#ffd866');});
+  A.npc.jk3=mkPerson('#1a1a22','#2a2a3a',g=>{
+    px(g,4,8,8,4,'#3a2a1a');px(g,5,9,2,2,'#caa53d');px(g,8,9,2,2,'#7a3a80');px(g,6,10,3,1,'#56d364');
+  });
   A.npc.olli=mkCat(true);
   A.npc.kwai=mkCat(false);
 }
@@ -876,6 +906,42 @@ function buildEnemies(){
   px(cfg,23,28,5,5,'#f4f1e6');px(cfg,24,29,3,3,'rgba(0,0,0,0)');
   px(cfg,12,22,2,4,'rgba(230,230,240,.6)');px(cfg,18,21,2,5,'rgba(230,230,240,.6)');
   A.enemy.cafghost=cf;
+  // 3장 중간보스: 목(目) 삼형제 — 외눈 나무괴물 + 축구 유니폼
+  function mkMok(bark,leaf,jersey,iris,num){
+    const c=mkC(40,52),g=c.getContext('2d');
+    px(g,16,30,8,20,bark);px(g,14,34,12,4,bark);              // 줄기
+    px(g,10,46,8,5,bark);px(g,22,46,8,5,bark);                // 뿌리 다리
+    px(g,8,4,24,26,leaf);px(g,5,10,30,16,leaf);px(g,12,0,16,8,leaf); // 수관(머리)
+    px(g,10,16,20,12,jersey);px(g,10,16,20,3,'#f4f1e6');      // 유니폼
+    g.fillStyle='#fff';g.font='bold 9px sans-serif';g.fillText(num,17,26);
+    px(g,15,8,10,8,'#f4f1e6');px(g,18,10,5,5,iris);px(g,19,11,2,2,'#0a0a0a'); // 외눈(目)
+    px(g,16,9,8,1,'rgba(0,0,0,.3)');
+    return c;
+  }
+  A.enemy.sangmok=mkMok('#5c4326','#3f7a3a','#2a6e34','#9ad84a','1'); // 上目 녹색 힐러
+  A.enemy.jungmok=mkMok('#5c3a26','#7a3a3a','#a83040','#f0d040','2'); // 中目 적색 딜러
+  A.enemy.hamok=mkMok('#4a3a26','#5a3a6a','#5a2a7a','#c87af0','3');   // 下目 보라 상태이상
+  // 3장 BWH 펠로우 5종 — 병원 가운/스크럽 + 청진기
+  function mkDoc(scrub,hair,badge,extra){
+    const c=mkC(34,46),g=c.getContext('2d');
+    px(g,9,2,16,7,hair);px(g,9,8,16,8,'#f0c8a0');
+    px(g,12,10,3,2,'#333');px(g,19,10,3,2,'#333');px(g,14,13,6,1,'#a06a5a');
+    px(g,7,16,20,22,scrub);px(g,5,18,3,14,scrub);px(g,26,18,3,14,scrub);
+    px(g,13,16,8,14,'#eef2f6');                                // 가운 앞섶
+    px(g,15,18,4,10,'#5a8ab0');px(g,14,27,2,4,'#5a8ab0');px(g,19,27,2,4,'#5a8ab0'); // 청진기
+    px(g,15,30,4,3,'#c0c0c8');
+    px(g,21,17,5,4,badge);                                     // 명찰
+    if(extra)extra(g);
+    px(g,9,38,6,7,'#2b2b33');px(g,19,38,6,7,'#2b2b33');
+    return c;
+  }
+  A.enemy.bwh1=mkDoc('#3a8a8a','#2b2b33','#56d364',g=>{px(g,2,20,5,3,'#9ad8e8');}); // 마취과
+  A.enemy.bwh2=mkDoc('#4a5a8a','#4a3a2a','#ffd866',g=>{px(g,1,18,6,8,'#1a1a22');px(g,2,20,4,4,'#3a6ea5');}); // 영상의학
+  A.enemy.bwh3=mkDoc('#5a7a4a','#3a2c1a','#f0a0a0',g=>{px(g,1,22,6,9,'#f4f1e6');px(g,2,24,4,1,'#9aa');}); // 내과
+  A.enemy.bwh4=mkDoc('#a83040','#1a1a22','#ffffff',g=>{px(g,0,17,7,5,'#e24b4a');g.fillStyle='#fff';g.font='bold 7px sans-serif';g.fillText('+',2,21);}); // 응급의학
+  const b5=mkDoc('#1d3a5c','#c8c8d4','#ffd866',g=>{px(g,7,16,20,2,'#ffd866');px(g,1,20,6,4,'#caa53d');});
+  const b5g=b5.getContext('2d');b5g.fillStyle='#ffd866';b5g.font='bold 6px sans-serif';b5g.fillText('과장',9,44);
+  A.enemy.bwh5=b5; // 외과 과장
   // 청중 3종 — 착석한 사람들
   function mkAud(hair,top,extra){
     const c=mkC(32,40),g=c.getContext('2d');
@@ -1203,6 +1269,60 @@ function npcTalk(kind){
       ()=>{closeMenu();MODE='map';});
     build('학자의 무기를 팝니다.');
     return;
+  }
+  // ===== 3장 MIT 중간보스: 목(目) 나무 지형물 =====
+  if(kind==='moktree'){
+    sfx.ok();
+    showDialog('???',['MIT 잔디밭 한복판, 유독 검은 나무 한 그루가 서 있다.','가까이 다가가자 줄기 한가운데에서 커다란 <b>외눈</b>이 번쩍 뜬다.','「…우리 셋을 이기면, BWH로 가는 길을 알려주지. 도망칠 생각은 말고.」'],()=>{
+      openMenu('나무괴물 <b>목(目) 삼형제</b>가 깨어난다. 도전하시겠습니까?<br><span style="color:#aab;font-size:12px">상목·중목·하목 동시전 · 도주 불가 · 중간 회복 없음 · <b style="color:#f0d080">권장 Lv 27+ · 술/요리 필수</b><br>주의: 상목이 살아 있는 동안 마시는 술은 가로채인다!</span>',[
+        {label:'도전한다',fn:()=>{closeMenu();startEventBattle({
+          waves:[['sangmok','jungmok','hamok']],
+          noRun:true,noRunMsg:'세 그루가 가지로 길을 막았다 — 도망칠 수 없다!',
+          intro:'상목·중목·하목이 가지를 뻗으며 일어섰다! 세 개의 눈이 일제히 이쪽을 노려본다!',
+          onWin:()=>{
+            S.mok=1;S.bwhCoupon=1;
+            showDialog('목(目)',['세 그루가 천천히 쓰러지며 잎을 떨군다.','「…인정하지. 자네는 우리 팀이 아니라, 더 높은 곳으로 갈 사람이야.」','쓰러진 자리에서 <b style="color:#ffd866">BWH 쿠폰</b>이 떨어졌다!','「롱우드의 BWH 펠로우들에게 보여주게. …그들도 한 술 하거든.」']);
+          }
+        });}},
+        {label:'아직 이르다',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
+  // ===== 3장 롱우드: BWH 펠로우 5인 =====
+  const BWH={
+    bwh1:{drink:'buffalo', win:'마취과는 늘 침착하지. …자네가 더 침착했지만.'},
+    bwh2:{drink:'barolo',  win:'영상의학은 다 꿰뚫어 보거든. 자네 빼고.'},
+    bwh3:{drink:'barbaresco', win:'감별진단은 내 특기인데. …자네가 더 빨랐어.'},
+    bwh4:{drink:'stagg',   win:'응급의학은 속도야. 자네가 더 빨랐다는 게 분할 뿐.'},
+    bwh5:{drink:'wellerfp', win:'외과 과장으로서 인정하네. 손이 좋아, 자네.'}
+  };
+  if(kind==='bwh1'||kind==='bwh2'||kind==='bwh3'||kind==='bwh4'||kind==='bwh5'){
+    sfx.ok();
+    const b=BWH[kind],dn=ENEMY_DB[kind].name;
+    if(S[kind]){showDialog(dn,['좋은 승부였어. JK한테 내 얘기 잘 좀 해줘.']);return;}
+    if(!S.bwhCoupon){showDialog(dn,['BWH 회원만 상대해. 쿠폰 없으면 얘기 안 통해.','MIT 잔디밭의 그 검은 나무, 봤어? …삼형제를 꺾고 다시 와.']);return;}
+    showDialog(dn,['오, BWH 쿠폰? 진짜네. 목(目) 삼형제를 이겼다고?','우리 과 자존심이 있지. 한 판 붙고, 이기면 내 셀러에서 한 병 줄게.'],()=>{
+      openMenu(dn+'와(과) 대결한다?<br><span style="color:#aab;font-size:12px">1:1 · 도주 불가 · 이기면 <b style="color:#f0d080">레어 술 1병</b></span>',[
+        {label:'대결한다',fn:()=>{closeMenu();startEventBattle({
+          waves:[[kind]],noRun:true,noRunMsg:'의사는 차트를 덮지 않는다 — 도주 불가!',
+          intro:dn+'이(가) 가운을 펄럭이며 일어섰다!',
+          onWin:()=>{
+            S[kind]=1;P.inv[b.drink]=(P.inv[b.drink]||0)+1;
+            const all=S.bwh1&&S.bwh2&&S.bwh3&&S.bwh4&&S.bwh5;
+            showDialog(dn,['…졌네. 인정.','약속한 거. <b>'+ITEMS[b.drink].name+'</b> 한 병이야.',b.win,
+              all?'다섯 다 이겼군. 그럼 이제 <b>JK</b>가 자넬 손님으로 받을 거야.':'나머지 멤버도 찾아봐. 다 이기면 JK가 기다린다.']);
+          }
+        });}},
+        {label:'다음에',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
+  if(kind==='jk3'){
+    const all=S.bwh1&&S.bwh2&&S.bwh3&&S.bwh4&&S.bwh5;
+    if(!all){sfx.ok();showDialog('JK',['JK 리커 보스턴 지점에 온 걸 환영하네. …지만,','내 단골은 <b>BWH 펠로우 다섯</b>을 전부 꺾은 사람만 받아.','자존심이지. 다섯 다 이기고 오게.']);return;}
+    jk3Shop();return;
   }
   if(kind==='leader'){
     sfx.ok();
@@ -1539,6 +1659,35 @@ function jksShop(){
   };
   build('어서 와. 캠퍼스가 시끄러워야(전투) 좋은 물건이 흘러들어오지.');
 }
+function jk3Shop(){
+  sfx.ok();
+  if(!S.jk3free){
+    S.jk3free=1;
+    const pool=['stagg','wellerfp','barbaresco','barolo','buffalo'];
+    const free=pool[Math.floor(Math.random()*pool.length)];
+    P.inv[free]=(P.inv[free]||0)+1;updateHud();sfx.lvl();
+    showDialog('JK',['다섯을 다 꺾었다고? …허, 보스턴 와서 이런 손님은 처음이야.','환영 선물이야. <b>'+ITEMS[free].name+'</b> 한 병. 마셔.','내 진짜 물건은 <b>파피 밴 윙클 23년</b>이지. 전설이야.','단, 아무한테나 안 팔아. 자네가 <b>사냥(전투 5승)</b>할 때마다 한 병씩 빼주지.'],()=>jk3Build('자, 둘러보게.'));
+    return;
+  }
+  jk3Build('또 왔군. 사냥은 좀 했나?');
+}
+function jk3Build(msg){
+  // 입고: 3장 전투 5승마다 파피 1병
+  const chances=Math.floor((S.jk3kills||0)/5);
+  S.jk3kills=(S.jk3kills||0)-chances*5;
+  S.jk3stock=(S.jk3stock||0)+chances;
+  const reg=['stagg','wellerfp','barbaresco','buffalo'];
+  const head='<b style="color:#ffd866">JK&#39;s Liquor · 보스턴</b> — '+msg+'<br><span style="color:#aab;font-size:12px">'+
+    (S.jk3stock>0?'<b style="color:#f0d080">★ 파피 밴 윙클 23년: '+S.jk3stock+'병 입고</b>':'파피 선반이 비었다. <span style="color:#888">(전투 5승마다 1병 입고)</span>')+
+    ' · '+fmt(P.gold)+'</span>';
+  const opts=[];
+  if(S.jk3stock>0)opts.push({label:'<b style="color:#ffd866">'+ITEMS.pappy.name+'</b> ('+fmt(shopPrice('pappy'))+') <small>'+ITEMS.pappy.short+'</small>',disabled:P.gold<shopPrice('pappy'),
+    fn:()=>{P.gold-=shopPrice('pappy');P.inv.pappy++;S.jk3stock--;S.bought++;updateHud();sfx.lvl();jk3Build('…그걸 알아보다니. 좋은 혀야.');}});
+  reg.forEach(k=>opts.push({label:ITEMS[k].name+' ('+fmt(shopPrice(k))+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k),
+    fn:()=>{P.gold-=shopPrice(k);P.inv[k]++;S.bought++;updateHud();jk3Build('Cheers.');}}));
+  opts.push({label:'나가기',fn:()=>{closeMenu();MODE='map';}});
+  openMenu(head,opts,()=>{closeMenu();MODE='map';});
+}
 function shopPrice(k){return S.cafeStamp?Math.round(ITEMS[k].price*0.9):ITEMS[k].price;}
 function openShopWith(stock,title,greet){
   sfx.ok();
@@ -1704,10 +1853,11 @@ function snapshot(){
 }
 function applySnapshot(d){
   Object.assign(P,d.P);P.skills=[...d.P.skills];P.weapon=d.P.weapon||'pen';
-  P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},d.P.inv);
+  P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0,pappy:0},d.P.inv);
   P.tx=P.x;P.ty=P.y;P.fx=P.x*TILE;P.fy=P.y*TILE;P.moving=false;
   P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
-  const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0};
+  const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0,
+    mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
   wandangIdx=d.w||0;updateHud();
@@ -2167,12 +2317,25 @@ async function playerAct(act){
   }
   else if(act.type==='item'){
     const key=act.item,it=ITEMS[key];P.inv[key]--;
+    // 상목(上目): 살아 있는 동안 주인공의 술을 가로채 자가 회복
+    const thief=B&&B.enemies&&B.enemies.find(e=>e.key==='sangmok'&&e.hp>0);
+    if(thief){
+      sfx.crash();fxAdd('drink',null);thief.flash=6;thief.shake=8;
+      let healed=0;
+      if(it.full){healed=thief.maxhp-thief.hp;thief.hp=thief.maxhp;}
+      else if(it.hp){healed=Math.min(it.hp,thief.maxhp-thief.hp);thief.hp=Math.min(thief.maxhp,thief.hp+it.hp);}
+      if(it.debAtk||thief.debAtk>0)thief.debAtk=0;
+      updateHud();
+      await bmsg('<b>상목(上目)</b>이 가지를 쭉 뻗어 '+it.name+'을(를) 낚아챘다! 「그건 내가 마시지.」');
+      await bmsg(healed>0?'상목이 <b>'+healed+'</b> 회복했다… 술이 헛되이 사라졌다!':'상목이 꿀꺽 삼켰다. 효과는 없었지만, 술만 날렸다…');
+      return;
+    }
     if(it.full){P.hp=P.maxhp;P.mp=P.maxmp;}
     else{if(it.hp)P.hp=Math.min(P.maxhp,P.hp+it.hp);if(it.mp)P.mp=Math.min(P.maxmp,P.mp+it.mp);}
     if(it.buffAtk){P.buffAtk=Math.max(P.buffAtk,it.buffAtk);}
     sfx.heal();updateHud();fxAdd('drink',null);
     const parts=[];if(it.hp)parts.push('HP +'+it.hp);if(it.mp)parts.push('MP +'+it.mp);
-    const eff=(it.full?'HP·MP 완전 회복!':parts.join(' · '))+(it.buffAtk?' <b style="color:#ffd866">투지가 끓는다! (ATK +25%, 3턴)</b>':'');
+    const eff=(it.full?'HP·MP 완전 회복!':parts.join(' · '))+(it.buffAtk?' <b style="color:#ffd866">투지가 끓는다! (ATK +25%, '+it.buffAtk+'턴)</b>':'');
     await bmsg(it.name+'을(를) 들이켰다! '+eff+' 크—');
     if(it.hang&&Math.random()<it.hang){
       P.hangover=true;
@@ -2454,6 +2617,78 @@ async function enemyAct(e){
     if(hit!==null){P.mpLeak=Math.max(P.mpLeak,3);await bmsg('각성이 풀리지 않는다… <span style="color:#c8a0f0"><b>MP 누수</b></span>! (매턴 논리 −6, 3턴)');}
     return;
   }
+  // ===== 3장 중간보스: 목(目) 삼형제 =====
+  if(e.key==='sangmok'){
+    if(e.tc%3===0){
+      const al=alive();al.forEach(x=>{x.hp=Math.min(x.maxhp,x.hp+45);x.flash=4;});sfx.shield();
+      await bmsg('<b>상목(上目)</b>이 잎을 활짝 펼친다 — 광합성! 동료 전체 HP <b>45</b> 회복!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,0.8,'상목이 가느다란 가지로 툭 건드렸다.');
+    return;
+  }
+  if(e.key==='jungmok'){
+    if(Math.random()<0.35){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.6,'<b>중목(中目)</b>의 풀스윙 발리슛! 묵직한 한 방!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'중목이 굵은 가지를 휘둘렀다!');
+    return;
+  }
+  if(e.key==='hamok'){
+    if(Math.random()<0.5){
+      const roll=Math.random();
+      if(await tryCounter(e))return;
+      const hit=await eHitP(e,0.6,'<b>하목(下目)</b>의 포자 살포! 알록달록한 가루가 퍼진다…');
+      if(hit!==null){
+        if(roll<0.25){P.slow=Math.max(P.slow,2);await bmsg('<span style="color:#9cc4ea"><b>둔화</b></span>! 발이 뿌리에 얽혔다. (2턴)');}
+        else if(roll<0.5){P.confuse=Math.max(P.confuse,2);await bmsg('<span style="color:#f0c060"><b>혼란</b></span>! 환각 포자에 시야가 일렁인다. (2턴)');}
+        else if(roll<0.75){P.silence=Math.max(P.silence,2);await bmsg('<b>침묵</b>! 목이 뻣뻣하게 굳었다. (2턴)');}
+        else{P.mpLeak=Math.max(P.mpLeak,3);await bmsg('<span style="color:#c8a0f0"><b>MP 누수</b></span>! 정신이 산만하다. (3턴)');}
+      }
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.1,'하목이 가지 끝으로 후려쳤다!');
+    return;
+  }
+  // ===== 3장 롱우드: BWH 펠로우 5인 =====
+  if(e.key==='bwh1'&&Math.random()<0.35){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.9,'마취과 펠로우의 <b>프로포폴 한 방</b>… 나른해진다.');
+    if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('<span style="color:#9cc4ea"><b>둔화</b></span>! 몸이 무겁다. (2턴)');}
+    return;
+  }
+  if(e.key==='bwh3'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,0.9,'내과 펠로우의 <b>감별진단 폭격</b>! 머리가 핑 돈다!');
+    if(hit!==null){P.confuse=Math.max(P.confuse,2);await bmsg('<span style="color:#f0c060"><b>혼란</b></span>! (2턴)');}
+    return;
+  }
+  if(e.key==='bwh4'&&Math.random()<0.35){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,1.0,'응급의학 펠로우의 <b>코드블루 콜</b>! 끝없는 당직!');
+    if(hit!==null&&P.overwork<5){P.overwork++;await bmsg('<span style="color:#f09595"><b>과로 +1</b></span>! (받는 피해 +8%/스택, 현재 ×'+P.overwork+')');}
+    return;
+  }
+  if(e.key==='bwh5'){
+    if(e.tc%4===0){
+      e.hp=Math.min(e.maxhp,e.hp+50);e.flash=4;sfx.shield();
+      await bmsg('외과 과장이 <b>수술용 장갑을 고쳐 낀다</b> — 자가 봉합! HP <b>50</b> 회복!');
+      return;
+    }
+    if(Math.random()<0.3){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.6,'외과 과장의 <b>메스 일섬</b>! 정밀한 일격!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'외과 과장이 권위로 압박해 왔다!');
+    return;
+  }
   // ===== 잡몹 특성 =====
   if(e.key==='student'&&Math.random()<0.15){
     await bmsg(e.name+'은(는) 크게 하품만 했다. …zZ');
@@ -2478,7 +2713,7 @@ async function enemyAct(e){
     return;
   }
   if(await tryCounter(e))return;
-  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!'};
+  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!',bwh1:'주사기를 들이밀었다!',bwh2:'영상으로 약점을 짚었다!',bwh3:'청진기로 후려쳤다!',bwh4:'제세동 패들을 들이댔다!',bwh5:'메스를 휘둘렀다!'};
   await eHitP(e,1.0,e.name+'이(가) '+(verbs[e.key]||'들이받았다!'));
 }
 async function gainLevels(){
@@ -2498,6 +2733,7 @@ async function gainLevels(){
 async function victoryFinal(){
   B.over=true;sfx.win();
   if(CUR==='quad'||CUR==='asianlib'||CUR.startsWith('union'))S.jkkills=(S.jkkills||0)+1;
+  if(CUR==='charles'||CUR==='mit'||CUR==='infinite'||CUR==='longwood')S.jk3kills=(S.jk3kills||0)+1;
   if(B._saryoDrop){await bmsg('<사료 조각>을 '+B._saryoDrop+'개 주웠다! (현재 '+S.saryo+'/3)');}
   await bmsg('승리했다! 경험치 '+B.bank.xp+' · '+fmt(B.bank.gold)+' 획득!');
   P.gold+=B.bank.gold;P.xp+=B.bank.xp;updateHud();

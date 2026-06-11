@@ -70,7 +70,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
   ── 필드 ──
   renderMap / 이동·충돌 / encounter 판정 (encFor()) / tryInteract() (타일별 분기)
   npcTalk(kind) 모든 NPC 대화·퀘스트 / openChest / dormMenu(휴식처) / travelMenu(3지점)
-  labMenu / vendingShop / openShopWith(+shopPrice 할인) / jksShop(별도 함수!)
+  labMenu / vendingShop / openShopWith(+shopPrice 할인) / jksShop(2장 별도!) / jk3Shop·jk3Build(3장 보스턴 JK — 별도!)
   ── 전투 ──
   startEncounter / startEventBattle({waves,onWin,noRun…}) / startBoss
   battleLoop(웨이브전 포함) / bossLoop(다페이즈) / playerCommand(메뉴) / playerAct(스킬 실행)
@@ -156,6 +156,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 - **B 거점**: 완당 메일함(순환 4종 + paper3/boss3 진행 분기 — 엔딩 메일까지 이미 작성됨), 바나나 라운지 가이드(지역 떡밥), 백베이 보틀숍(바롤로·웰러 현지 조달 = E단계 재료 공급선), 가젯 무기상점. 휴식처(E) 문구 6종 분기.
 - **C 성장**: Lv캡 35(NEXT_XP 34개), 신규 스킬 4종 — 수신제가(Lv21, **자기 디버프 전해제+MP12, 침묵 중에도 사용 가능** — D단계 디버프 메타의 해답), 박학심문(Lv24 ×2.6), 법고창신(Lv27 전체×1.3+전체 약점), 활연관통(Lv30 ×3.0 방어·막기무시). 무기: 태블릿(ATK24/8만)·맥북(ATK36/20만). 디버그 돌탑 Lv35 상향.
 - **D 몹·디버프 엔진**: 신규 디버프 4축 — **둔화**(`P.slow`: 실효 SPD−6, `pSpdNow()`가 명중·턴순서·도주에 일괄 반영), **MP 누수**(`P.mpLeak`: roundEnd서 매턴 MP−6), **혼란**(`P.confuse`: 행동 35% 실패, 그중 절반은 maxhp 5% 자해(비치명) — **아이템 사용은 혼란 면제**), **과로 스택**(`P.overwork`: 스택당 받는 피해 +8%, 최대 5스택, **턴 감소 없음** — 전투 종료·수신제가로만 해제, eHitP에서 증폭). 수신제가 해제 목록에 4축 전부 추가, 전투 상태 태그 4종, 리셋 4지점(P init/applySnapshot/defeat/endBattle) 동기화. 지역 몹 8종 — 거위 3종(gosling/goose/gander: 둔화·혼란, 떼 인카운터), 축구망령 2종(tackler/striker: 둔화·침묵), 롱우드 3종(intern/resident/cafghost: 과로·MP누수). ENC 4테이블 + encFor 분기(charles 1/20 · mit 1/20 · infinite 1/16 · longwood 1/18). **시뮬(4,000회, 무보급+텀블러·태블릿)**: charles Lv20 100% / mit 99% / infinite Lv20 88%→Lv24 98%(엘리트 3팩 tackler×2+striker는 도주 권장 — 이 레벨대 도주율 100%) / longwood 100%(과로 압박은 F단계 보스에서 본격화).
+- **D+ 목(目)·BWH·보스턴 JK (F단계 선행분)**: ① **목(目) 중간보스** — MIT 잔디밭의 나무 지형물 NPC `moktree`(cond `!S.mok`)에 말 걸면 **상목/중목/하목 동시전**(`startEventBattle` waves 1개, noRun). 上目=3턴마다 적 전체 HP+45 힐·평타 약함·**주인공의 술을 가로챔**(item 분기에서 `B.enemies`에 sangmok 생존 시 효과 무효+상목 자가회복), 中目=고화력(35% ×1.6), 下目=상태이상 4종 랜덤(둔화/혼란/침묵/MP누수). 격파 시 `S.mok=1`+`S.bwhCoupon=1`. **시뮬: 무보급 Lv28 96% / 라면1개 Lv26 95%**(권장 Lv27+·술/요리 필수, 단 상목 탈취 때문에 회복템이 함정). ② **BWH 펠로우 5인**(롱우드, `bwh1~5` NPC=enemy 동명) — `S.bwhCoupon` 있으면 1:1 전투, 승리 시 `S.bwhN=1` + 레어 술 1병(buffalo/barolo/barbaresco/stagg/wellerfp). bwh2는 `drain`, bwh5(외과 과장)는 4턴마다 자가힐+강타. 단일전이라 Lv25+ 거의 100%. ③ **보스턴 JK** — NPC `jk3`, 5인 전부 격파(`S.bwh1~5`) 후 `jk3Shop` 개방. 첫 방문 시 레어 술 1병 무료(`S.jk3free`). 최상위 술 **파피 밴 윙클 23년**(`pappy`: 완전회복+ATK25%(5턴)+숙취없음, ₩55,000) 판매 — **3장 전투 5승마다 1병 입고**(`S.jk3kills`→`S.jk3stock`, jksShop의 jkkills 패턴 복제). victoryFinal에서 charles/mit/infinite/longwood 승리 시 jk3kills++. 신규 적 8종(sangmok/jungmok/hamok/bwh1~5)·NPC 7종(moktree/bwh1~5/jk3)·S플래그 11개·아이템 pappy 추가.
 
 ---
 
@@ -167,7 +168,8 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 - **주의**: 적측 디버프는 현재 `e.debAtk`(ATK −15%)뿐 — 천상 라면의 "적 전체 SPD −25%"용 **적 SPD 디버프 축(`e.debSpd` 등)은 E단계에서 신설**해야 함 (감소는 함정 #8대로 roundEnd에만, eMiss/턴순서/도주 계산에 반영).
 
 ### F. 필드보스·수집·바
-- 보스 구스(찰스, 광역 둔화·반격), 목(目)(infinite 끝, 2페이즈 디버프 종합 — 3장 중간 최대 벽), 스트레스 종양(롱우드, 과로 스택 압박). 골렘 게이트 패턴 재사용.
+- ✅(선행 완료) **목(目)** — D+단계에서 MIT 나무 지형물 트리거 + 상목/중목/하목 동시전으로 구현됨(설계 원안의 infinite 2페이즈와는 다른 형태). + **BWH 펠로우 5인 건틀릿 + 보스턴 JK 상점**(파피 밴 윙클)도 함께 구현. §6 D+ 참조.
+- (남음) 보스 구스(찰스, 광역 둔화·반격), 스트레스 종양(롱우드, 과로 스택 압박). 골렘 게이트 패턴 재사용. infinite 끝의 추가 보스는 선택.
 - 루카스(hsq 고정 NPC): 5개 지역 보물 수집(상자/보스 보상에 flag) → 루카스의 방울(디버프 저항: 지속턴 −1 또는 확률 무효).
 - 나이트 쉬프트 맥주바: 현상금 게시판(반복 토벌 퀘) + 3장 맥주.
 

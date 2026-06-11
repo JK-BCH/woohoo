@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — v1.0</title>
+<title>격물치지 — v1.1</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v1.0 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v1.1 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -91,7 +91,8 @@ const MAPS={
  library:{name:"중앙도서관 열람실",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFSFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFCCCCCFFFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFCCCCCFCCCCCFFFFFFFFFB","BFFFCCCCCFCCCCCFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBFBBBBBBBBBBBB"]},
  stacks:{name:"깊은 서고 B2",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFKFFFXFFFKFFFFFSFB","BFFFKFFFKFFFFFFFKFFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFFFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFFFFFKFFFB","BFFFFFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFFFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFFFFFKFFFFFFFKFFFB","BFKFFFFFFFFFKFFFFFFXFFFFB","BXKFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBBBBBBBBBBBBBB"]},
  alley:{name:"안암 술집 골목",tiles:["TTTTTTTTTTTTTTT","TGGGGGGPGGGGGGT","TBBGPGGPGGBBBBT","TBBWPGGPGGBFFBT","TBBGPPPPGGFFFBT","TBBWPGGPGGBFFBT","TBBGPGGPGGBBBBT","TBBWPGGPGGGGGGT","TBBGPGGPGGGGGGT","TGGPPPPPPPPPGGT","TGGGGGGPGGGGGGT","TTTTTTTTTTTTTTT"]},
- quad:{name:"UIUC 메인 쿼드",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGYYGYGGYGGYGGGGGGGGGGGGYGGYGGYGGYGT","TGGGGGGGGGGGGGRRRRRRRRGGGGGGGGGGGGGT","TGGGGGGGGGGGGGBBBBBBBBGGGGGGGGGGGGYT","TGGGGGGGGGGGGGBBBDBBBBGGGGGGGGGGGGGT","TYGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGTGGGGPGGGGTGGGGGGGGGGGGT","TYGRRRRRRRGGGGGGGPGGGGGGRRRRRRRGGGYT","TGGBBBBBBBGGGGGGGPGGGGGGBBBBBBBGGGGT","TGGBBBDBBBGGGGGGGPGGGGGGBBBDBBBGGGGT","TGGGGGPGGGGGGGGGGPGGGGGGGGGPGGGGGGGT","TGGGGGPPPPPPPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TYGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TGGGTGGGGGGGGGGGGPGGGTGGGGGGGGGGGGGT","TGGGGGGGRRRRRRRGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGBBBBBBBGGPGGGGGGGTGGGGGGGGGT","TGGGGGGGBBBDBBBGGPGGGGGGGGGGGGGGGGYT","TYGGGGGGGGGPGGGGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGPPPPPPPGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGAPGGGGGGGGGGGGTGGGGT","TGXGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGYGGGGYGGGGGGGGGGGGGGGGGGYGGGGYGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]}, asianlib:{name:"아시아도서관",tiles:["BBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFKFFFFFFFKFFFFFFB","BFFFKFFFKFFFFFFFKFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFFFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFFFFFKFFB","BFFFFFFFKFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFFFFB","BFFFKFFFKFFFFFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFFFFFKFFFFFFFKFFB","BFFFFFFFFFFFKFFFFFFFFFFB","BFXFFFFFFFFFFFFFFFFFFXFB","BFFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBFBBBBBBBBBBB"]}, green:{name:"그린 스트리트",tiles:["TTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGT","TGGGWGGGGWGGGGWGGGGT","TGGGGGGGGGGGGGGGGGGT","TGGGPGGGGPGGGGPGGGGT","TPPPPPPPPPPPPPPPPPGT","TGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGT","TGTGGGGTGGGGTGGGGTGT","TGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTT"]}, dorm:{name:"셔먼 홀 기숙사",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFEFFCFFFXFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
+ quad:{name:"UIUC 메인 쿼드",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGYYGYGGYGGYGGGGGGGGGGGGYGGYGGYGGYGT","TGGGGGGGGGGGGGRRRRRRRRGGGGGGGGGGGGGT","TGGGGGGGGGGGGGBBBBBBBBGGGGGGGGGGGGYT","TGGGGGGGGGGGGGBBBDBBBBGGGGGGGGGGGGGT","TYGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGPGGGGTGGGGGGGGGGGGT","TYGRRRRRRRGGGGGGGPGGGGGGRRRRRRRGGGYT","TGGBBBBBBBGGGGGGGPGGGGGGBBBBBBBGGGGT","TGGBBBDBBBGGGGGGGPGGGGGGBBBDBBBGGGGT","TGGGGGPGGGGGGGGGGPGGGGGGGGGPGGGGGGGT","TGGGGGPPPPPPPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TYGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGT","TGGGTGGGGGGGGGGGGPGGGTGGGGGGGGGGGGGT","TGGGGGGGRRRRRRRGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGBBBBBBBGGPGGGGGGGTGGGGGGGGGT","TGGGGGGGBBBDBBBGGPGGGGGGGGGGGGGGGGYT","TYGGGGGGGGGPGGGGGPGGGGGGGGGGGGGGGGGT","TGGGGGGGPPPPPPPPPPGGGGGGGGGGGGGGGGGT","TGGGGGGGPGGGGGGGAPGGGGGGGGGGGGTGGGGT","TGXGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGYGGGGYPGGGGGGGGGGGGGGGGGYGGGGYGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]}, asianlib:{name:"아시아도서관",tiles:["BBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFKFFFFFFFKFFFFFFB","BFFFKFFFKFFFFFFFKFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFFFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFFFFFKFFB","BFFFFFFFKFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFFFFB","BFFFKFFFKFFFFFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFKFFFKFFFKFFFKFFB","BFFFKFFFFFFFKFFFFFFFKFFB","BFFFFFFFFFFFKFFFFFFFFFFB","BFXFFFFFFFFFFFFFFFFFFXFB","BFFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBFBBBBBBBBBBB"]},cafe:{name:"카페 거리",tiles:["TTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGPGGGGGGGGGGT","TGGGGGGTGGGGPGGGGTGGGGGT","TGGRRRGGRRRGPRRRGGRRRGGT","TGGBBBGGBBBGPBBBGGBBBGGT","TGGBBBGGBBBGPBBBGGBDBGGT","TGGGGGGGGGGGPGGGGGGPGGGT","TGPPPPPPPPPPPPPPPPPPPPGT","TGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGT","TGTEGGTGGGGTGGGGTGGGGTGT","TGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTT"]},bookstore:{name:"헌책방",tiles:["BBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFB","BFFFKFFFKFFFKFXB","BFFFKFFFKFFFKFFB","BFFFKFFFFFFFKFFB","BFFFFFFFKFFFKFFB","BFFFKFFFKFFFFFFB","BFFFKFFFKFFFKFFB","BFFFFFFFFFFFFFFB","BBBBBBBBFBBBBBBB"]},
+ green:{name:"그린 스트리트",tiles:["TTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGT","TGGGWGGGGWGGGGWGGGGT","TGGGGGGGGGGGGGGGGGGT","TGGGPGGGGPGGGGPGGGGT","TPPPPPPPPPPPPPPPPPGT","TGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGT","TGTGGGGTGGGGTGGGGTGT","TGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTT"]}, dorm:{name:"셔먼 홀 기숙사",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFEFFCFFFXFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
  union1:{name:"일리니 유니언 1층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFCFFCFFCFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]}, union2:{name:"일리니 유니언 2층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BSFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFKFFKFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFXB","BFFFFFFFFFFFFB","BBBBBBBBBBBBBB"]}, union3:{name:"일리니 유니언 3층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BSFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFCFFCFFCFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBBBBBBBB"]}, union4:{name:"일리니 유니언 4층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFBFFFB","BSFFFFFFFBFFFB","BFFFFFFFFBFFFB","BFFFFFFFFFFXFB","BFFFFFFFFBFFFB","BFFFFFFFFBFFFB","BFFFFFFFFBFFFB","BFFFFFFFFBFFFB","BBBBBBBBBBBBBB"]},
  prelim:{name:"예비심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
  hall:{name:"본관 심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
@@ -109,7 +110,9 @@ const WALKP={
   stacks:{'22,2':{to:'library',x:22,y:3,d:'down'}},
   alley:{'7,1':{to:'campus',x:6,y:27,d:'up'}},
   hall:{'6,9':{to:'campus',x:19,y:5,d:'down'}},
-  quad:{'34,12':{to:'green',x:2,y:6,d:'right'}},
+  quad:{'34,12':{to:'green',x:2,y:6,d:'right'},'8,24':{to:'cafe',x:12,y:2,d:'down'}},
+  cafe:{'12,1':{to:'quad',x:8,y:23,d:'up'}},
+  bookstore:{'8,9':{to:'cafe',x:19,y:6,d:'down'}},
   green:{'1,6':{to:'quad',x:33,y:12,d:'left'}},
   asianlib:{'12,17':{to:'quad',x:6,y:11,d:'down'}},
   dorm:{'6,8':{to:'quad',x:11,y:19,d:'down'}},
@@ -121,7 +124,8 @@ const WALKP={
 };
 const DOORP={
   campus:{'19,4':{to:'hall',x:6,y:8,d:'up'},'7,7':{to:'liberal',x:10,y:13,d:'up'},'31,7':{to:'library',x:12,y:18,d:'up'}},
-  quad:{'17,4':{to:'prelim',x:6,y:8,d:'up'},'6,10':{to:'asianlib',x:12,y:16,d:'up'},'27,10':{to:'union1',x:7,y:8,d:'up'},'11,18':{to:'dorm',x:6,y:7,d:'up'}}
+  quad:{'17,4':{to:'prelim',x:6,y:8,d:'up'},'6,10':{to:'asianlib',x:12,y:16,d:'up'},'27,10':{to:'union1',x:7,y:8,d:'up'},'11,18':{to:'dorm',x:6,y:7,d:'up'}},
+  cafe:{'19,5':{to:'bookstore',x:8,y:8,d:'up'}}
 };
 const NPCS={
   campus:[{x:17,y:6,kind:'wandang'}],
@@ -130,9 +134,12 @@ const NPCS={
   stacks:[{x:1,y:17,kind:'golem',cond:()=>!S.golem}],
   alley:[{x:4,y:3,kind:'pocha'},{x:4,y:5,kind:'hof'},{x:4,y:7,kind:'mak'},{x:12,y:4,kind:'senior'}],
   hall:[],
-  quad:[{x:19,y:6,kind:'wandang'}],
+  quad:[{x:19,y:6,kind:'wandang'},{x:6,y:21,kind:'minseo'}],
   asianlib:[],
-  green:[{x:4,y:4,kind:'murphys'},{x:9,y:4,kind:'wine'},{x:14,y:4,kind:'jks'}],
+  green:[{x:4,y:4,kind:'murphys'},{x:9,y:4,kind:'wine'},{x:14,y:4,kind:'jks'},{x:17,y:4,kind:'postdoc'}],
+  cafe:[{x:4,y:6,kind:'barista'},{x:9,y:6,kind:'mailman'},{x:14,y:6,kind:'bookkeeper'}],
+  asianlib:[{x:22,y:3,kind:'libghost',cond:()=>!S.libboss}],
+  bookstore:[],
   union1:[{x:3,y:7,kind:'leader'}],
   union2:[],union3:[],
   union4:[{x:9,y:4,kind:'vgolem',cond:()=>!S.union}],
@@ -145,6 +152,7 @@ const CHEST_DB={
   'quad:2,22':{gold:12000,text:'쿼드 구석의 상자를 열었다.|₩12,000을 얻었다. RA 장학금이 입금됐다!'},
   'asianlib:2,15':{item:'barolo',n:2,text:'서가 뒤 상자를 열었다.|바롤로 2병을 얻었다. 사서의 비상용인가…'},
   'asianlib:21,15':{gold:15000,text:'먼지 쌓인 상자를 열었다.|₩15,000을 얻었다. 컨퍼런스 출장비의 잔액이다.'},
+  'bookstore:14,2':{flag:'scanboost',req:()=>S.bookQ>=1,reqMsg:['서가 깊은 곳의 낡은 상자. 잠겨 있다.','헌책방 주인에게 먼저 부탁을 받아야 할 것 같다.'],text:'먼지투성이 상자에서 절판된 사료와 함께 <돋보기 안경>이 나왔다!|관찰의 도구다. 약점 노출(격물치지·실사구시 등)이 1턴 더 지속된다!|헌책방 주인에게 알리자.'},
   'dorm:9,2':{stat:{hp:20},text:'기숙사 사물함을 열었다.|<프로틴 셰이커>를 얻었다! ARC에서 단련한 멘탈… 최대 HP가 영구히 +20!'},
   'union2:12,7':{stat:{def:5},text:'스터디룸 구석의 상자를 열었다.|<롱패딩 점퍼>를 얻었다! 일리노이의 겨울도 끄떡없다. 철면피(DEF)가 영구히 +5!'},
   'union4:11,4':{regen:1,text:'라운지의 상자를 열었다.|<일리니 보온 텀블러>를 얻었다!|전투 중 매 턴, 따뜻한 커피가 논리(MP)를 5씩 데워준다.'}
@@ -199,7 +207,8 @@ const ITEMS={
   barbaresco:{name:'바르바레스코', price:16000, hp:100, mp:30, short:'HP+100 MP+30'},
   buffalo:{name:'버팔로 트레이스', price:12000, mp:50, short:'MP+50'},
   stagg:{name:'스태그 Jr.', price:28000, full:true, hang:0.1, buffAtk:3, short:'완전회복·ATK+25%(3턴)·숙취10%'},
-  wellerfp:{name:'웰러 풀프루프', price:30000, full:true, short:'완전회복·숙취 없음'}
+  wellerfp:{name:'웰러 풀프루프', price:30000, full:true, short:'완전회복·숙취 없음'},
+  banchan:{name:'어머니의 밑반찬', price:0, full:true, short:'완전회복·숙취 없음·집밥'}
 };
 const SKILLS={
   gyeokmul:{id:'gyeokmul',name:'격물치지',mp:6,lv:2,desc:'사물을 파고든다 — 단일 ×1.8 + 약점 노출(받는 피해 +20%, 3턴)',brief:'단일 ×1.8+약점'},
@@ -231,6 +240,10 @@ const ENEMY_DB={
   snowman:{key:'snowman',name:'폴라 보텍스 눈사람',hp:120,atk:34,def:14,spd:8,xp:120,gold:7000},
   hanmun:{key:'hanmun',name:'한문 사료 더미',hp:100,atk:32,def:16,spd:6,xp:110,gold:6500,guard:0.2},
   mfghost:{key:'mfghost',name:'마이크로필름 유령',hp:80,atk:38,def:6,spd:20,xp:115,gold:6000},
+  aud1:{key:'aud1',name:'깐깐한 청중',hp:130,atk:32,def:14,spd:13,xp:110,gold:5000},
+  aud2:{key:'aud2',name:'졸다 깬 청중',hp:120,atk:30,def:10,spd:11,xp:90,gold:4000},
+  aud3:{key:'aud3',name:'용어 집착 청중',hp:130,atk:32,def:12,spd:14,xp:100,gold:4500,drain:6},
+  libghost:{key:'libghost',name:'금서 목록의 망령',hp:560,atk:50,def:18,spd:14,xp:450,gold:18000,guard:0.15},
   vgolem:{key:'vgolem',name:'폭주 자판기 골렘',hp:280,atk:40,def:18,spd:9,xp:300,gold:12000,guard:0.2},
   judge:{key:'judge',name:'심사위원',hp:180,atk:18,def:8,spd:9,xp:0,gold:0,guard:0.12},
   judge2:{key:'judge2',name:'심사위원',hp:150,atk:22,def:8,spd:10,xp:0,gold:0,guard:0.12},
@@ -238,10 +251,10 @@ const ENEMY_DB={
 };
 // ============ 상태 ============
 const P={lv:1,xp:0,maxhp:50,hp:50,maxmp:20,mp:20,atk:10,def:5,spd:8,luk:5,
-  gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
+  gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
   dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,counter:false,hangover:false};
 const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
-  card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0};
+  card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0};
 let wandangIdx=0;
 let MODE='title';
 // ============ 유틸 ============
@@ -508,7 +521,50 @@ function buildNpc(){
   A.npc.leader=mkPerson('#2b2b33','#1d3a5c',g=>{
     px(g,5,8,6,5,'#e8742a');g.fillStyle='#fff';g.font='bold 4px sans-serif';g.fillText('KSA',6,12);
   });
+  // 학회 포닥 선배 — 정장+명찰
+  A.npc.postdoc=mkPerson('#2b2b22','#3a3a4a',g=>{
+    px(g,6,7,4,2,'#f0f0f5');px(g,7,7,2,4,'#8c3030');
+    px(g,9,8,3,3,'#f4f1e6');px(g,9,8,3,1,'#c0392b');
+  });
+  // 바리스타 — 앞치마+비니
+  A.npc.barista=mkPerson('#1a1a22','#4a2f24',g=>{
+    px(g,4,1,8,3,'#2a6e54');
+    px(g,5,8,6,5,'#6b4a2b');px(g,6,9,4,1,'#caa53d');
+    px(g,11,9,2,3,'#e8e4d8');
+  });
+  // 우체국 직원 — 파란 제복+모자
+  A.npc.mailman=mkPerson('#2b2b33','#1d4a8c',g=>{
+    px(g,4,1,8,2,'#15356e');px(g,5,2,6,1,'#ffd866');
+    px(g,5,8,6,5,'#15356e');px(g,6,9,4,1,'#ffd866');
+    px(g,11,8,3,4,'#a8743f');
+  });
+  // 헌책방 주인 — 노학자, 둥근 안경+카디건
+  A.npc.bookkeeper=mkPerson('#d8d8e0','#5c4636',g=>{
+    px(g,4,4,3,2,'rgba(80,80,120,.6)');px(g,9,4,3,2,'rgba(80,80,120,.6)');px(g,7,5,2,1,'#445');
+    px(g,5,8,6,5,'#6e5444');
+  });
+  // 동기 유학생 민서 — 후드, 풀죽은 자세
+  A.npc.minseo=mkPerson('#3a2c2c','#5a5a6e',g=>{
+    px(g,3,6,10,4,'#4a4a5e');px(g,4,5,8,2,'#4a4a5e');
+    px(g,6,9,1,1,'#445');px(g,9,9,1,1,'#445');
+  });
   A.npc.golem=gm;
+  // 폭주 자판기 골렘 (맵용 16x16)
+  const vgm=mkC(16,16),vmg=vgm.getContext('2d');
+  px(vmg,2,1,12,14,'#c0392b');px(vmg,3,2,10,12,'#d8553a');
+  px(vmg,4,3,8,4,'#1d3a5c');
+  px(vmg,5,4,2,2,'#ffd866');px(vmg,9,4,2,2,'#56d364');
+  px(vmg,4,9,8,2,'#1a1a22');px(vmg,9,12,3,2,'#1a1a22');
+  px(vmg,1,6,2,3,'#a83020');px(vmg,13,6,2,3,'#a83020');
+  vmg.fillStyle='#fff';vmg.font='bold 4px sans-serif';vmg.fillText('!',7,8);
+  A.npc.vgolem=vgm;
+  // 금서 망령 (맵용)
+  const lgm=mkC(16,16),lmg=lgm.getContext('2d');
+  px(lmg,4,2,8,9,'rgba(30,26,50,.9)');px(lmg,2,5,12,5,'rgba(30,26,50,.85)');
+  px(lmg,5,5,2,2,'#c84a6a');px(lmg,9,5,2,2,'#c84a6a');
+  px(lmg,4,11,8,4,'#5c3a22');px(lmg,5,12,6,2,'#3a2516');
+  lmg.fillStyle='#e8d8c0';lmg.font='bold 6px serif';lmg.fillText('禁',6,9);
+  A.npc.libghost=lgm;
   // 진저캣 — 올리(둥글둥글) / 꽈이꽈이(날렵, 흰 가슴털)
   function mkCat(round){
     const c=mkC(40,34),g=c.getContext('2d');
@@ -661,6 +717,41 @@ function buildEnemies(){
   px(vgg,9,42,8,6,'#7a241a');px(vgg,21,42,8,6,'#7a241a');
   vgg.fillStyle='#fff';vgg.font='bold 6px sans-serif';vgg.fillText('OUT OF',9,30);vgg.fillText('ORDER',10,37);
   A.enemy.vgolem=vg;
+  // 청중 3종 — 착석한 사람들
+  function mkAud(hair,top,extra){
+    const c=mkC(32,40),g=c.getContext('2d');
+    px(g,6,28,20,10,'#5a4632');px(g,6,28,20,2,'#6e5844');
+    px(g,8,14,16,16,top);px(g,5,16,4,10,top);px(g,23,16,4,10,top);
+    px(g,9,2,14,6,hair);px(g,9,7,14,8,'#f0c8a0');
+    px(g,12,9,3,2,'#333');px(g,18,9,3,2,'#333');
+    if(extra)extra(g);
+    return c;
+  }
+  A.enemy.aud1=mkAud('#3a3a44','#4a3a5e',g=>{
+    px(g,11,9,4,2,'rgba(60,60,90,.6)');px(g,18,9,4,2,'rgba(60,60,90,.6)');px(g,15,10,3,1,'#445');
+    px(g,26,4,5,14,'#f0c8a0');px(g,27,2,3,4,'#f0c8a0');
+    px(g,13,13,6,1,'#a05a4a');
+  });
+  A.enemy.aud2=mkAud('#5a4632','#3a5e4a',g=>{
+    px(g,12,9,3,1,'#333');px(g,18,9,3,1,'#333');
+    px(g,13,13,6,2,'#222');
+    g.fillStyle='#9cc4ea';g.font='bold 8px sans-serif';g.fillText('z',25,8);g.fillText('Z',27,4);
+  });
+  A.enemy.aud3=mkAud('#2b2b22','#6e4a3a',g=>{
+    px(g,11,9,4,2,'rgba(60,60,90,.6)');px(g,18,9,4,2,'rgba(60,60,90,.6)');
+    px(g,1,16,6,9,'#f4f1e6');px(g,2,18,4,1,'#9aa');px(g,2,21,4,1,'#9aa');
+    px(g,13,13,5,1,'#a05a4a');
+  });
+  // 금서 목록의 망령 — 목록 카드 서랍 + 유령
+  const lg=mkC(40,46),lgg=lg.getContext('2d');
+  px(lgg,8,2,24,22,'rgba(30,26,50,.9)');px(lgg,4,8,32,14,'rgba(30,26,50,.85)');
+  px(lgg,12,8,4,4,'#c84a6a');px(lgg,24,8,4,4,'#c84a6a');
+  px(lgg,14,18,12,2,'#5a3a6a');
+  px(lgg,6,26,28,16,'#5c3a22');px(lgg,8,28,24,12,'#7a4a2b');
+  for(let i=0;i<3;i++){px(lgg,9,29+i*4,22,3,'#3a2516');px(lgg,18,30+i*4,4,1,'#caa53d');}
+  lgg.fillStyle='#e8d8c0';lgg.font='bold 8px serif';lgg.fillText('禁',16,16);
+  for(let i=0;i<5;i++)px(lgg,2+i*8,42+(i%2)*2,5,3,'#e8dcc0');
+  A.enemy.libghost=lg;
   const go=mkC(40,44),gog=go.getContext('2d');
   px(gog,6,2,28,12,'#6e6e78');px(gog,8,4,24,8,'#84848f');
   px(gog,12,6,4,4,'#ffd866');px(gog,24,6,4,4,'#ffd866');
@@ -815,7 +906,7 @@ function stepDone(){
   }
   if(CUR==='quad'&&tileAt(P.x,P.y)==='G'&&Math.random()<1/40){catEvent();return;}
   const z=encFor();
-  if(z&&z.tiles.includes(tileAt(P.x,P.y))&&Math.random()<z.rate)startEncounter();
+  if(z&&z.tiles.includes(tileAt(P.x,P.y))&&Math.random()<z.rate*(S.encDown?0.8:1))startEncounter();
 }
 function catEvent(){
   sfx.heal();
@@ -923,6 +1014,99 @@ function npcTalk(kind){
     showDialog('유학생회장',['아, 한국에서 온 박사과정? 잘됐다. 부탁 하나만…','위층이 난리야. 4층 자판기가 폭주해서 동전을 쏘고 다녀.','층마다 이상한 것들이 깨어났어. 2층 스터디룸엔 사료 더미가, 3층엔 한파가…','4층까지 올라가서 그 자판기 좀 멈춰줘. 사례는 두둑이 할게.']);
     return;
   }
+  // ===== 학회 포닥 선배 (그린 스트리트) =====
+  if(kind==='postdoc'){
+    sfx.ok();
+    if(S.postdocQ>=2){showDialog('포닥 선배',['리허설 덕 좀 봤어? 학회는 결국 멘탈 싸움이야.','명찰 잘 달고 다녀. 사람 덜 꼬인다… 농담이고, 잡몹 말이야.']);return;}
+    if(S.postdocQ===1){
+      showDialog('포닥 선배',['오, 발표 준비됐어? 청중 앞에서 한 번 돌려보자.','질문 폭격 버틸 수 있겠어? 시작한다.'],()=>{
+        openMenu('컨퍼런스 리허설을 시작한다? <span style="color:#aab;font-size:12px">(청중 웨이브 3연전 · 중간 회복 없음 · 권장 Lv 12+ · 맥주 챙길 것)</span>',[
+          {label:'발표한다 (전투)',fn:()=>{closeMenu();startEventBattle({
+            waves:[['aud1','aud2'],['aud1','aud3'],['aud1','aud2','aud3']],
+            intro:'세미나실의 청중이 일제히 손을 들었다!',waveMsg:'다음 줄의 청중이 손을 든다…!',
+            onWin:()=>{S.postdocQ=2;
+              showDialog('포닥 선배',['깔끔했어. 그 정도면 어디 가서도 안 깨져.','옜다, <학회 명찰>. 이거 달면 잔챙이들이 알아서 피해 가.','(인카운터율이 영구히 20% 감소한다!)'],()=>{S.encDown=1;});}
+          });}},
+          {label:'다음에',fn:()=>{closeMenu();MODE='map';}}
+        ],()=>{closeMenu();MODE='map';});
+      });return;
+    }
+    showDialog('포닥 선배',['어, 한국에서 왔구나? 나도 여기서 박사 했어. 지금은 포닥.','곧 학회 있지? 발표 리허설 안 하면 현장에서 깨져.','준비되면 말해. 청중 역할은 내가… 아니, 알아서 모일 거야.'],()=>{S.postdocQ=1;});
+    return;
+  }
+  // ===== 바리스타 (카페 거리) — 오늘의 커피 수집 =====
+  if(kind==='barista'){
+    sfx.ok();
+    if(S.cafeStamp){showDialog('바리스타',['단골 도장 다 채웠네! 이제 어디서든 10% 깎아줄게… 술집에서도? 글쎄, 말은 해둘게.','오늘의 메뉴는… 그냥 아메리카노. 솔직히 그게 제일 잘 나가.']);return;}
+    const menus=['에티오피아 예가체프','콜드브루 토닉','피스타치오 라떼','아인슈페너','옥수수 라떼(…진짜로)'];
+    const todayIdx=(S.coffees?Object.keys(S.coffees).length:0)%menus.length;
+    let firstNew=-1;
+    for(let i=0;i<menus.length;i++){if(!S.coffees[i]){firstNew=i;break;}}
+    if(firstNew<0){showDialog('바리스타',['다 마셔봤네! 곧 도장 카드 나올 거야.']);return;}
+    const m=menus[firstNew];
+    showDialog('바리스타',['어서 와. 오늘의 메뉴는 <b>'+m+'</b>.','마셔볼래? 첫 잔은 서비스. 단골 도장도 찍어줄게.'],()=>{
+      S.coffees[firstNew]=1;sfx.heal();
+      const cnt=Object.keys(S.coffees).filter(k=>S.coffees[k]).length;
+      const done=cnt>=5;
+      if(done){S.cafeStamp=1;P.mp=Math.min(P.maxmp,P.mp+10);}
+      showDialog('바리스타',[m+'을(를) 마셨다. 머리가 맑아진다.',
+        done?'…그리고 도장 5개 완성! <단골 도장 카드>를 받았다! (상점가 술값 10% 할인)':'단골 도장 '+cnt+'/5.']);
+    });
+    return;
+  }
+  // ===== 우체국 직원 (카페 거리) — 사료 조각 배달 =====
+  if(kind==='mailman'){
+    sfx.ok();
+    if(S.bansae){showDialog('우체국 직원',['소포 잘 받았지? 어머님이 자주 부치시더라.','집밥 떨어지면 또 와. …아 맞다, 배달은 네가 했지.']);return;}
+    if(S.saryo>=3){
+      showDialog('우체국 직원',['오, 사료 조각 3개 다 모았네! 분류 끝났어.','대신 이거, 너 앞으로 온 소포. 어머님이 보내셨더라.'],()=>{
+        S.bansae=1;S.saryo=0;P.inv.banchan=(P.inv.banchan||0)+3;
+        showDialog('',['<어머니의 밑반찬> 3개를 얻었다!','집밥은 완전회복에 숙취도 없다. 괜히 집밥이 아니다.']);
+      });return;
+    }
+    showDialog('우체국 직원',['아시아도서관에서 흘러나온 <사료 조각>들이 우편함에 섞여 들어왔어.','3개만 찾아서 갖다주면 분류 끝나는데… 도와줄래?','(아시아도서관 몹이 가끔 떨어뜨려. 현재 '+S.saryo+'/3)']);
+    return;
+  }
+  // ===== 헌책방 주인 (카페 거리) =====
+  if(kind==='bookkeeper'){
+    sfx.ok();
+    if(S.bookQ>=2){showDialog('헌책방 주인',['그 돋보기, 잘 쓰고 있나? 안 보이던 게 보이지.','격물치지란 게 별건가. 끝까지 들여다보는 게야.']);return;}
+    if(S.bookQ===1){
+      showDialog('헌책방 주인',['절판된 사료를 찾았는가? 안쪽 서가 깊은 곳에 있을 텐데.','…아직이군. 책장 사이를 잘 뒤져보게. 안쪽 문으로 들어가게.']);return;}
+    showDialog('헌책방 주인',['허허, 동방에서 온 학인이로군.','내 가게 안쪽 서가에 절판된 사료 한 권이 잠들어 있네.','먼지 속 그것을 찾아오면… 자네 눈을 밝혀줄 물건을 주지.','안쪽 문으로 들어가 상자를 찾게.'],()=>{S.bookQ=1;});
+    return;
+  }
+  // ===== 동기 유학생 민서 (쿼드 벤치) =====
+  if(kind==='minseo'){
+    sfx.ok();
+    const stages=[
+      ['…어, 안녕. 나도 여기 박사과정.','요즘 잠이 안 와. 내 연구가 의미가 있나 싶어서…','(가끔 들러서 말동무가 되어주자.)'],
+      ['또 왔네. 고마워.','어제는 지도교수가 내 챕터를 통째로 다시 쓰래. 멘탈이 바스러졌어.','…그래도 누가 들어주니까 좀 낫다.'],
+      ['있잖아, 너랑 얘기하면서 깨달았어.','우리 다 똑같이 헤매는 거더라. 나만 못난 게 아니라.','이거 받아. 내가 만든 백업용 USB. 필드 어디서든 저장돼.','(<동기의 USB> 획득! 메뉴에서 언제든 세이브 가능!)']
+    ];
+    if(S.minseo>=3){showDialog('민서',['너 덕분에 다시 책상에 앉았어.','USB 잘 쓰고 있지? 우린 같이 졸업하자.']);return;}
+    const st=S.minseo;
+    showDialog('민서',stages[st],()=>{
+      S.minseo=st+1;
+      if(S.minseo>=3){S.usbSave=1;sfx.lvl();}
+    });
+    return;
+  }
+  if(kind==='libboss'||kind==='libghost'){
+    sfx.crash();
+    showDialog('???',['…書庫의 가장 깊은 곳. 공기가 차갑다.','낡은 목록 카드들이 저절로 떠올라 형체를 이룬다.','「禁書를 찾는 者인가. 그 자격을 증명하라.」'],()=>{
+      openMenu('금서 목록의 망령에게 도전한다? <span style="color:#aab;font-size:12px">(필드보스 — 대출 금지(침묵)·색인 폭풍 · 권장 Lv 14+)</span>',[
+        {label:'증명한다 (전투)',fn:()=>{closeMenu();startEventBattle({
+          waves:[['libghost']],noRun:true,noRunMsg:'목록 카드들이 출구를 봉쇄했다!',
+          intro:'금서 목록의 망령이 차가운 바람과 함께 덮쳐온다!',
+          onWin:()=>{S.libboss=1;P.maxmp+=30;P.mp=P.maxmp;sfx.lvl();updateHud();
+            showDialog('',['망령이 고개를 숙이더니, 목록 카드가 한 장 남고 흩어졌다.','「…閱覽을 許한다.」','금서의 지혜가 흘러들어온다 — <b>최대 논리(MP)가 영구히 +30!</b>']);}
+        });}},
+        {label:'물러난다',fn:()=>{closeMenu();MODE='map';}}
+      ],()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
   if(kind==='vgolem'){
     sfx.crash();
     showDialog('???',['위이이잉— 덜컹! 덜컹!','폭주한 자판기가 동전을 장전한다…!'],()=>{
@@ -989,9 +1173,10 @@ function tryInteract(){
 }
 function dormMenu(){
   sfx.ok();
-  openMenu('기숙사 침대 — 시차 적응엔 잠이 최고다.',[
-    {label:'푹 잔다 (HP·MP 완전 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();
-      showDialog('',['옥수수밭 너머로 해가 지고, 뜬다…','HP와 MP가 모두 회복되었다!']);}},
+  const cafe=CUR==='cafe';
+  openMenu(cafe?'카페 야외 좌석 — 잠깐 쉬어갈까?':'기숙사 침대 — 시차 적응엔 잠이 최고다.',[
+    {label:cafe?'커피 한잔 한다 (HP·MP 완전 회복)':'푹 잔다 (HP·MP 완전 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();
+      showDialog('',cafe?['따뜻한 커피 한 잔에 숨을 돌렸다.','HP와 MP가 모두 회복되었다!']:['옥수수밭 너머로 해가 지고, 뜬다…','HP와 MP가 모두 회복되었다!']);}},
     {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
   ],()=>{closeMenu();MODE='map';});
 }
@@ -1016,10 +1201,12 @@ function openChest(x,y){
   if(S.chests[key]){sfx.ok();showDialog('',['상자는 비어 있다.']);return;}
   const c=CHEST_DB[key];
   if(!c){sfx.ok();showDialog('',['열리지 않는다.']);return;}
+  if(c.req&&!c.req()){sfx.ok();showDialog('',c.reqMsg||['아직 열 수 없다.']);return;}
   S.chests[key]=1;sfx.lvl();
   if(c.gold)P.gold+=c.gold;
   if(c.item)P.inv[c.item]=(P.inv[c.item]||0)+c.n;
   if(c.note)P.atk+=3;
+  if(c.flag){S[c.flag]=1;if(c.flag==='scanboost')S.bookQ=2;}
   if(c.stat){
     if(c.stat.hp){P.maxhp+=c.stat.hp;P.hp+=c.stat.hp;}
     if(c.stat.mp){P.maxmp+=c.stat.mp;P.mp+=c.stat.mp;}
@@ -1047,7 +1234,7 @@ function travelMenu(){
       {label:'출국한다 ✈',fn:()=>{closeMenu();
         if(!S.ch2first){S.ch2first=1;
           goMap('quad',17,20,'up').then(()=>{
-            showDialog('',['…14시간의 비행과 2시간의 버스.','끝없는 옥수수밭 한가운데, UIUC 메인 쿼드에 도착했다.','겨울엔 영하 21도까지 떨어진다고 한다. 술이 필요하다.','동쪽 길 끝엔 그린 스트리트(상점가), 서쪽엔 아시아도서관.','…그리고 잔디밭 어딘가에 주황 털뭉치들이 산다는 소문이.']);
+            showDialog('',['…14시간의 비행과 2시간의 버스.','끝없는 옥수수밭 한가운데, UIUC 메인 쿼드에 도착했다.','겨울엔 영하 21도까지 떨어진다고 한다. 술이 필요하다.','동쪽 길 끝엔 그린 스트리트(상점가), 서쪽엔 아시아도서관.','남서쪽으로 내려가면 카페 거리, 거기서 만날 사람이 많다.','…그리고 잔디밭 어딘가에 주황 털뭉치들이 산다는 소문이.']);
           });
         }else goMap('quad',17,20,'up');
       }},
@@ -1069,12 +1256,12 @@ function hiddenPagoda(x,y){
       {label:'손을 댄다',fn:()=>{closeMenu();
         S.debugMax=1;
         P.lv=20;P.xp=0;
-        P.maxhp=50+12*19;P.maxmp=20+4*19;
-        P.atk=10+2*19;P.def=Math.floor(5+1.5*19);P.spd=8+19;P.luk=Math.floor(5+0.5*19);
+        P.maxhp=50+12*19+1000;P.maxmp=20+4*19+1000;
+        P.atk=10+2*19+1000;P.def=Math.floor(5+1.5*19)+1000;P.spd=8+19+1000;P.luk=Math.floor(5+0.5*19)+1000;
         P.hp=P.maxhp;P.mp=P.maxmp;
         P.skills=Object.keys(SKILLS);
         sfx.lvl();updateHud();
-        showDialog('',['돌탑에서 엄청난 기운이 흘러들어온다…!','<b>[DEBUG] Lv 20 (만렙) 달성! 전 스킬 습득!</b>','…이 돌탑은 출시 전에 치워야 한다.']);}},
+        showDialog('',['돌탑에서 엄청난 기운이 흘러들어온다…!','<b>[DEBUG] Lv 20 (만렙) + 전 스탯 +1000! 전 스킬 습득!</b>','이제 무엇이든 한 방이다. …이 돌탑은 출시 전에 반드시 치워야 한다.']);}},
       {label:'물러난다',fn:()=>{closeMenu();MODE='map';}}
     ],()=>{closeMenu();MODE='map';});
   });
@@ -1117,8 +1304,8 @@ function jksShop(){
     const inv=stock.map(k=>ITEMS[k].name+' '+P.inv[k]).join(' · ');
     const head='<b style="color:#ffd866">JK&#39;s Liquor</b> — '+msg+'<br><span style="color:#aab;font-size:12px">'+(rare.length?'<b style="color:#f0d080">★ 히든 재고: '+rare.join(', ')+'</b> <span style="color:#888">(각 1병 한정)</span><br>':'히든 선반이 비어 있다. <span style="color:#888">(전투 5승마다 입고 기회)</span><br>')+inv+' · '+fmt(P.gold)+'</span>';
     openMenu(head,
-      stock.map(k=>({label:ITEMS[k].name+' ('+fmt(ITEMS[k].price)+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<ITEMS[k].price,
-        fn:()=>{P.gold-=ITEMS[k].price;P.inv[k]++;S.bought++;
+      stock.map(k=>({label:ITEMS[k].name+' ('+fmt(shopPrice(k))+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k),
+        fn:()=>{P.gold-=shopPrice(k);P.inv[k]++;S.bought++;
           if(k==='stagg'){S.jkstag=0;S.jkrare=1;}
           if(k==='wellerfp'){S.jkweller=0;S.jkrare=1;}
           updateHud();
@@ -1128,13 +1315,14 @@ function jksShop(){
   };
   build('어서 와. 캠퍼스가 시끄러워야(전투) 좋은 물건이 흘러들어오지.');
 }
+function shopPrice(k){return S.cafeStamp?Math.round(ITEMS[k].price*0.9):ITEMS[k].price;}
 function openShopWith(stock,title,greet){
   sfx.ok();
   const inv=()=>stock.map(k=>ITEMS[k].name+' '+P.inv[k]).join(' · ');
   const head=m=>'<b style="color:#ffd866">'+title+'</b> — '+m+'<br><span style="color:#aab;font-size:12px">'+inv()+' · '+fmt(P.gold)+'</span>';
   const build=msg=>openMenu(head(msg),
-    stock.map(k=>({label:ITEMS[k].name+' ('+fmt(ITEMS[k].price)+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<ITEMS[k].price,
-      fn:()=>{P.gold-=ITEMS[k].price;P.inv[k]++;S.bought++;updateHud();build('좋은 선택이야.');}}))
+    stock.map(k=>({label:ITEMS[k].name+' ('+fmt(shopPrice(k))+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k),
+      fn:()=>{P.gold-=shopPrice(k);P.inv[k]++;S.bought++;updateHud();build('좋은 선택이야.');}}))
     .concat([{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
     ()=>{closeMenu();MODE='map';});
   build(greet);
@@ -1165,6 +1353,12 @@ const QUESTS=[
   {name:'[2장] 꽈이꽈이와의 우정',desc:'쿼드에서 진저캣 꽈이꽈이와 5회 조우',prog:()=>Math.min(S.kwai,5)+'/5',done:()=>S.kwai>=5,ch2:true},
   {name:'[2장] 유니언 대소동',desc:'일리니 유니언 4층의 폭주 자판기 골렘 진압 (회장의 부탁)',prog:()=>S.union?'1/1':'0/1',done:()=>S.union>=1,ch2:true},
   {name:"[2장] JK의 히든 재고",desc:"JK's Liquor에서 스태그 또는 웰러 구매",prog:()=>S.jkrare?'1/1':'0/1',done:()=>S.jkrare>=1,ch2:true},
+  {name:'[2장] 카페 거리의 단골',desc:'바리스타의 오늘의 커피 5종 모두 맛보기 → 단골 도장 카드',prog:()=>Math.min(Object.keys(S.coffees||{}).filter(k=>S.coffees[k]).length,5)+'/5',done:()=>S.cafeStamp>=1,ch2:true},
+  {name:'[2장] 컨퍼런스 리허설',desc:'그린 스트리트 포닥 선배의 발표 리허설 통과 → 학회 명찰',prog:()=>S.encDown?'1/1':'0/1',done:()=>S.encDown>=1,ch2:true},
+  {name:'[2장] 고향에서 온 소포',desc:'사료 조각 3개를 우체국에 배달 → 어머니의 밑반찬',prog:()=>(S.bansae?3:Math.min(S.saryo,3))+'/3',done:()=>S.bansae>=1,ch2:true},
+  {name:'[2장] 절판된 사료',desc:'헌책방 안쪽 서가의 절판 사료 회수 → 돋보기 안경',prog:()=>S.scanboost?'1/1':'0/1',done:()=>S.scanboost>=1,ch2:true},
+  {name:'[2장] 같이 졸업하자',desc:'쿼드 벤치의 동기 민서와 끝까지 대화 → 동기의 USB',prog:()=>Math.min(S.minseo,3)+'/3',done:()=>S.minseo>=3,ch2:true},
+  {name:'[2장] 금서 목록의 망령',desc:'아시아도서관 가장 깊은 곳의 필드보스 격파 → 최대 MP +30 (권장 Lv 14+)',prog:()=>S.libboss?'1/1':'0/1',done:()=>S.libboss>=1,ch2:true},
   {name:'[2장] 박사 디펜스 (Prelim)',desc:'예비심사장에서 위원회 격파 (권장 Lv 18+ · 위스키 필수)',prog:()=>S.boss2?'1/1':'0/1',done:()=>S.boss2>=1,ch2:true}
 ];
 function openFieldMenu(){sfx.ok();MODE='fieldmenu';fmView('main');FM.style.display='block';}
@@ -1205,7 +1399,7 @@ function fmView(view){
       return '<button class="gbtn" data-act="use-'+k+'" '+(P.inv[k]<1||full||fullAll?'disabled':'')+'>'+it.name+' ×'+P.inv[k]+' <small>'+it.short+'</small></button>';
     }).join('');
     html='<h3>아이템</h3><div class="btnrow">'+rows+'</div>'+
-    '<p style="color:#aab;font-size:12px;margin-top:8px">장비: '+wpn().name+' (ATK+'+wpn().atk+') · 『주자어류』(스킬북)'+(S.chests['stacks:1,18']?' · 고문헌 노트(ATK+3)':'')+(S.chests['dorm:9,2']?' · 프로틴 셰이커(HP+20)':'')+(S.chests['union2:12,7']?' · 롱패딩 점퍼(DEF+5)':'')+(S.chests['union4:11,4']?' · 일리니 보온 텀블러(턴당 MP+5)':'')+(S.charm?' · 주황 털뭉치 부적(LUK+10·SPD+3)':'')+(P.hangover?'<br><span style="color:#f0d080">⚠ 숙취 — 다음 전투 첫 행동 불가</span>':'')+'</p><br><div class="btnrow">'+back+'</div>';
+    '<p style="color:#aab;font-size:12px;margin-top:8px">장비: '+wpn().name+' (ATK+'+wpn().atk+') · 『주자어류』(스킬북)'+(S.chests['stacks:1,18']?' · 고문헌 노트(ATK+3)':'')+(S.chests['dorm:9,2']?' · 프로틴 셰이커(HP+20)':'')+(S.chests['union2:12,7']?' · 롱패딩 점퍼(DEF+5)':'')+(S.chests['union4:11,4']?' · 일리니 보온 텀블러(턴당 MP+5)':'')+(S.charm?' · 주황 털뭉치 부적(LUK+10·SPD+3)':'')+(S.encDown?' · 학회 명찰(인카운터↓)':'')+(S.cafeStamp?' · 단골 도장 카드(술값 10%↓)':'')+(S.scanboost?' · 돋보기 안경(약점+1턴)':'')+(S.usbSave?' · 동기의 USB(필드 세이브)':'')+(P.hangover?'<br><span style="color:#f0d080">⚠ 숙취 — 다음 전투 첫 행동 불가</span>':'')+'</p><br><div class="btnrow">'+back+'</div>';
   }
   else if(view==='mapv'){
     const m=M();const sc=Math.max(3,Math.min(7,Math.floor(220/m.w)));
@@ -1223,12 +1417,12 @@ function fmView(view){
     const slots=[1,2,3].map(i=>{
       const d=loadSlotInfo(i);
       return '<tr><td>슬롯 '+i+'</td><td>'+(d?d:'(비어 있음)')+'</td>'+
-        '<td><button class="gbtn" data-act="sv-'+i+'" style="padding:3px 8px;font-size:12px">저장</button>'+
+        '<td><button class="gbtn" data-act="sv-'+i+'" style="padding:3px 8px;font-size:12px" '+(canSave()?'':'disabled')+'>저장</button>'+
         '<button class="gbtn" data-act="ld-'+i+'" style="padding:3px 8px;font-size:12px" '+(d?'':'disabled')+'>로드</button></td></tr>';
     }).join('');
     html='<h3>세이브 / 로드</h3><table>'+slots+'</table>'+
-      '<p style="font-size:11px;color:#aab;margin-top:6px">'+(storageOK?'이 기기 브라우저(localStorage)에 저장됩니다. 브라우저 데이터 삭제·시크릿 모드·기기 변경 시 소실되니, 장기 보관은 아래 <b>세이브 코드</b>를 복사해 메모장 등에 백업해두세요.':'⚠ 이 환경은 브라우저 저장이 막혀 있어요 — 아래 세이브 코드를 복사해 보관하세요.')+'</p>'+
-      '<div class="btnrow"><button class="gbtn" data-act="export">세이브 코드 내보내기</button><button class="gbtn" data-act="import">코드로 불러오기</button></div>'+
+      '<p style="font-size:11px;color:#aab;margin-top:6px">'+(S.usbSave?'<span style="color:#56d364">동기의 USB</span> — 어디서든 저장 가능.<br>':(canSave()?'<span style="color:#56d364">세이브 포인트</span> 근처입니다 — 저장 가능.<br>':'<span style="color:#f0d080">저장은 노트북·침대·벤치 근처에서만 가능합니다.</span> (동기의 USB가 있으면 어디서든)<br>'))+(storageOK?'이 기기 브라우저(localStorage)에 저장됩니다. 브라우저 데이터 삭제·시크릿 모드·기기 변경 시 소실되니, 장기 보관은 아래 <b>세이브 코드</b>를 복사해 메모장 등에 백업해두세요.':'⚠ 이 환경은 브라우저 저장이 막혀 있어요 — 아래 세이브 코드를 복사해 보관하세요.')+'</p>'+
+      '<div class="btnrow"><button class="gbtn" data-act="export" '+(canSave()?'':'disabled')+'>세이브 코드 내보내기</button><button class="gbtn" data-act="import">코드로 불러오기</button></div>'+
       '<textarea id="saveCode" placeholder="세이브 코드가 여기 표시되거나, 코드를 붙여넣고 [코드로 불러오기]"></textarea>'+
       '<div class="btnrow">'+back+'</div>';
   }
@@ -1271,6 +1465,14 @@ const MEMSTORE={};let storageOK=false;
 try{localStorage.setItem('__t','1');localStorage.removeItem('__t');storageOK=true;}catch(e){storageOK=false;}
 function rawSave(k,v){if(storageOK){try{localStorage.setItem(k,v);return;}catch(e){}}MEMSTORE[k]=v;}
 function rawLoad(k){if(storageOK){try{const v=localStorage.getItem(k);if(v!=null)return v;}catch(e){}}return MEMSTORE[k]||null;}
+function canSave(){
+  if(S.usbSave)return true;
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[0,0]]){
+    const t=tileAt(P.x+dx,P.y+dy);
+    if(t==='O'||t==='E'||t==='L')return true;
+  }
+  return false;
+}
 function snapshot(){
   return {v:4,cur:CUR,P:{lv:P.lv,xp:P.xp,maxhp:P.maxhp,hp:P.hp,maxmp:P.maxmp,mp:P.mp,atk:P.atk,def:P.def,spd:P.spd,luk:P.luk,
     gold:P.gold,inv:{...P.inv},skills:[...P.skills],weapon:P.weapon,x:P.x,y:P.y,dir:P.dir},
@@ -1278,10 +1480,10 @@ function snapshot(){
 }
 function applySnapshot(d){
   Object.assign(P,d.P);P.skills=[...d.P.skills];P.weapon=d.P.weapon||'pen';
-  P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0},d.P.inv);
+  P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0},d.P.inv);
   P.tx=P.x;P.ty=P.y;P.fx=P.x*TILE;P.fy=P.y*TILE;P.moving=false;
   P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;
-  const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0};
+  const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
   wandangIdx=d.w||0;updateHud();
@@ -1387,6 +1589,7 @@ function tallyBank(){
   B.enemies.forEach(e=>{
     if(B.bank){B.bank.xp+=e.xp;B.bank.gold+=e.gold;}
     if(e.key==='slime')S.slimeKills++;else if(e.key==='spirit')S.spiritKills++;
+    if(CUR==='asianlib'&&!S.bansae&&S.saryo<3&&Math.random()<0.25){S.saryo++;B._saryoDrop=(B._saryoDrop||0)+1;}
   });
 }
 async function battleLoop(){
@@ -1595,7 +1798,7 @@ async function playerAct(act){
     const gq=cfg.pierce?{d,g:false}:enemyGuard(t,d);d=gq.d;
     t.hp=Math.max(0,t.hp-d);t.shake=10;t.flash=6;sfx.hit();
     await bmsg(t.name+'에게 '+d+'의 데미지!'+(cfg.pierce?' <span style="color:#9fd">(방어·막기 무시)</span>':'')+(act.type==='ilgwan'?' <span style="color:#9fd">(×'+cfg.mult.toFixed(1)+' 관통)</span>':'')+(gq.g?' <span style="color:#aab">(상대가 막아냈다 — 절반)</span>':'')+(r.crit?' <b style="color:#ffd866">크리티컬!</b>':''));
-    if(act.type==='gyeokmul'&&t.hp>0){t.weak=3;await bmsg(t.name+'의 논리적 약점이 드러났다! (받는 피해 증가)');}
+    if(act.type==='gyeokmul'&&t.hp>0){t.weak=S.scanboost?4:3;await bmsg(t.name+'의 논리적 약점이 드러났다! (받는 피해 증가'+(S.scanboost?' · 돋보기 연장':'')+')');}
     if(t.hp<=0){fxAdd('pop',t);await bmsg(t.name+'을(를) 해치웠다!');}
   }
   else if(act.type==='geogyeong'){
@@ -1614,7 +1817,7 @@ async function playerAct(act){
     let t=act.target;if(!t||t.hp<=0)t=alive()[0];if(!t)return;
     fxAdd('scan',t);sfx.shield();
     await bmsg('<b>실사구시(實事求是)!</b> 사실로 못 박는다 — 반박의 여지를 봉쇄!');
-    t.weak=3;t.noGuard=3;
+    t.weak=S.scanboost?4:3;t.noGuard=3;
     await bmsg('[고증 완료] '+t.name+' — HP '+t.hp+'/'+t.maxhp+' · ATK '+t.atk+' · DEF '+t.def+(t.guard?' · 막기 '+Math.round(t.guard*100)+'%':''),1000);
     await bmsg('<span style="color:#ffd866">약점 노출(+20% 피해)</span> + <span style="color:#9fd">막기 봉인</span> (3턴)!');
   }
@@ -1816,6 +2019,38 @@ async function enemyAct(e){
     await eHitP(e,1.0,'취객이 비틀거리며 어깨동무를 시도했다!');
     return;
   }
+  // ===== 리허설: 청중 3종 =====
+  if(e.key==='aud1'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    await eHitP(e,1.5,'깐깐한 청중: 「그 주장의 <b>근거는요</b>?」 날카로운 추궁!');
+    return;
+  }
+  if(e.key==='aud2'){
+    const roll=Math.random();
+    if(roll<0.2){await bmsg('졸다 깬 청중은 다시 꾸벅꾸벅 졸기 시작했다… zZ');return;}
+    if(roll<0.35){sfx.crash();P.hp=Math.max(0,P.hp-12);updateHud();
+      await bmsg('청중이 마이크를 건드렸다 — <b>삐이이익!</b> 하울링, 12의 고정 데미지!');return;}
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'졸다 깬 청중이 뜬금없는 질문을 던졌다!');
+    return;
+  }
+  // ===== 필드보스: 금서 목록의 망령 =====
+  if(e.key==='libghost'){
+    if(e.tc%3===0){
+      sfx.crash();P.hp=Math.max(0,P.hp-15);P.silence=2;updateHud();
+      await bmsg('망령: <b>「貸出禁止 — 이 지식은 봉인되었다.」</b>',950);
+      await bmsg('15의 고정 데미지 + <b>침묵</b>(다음 턴 스킬 불가)!');
+      return;
+    }
+    if(Math.random()<0.25){
+      if(await tryCounter(e))return;
+      await eHitP(e,1.5,'망령의 <b>색인 폭풍</b>! 낡은 목록 카드가 휘몰아친다!');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.1,'망령이 금서의 그림자로 후려쳤다!');
+    return;
+  }
   // ===== 2장 미니보스: 폭주 자판기 골렘 =====
   if(e.key==='vgolem'){
     if(e.tc%3===0){
@@ -1871,7 +2106,7 @@ async function enemyAct(e){
   }
   if(e.drain&&Math.random()<0.5){
     if(await tryCounter(e))return;
-    const verb=e.key==='worm'?'갉아대기':'알림 폭격';
+    const verb=e.key==='worm'?'갉아대기':(e.key==='aud3'?'「그 용어, 정의부터 다시」 꼬투리':'알림 폭격');
     const hit=await eHitP(e,0.8,e.name+'의 '+verb+'!',false,true);
     if(hit!==null){P.mp=Math.max(0,P.mp-e.drain);updateHud();await bmsg('집중력(MP)이 '+e.drain+' 깎였다!');}
     return;
@@ -1897,6 +2132,7 @@ async function gainLevels(){
 async function victoryFinal(){
   B.over=true;sfx.win();
   if(CUR==='quad'||CUR==='asianlib'||CUR.startsWith('union'))S.jkkills=(S.jkkills||0)+1;
+  if(B._saryoDrop){await bmsg('<사료 조각>을 '+B._saryoDrop+'개 주웠다! (현재 '+S.saryo+'/3)');}
   await bmsg('승리했다! 경험치 '+B.bank.xp+' · '+fmt(B.bank.gold)+' 획득!');
   P.gold+=B.bank.gold;P.xp+=B.bank.xp;updateHud();
   await gainLevels();
@@ -2093,6 +2329,24 @@ function battleBg(){
     ctx.fillStyle='#3a3530';ctx.fillRect(0,104,256,88);
     ctx.fillStyle='#2c2825';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
     return '그린 스트리트 · 저녁';
+  }
+  if(CUR==='cafe'){
+    const grd=ctx.createLinearGradient(0,0,0,120);
+    grd.addColorStop(0,'#e8c9a0');grd.addColorStop(1,'#f4e4d0');
+    ctx.fillStyle=grd;ctx.fillRect(0,0,256,120);
+    ctx.fillStyle='#8a5a3a';ctx.fillRect(30,40,60,64);ctx.fillRect(150,40,70,64);
+    ctx.fillStyle='#6b4226';ctx.fillRect(30,40,60,5);ctx.fillRect(150,40,70,5);
+    ctx.fillStyle='#caa050';ctx.fillRect(40,54,16,10);ctx.fillStyle='#fff';ctx.font='6px sans-serif';ctx.fillText('CAFE',40,62);
+    ctx.fillStyle='#5a8a4a';ctx.fillRect(0,104,256,88);
+    return '카페 거리';
+  }
+  if(CUR==='bookstore'){
+    ctx.fillStyle='#3a2c20';ctx.fillRect(0,0,256,110);
+    for(let i=0;i<5;i++){const bx=10+i*50;ctx.fillStyle='#5c3a22';ctx.fillRect(bx,12,40,92);
+      const cols=['#7a4848','#3a5e85','#4a8a4a','#caa53d'];
+      for(let y=18;y<98;y+=18)for(let b=0;b<5;b++){ctx.fillStyle=cols[(y+b+i)%4];ctx.fillRect(bx+4+b*6,y,5,14);}}
+    ctx.fillStyle='#2a1f16';ctx.fillRect(0,104,256,88);
+    return '헌책방';
   }
   if(CUR==='library'||CUR==='stacks'||CUR==='asianlib'){
     ctx.fillStyle=CUR==='stacks'?'#1d1828':'#3a3040';ctx.fillRect(0,0,256,110);

@@ -249,16 +249,13 @@ hline(hs,2,16,25,'R')
 for y in (3,4):
     for x in range(16,26): hs[y][x]='B'
 put(hs,20,4,'D')
-# 바나나 라운지 (북동) rows2-4 cols29-36, 문 (32,4)
-hline(hs,2,29,36,'R')
-for y in (3,4):
-    for x in range(29,37): hs[y][x]='B'
-put(hs,32,4,'D')
+# (구 바나나 라운지 자리 — MIT 무한복도 끝으로 이전. 북동쪽은 작은 공원으로)
+for (x,y) in [(30,3),(33,2),(36,4),(31,6),(35,7)]:
+    hs[y][x]='T'
 # 도로망: 길은 전부 목적지에서 종결
 vline(hs,20,5,25,'P')          # 메인 세로 (대강당 문앞 ~ 남쪽 롱우드 포털)
-hline(hs,8,7,32,'P')           # 북 가로 (옌칭~바나나 문앞)
+hline(hs,8,7,20,'P')           # 북 가로 (옌칭~대강당)
 vline(hs,7,5,8,'P')            # 옌칭 연결
-vline(hs,32,5,8,'P')           # 바나나 연결
 hline(hs,14,1,38,'P')          # 중앙 대로 (서: 뉴버리 포털 / 동: 찰스 포털)
 put(hs,16,20,'A')              # T 정거장 (공항 연결)
 vline(hs,16,21,21,'P'); hline(hs,21,16,20,'P')   # 정거장 진입로(메인 세로와 연결)
@@ -294,7 +291,7 @@ for y in (3,4):
 hline(nb,7,2,24,'P')
 for x in (5,13,18): vline(nb,x,5,7,'P')
 put(nb,24,7,'P')               # 동쪽 출구 → 하버드 스퀘어
-put(nb,3,10,'E')               # 카페 야외 좌석
+# (카페 야외 좌석 E는 밸런스 패치로 제거 — 힐링 스팟 과다)
 for (x,y) in [(9,10),(15,10),(21,10),(2,5)]:
     if nb[y][x]=='G': nb[y][x]='T'
 
@@ -333,6 +330,7 @@ for (x,y) in [(5,15),(26,15),(10,18),(21,18),(27,5),(4,5)]:
 ic=grid(38,7,'F'); border(ic,'B')
 for x in range(6,34,6): put(ic,x,1,'B'); put(ic,x,5,'B')   # 기둥
 put(ic,2,4,'F')                # 서쪽 입출구 부근
+put(ic,37,3,'D')               # 동쪽 끝 — 바나나 라운지 (포닥들의 비밀 휴게실)
 
 # ---------- [3장] 롱우드 지역 28x18 ----------
 lw=grid(28,18,'G'); border(lw,'T')
@@ -410,13 +408,13 @@ CHECK={
  'cafe':dict(start=(12,8),walk=[(12,1)],doors=[(19,5)],npc=[(4,7),(9,7),(14,7)],arrive=[(12,8),(12,2),(19,6)]),
  'bookstore':dict(start=(8,8),walk=[(8,9)],doors=[(14,2)],npc=[],arrive=[(8,8)]),
  'prelim':dict(start=(6,8),walk=[(6,9)],doors=[(4,2),(5,2),(6,2),(7,2),(2,2),(9,2)],npc=[],arrive=[(6,8)]),
- 'hsq':dict(start=(20,14),walk=[(1,14),(38,14),(20,25)],doors=[(7,4),(20,4),(32,4),(16,20)],npc=[],arrive=[(20,14),(20,5),(7,5),(32,5),(2,14),(37,14),(20,24),(16,21)]),
+ 'hsq':dict(start=(20,14),walk=[(1,14),(38,14),(20,25)],doors=[(7,4),(20,4),(16,20)],npc=[],arrive=[(20,14),(20,5),(7,5),(2,14),(37,14),(20,24),(16,21)]),
  'yenching':dict(start=(7,8),walk=[(7,9)],doors=[(2,2),(11,2)],npc=[],arrive=[(7,8)]),
  'banana':dict(start=(7,8),walk=[(7,9)],doors=[(2,2)],npc=[],arrive=[(7,8)]),
- 'newbury':dict(start=(23,7),walk=[(24,7)],doors=[(13,3),(18,3),(3,10)],npc=[],arrive=[(23,7)]),
+ 'newbury':dict(start=(23,7),walk=[(24,7)],doors=[(13,3),(18,3)],npc=[],arrive=[(23,7)]),
  'charles':dict(start=(2,9),walk=[(1,9),(28,9)],doors=[(12,11)],npc=[],arrive=[(2,9),(27,9)]),
  'mit':dict(start=(2,11),walk=[(1,11)],doors=[(15,5)],npc=[],arrive=[(2,11),(15,6)]),
- 'infinite':dict(start=(2,3),walk=[(1,3)],doors=[],npc=[],arrive=[(2,3)]),
+ 'infinite':dict(start=(2,3),walk=[(1,3)],doors=[(37,3)],npc=[],arrive=[(2,3),(36,3)]),
  'longwood':dict(start=(14,2),walk=[(14,1)],doors=[],npc=[],arrive=[(14,2)]),
  'jobhall':dict(start=(6,8),walk=[(6,9)],doors=[(4,2),(5,2),(6,2),(7,2),(2,2),(9,2)],npc=[],arrive=[(6,8)]),
 }

@@ -31,7 +31,9 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 ## 1. 제품·배포 상태
 
 - **배포**: GitHub Pages — 리포 `JK-BCH/woohoo`, main 브랜치 root. URL `https://JK-BCH.github.io/woohoo/`
-- **배포본**: **v2.1 (본편 완결 + 국제관 던전)**. 작업본이 `index.html`에 통합됨 — 별도 작업본 파일 없음. (주의: 변경은 feature 브랜치에서 작업 — **main에 머지되어야 GH Pages에 반영**된다.)
+- **배포본**: **v2.3 (본편 완결 + 국제관 + 도감/칭호 + 리비전 지옥)**. 작업본이 `index.html`에 통합됨 — 별도 작업본 파일 없음. **볼륨 확장 로드맵은 `volume_expansion_spec.md` 참조** (v2.2 도감/QoL·v2.3 무한던전 완료). (주의: 변경은 feature 브랜치에서 작업 — **main에 머지되어야 GH Pages에 반영**된다.)
+- **v2.2 수집/QoL**: 도감·칭호 탭(`fmView('dex')`) — 몬스터/술/요리/트로피 도감 + 칭호 11종(`TITLES`, `S.title` 1개 장착 패시브, `checkTitles()`). 트로피 `TROPHIES`(tallyBank 드랍). 전투 배속(`SPEED` 전역·localStorage), 오토세이브(`autoSave()`→'auto'슬롯), 일괄구매(`BUYQ`), 코드복사, 권장Lv표찰(`RECLV`).
+- **v2.3 반복 루프**: 리비전 지옥(무한던전) — hsq NPC `revgate`(boss2 게이트), `revStart/revNext/revDefeat/revShop`. 전역 `REV`(세이브 불필요), B.rev 플래그로 battleBg·defeat 분기. 적은 `mkScaled`로 층 스케일(HP×1.13^/ATK×1.05^), 5층마다 `REV_BOSS`. 보상=심사 포인트(`S.revPoints`), 교환소서 영구 스탯 반복 구매. 일일 출석(`S.dailyDate`, ISO 날짜 비교).
 - **절대 금지**: 리포 이름/도메인 변경. localStorage는 origin 단위라 **모든 플레이어의 세이브가 증발**한다 (세이브 코드로만 이주 가능).
 - 업데이트 절차: `index.html` 덮어쓰기 + CHANGELOG 한 줄 + git tag. GH Pages 캐시 ~10분, 캐시버스팅 불필요.
 
@@ -183,9 +185,10 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 - **국제관**(campus 남서 건물, 문 12,25 → `intl1`/`intl2` 신규 맵 2종): ① 1층 = 국제 학회 던전(ENC 1/16, 학회 잡몹 3종 confstu/interp/posterg — 침묵·MP깎기 기믹, 출장비 상자 ₩25,000). **시뮬(무보급·만년필): Lv8 69% / Lv10 83% / Lv12 99%** — 권장 Lv10+ 고급 사냥터. ② 2층 = 계단 알코브를 NPC `staffer`(cond `!S.boss3`)가 가로막음 — **3장 완결 후 개방**. 교수급 3종 emer/keynote/chaired(ENC 1/14, 기력소진·침묵 기믹) + 잉크 상자(MP+20) + 최심부 NPC `tenure`(`S.tenureSeen` — **종신심사 Tenure DLC 떡밥**). **시뮬(맥북): Lv33 무보급 82% / Lv35+요리5 99%** — 만렙 엔드게임. 미션 2종(국제관 포스터 세션 5킬=`S.intlKills` / [종장] 종신의 문턱). 신규 S 플래그 2개·적 6종·NPC 2종·전투 배경 1종(1·2층 공용 분기). ③ **나이트 쉬프트 → charles 강변 이전**, ④ **gooseboss/tumorboss 필드 스프라이트를 전투 모습과 일치**(16×16 거위/종양)하게 교체.
 
 ### 다음 작업 후보 (선택)
-- (떡밥) 종신심사 Tenure 편 — 진엔딩/DLC. intl2의 `tenure` NPC가 입구. 설계서 엔딩 절 참조.
+- **볼륨 확장 로드맵: `volume_expansion_spec.md` 참조** — 5축(스토리/미니게임/반복/수집/편의) 명세 + v2.2~v3.0 배포 단위 제안. 신규 작업은 이 문서의 공통 구현 규약(§7)을 따를 것.
+- (떡밥) 종신심사 Tenure 편 — 진엔딩/DLC. intl2의 `tenure` NPC가 입구. 설계서 엔딩 절 + 확장 명세 §1-1 참조.
 - 캐릭터 성별 선택 · 외부 스프라이트시트 (README 로드맵).
-- infinite 끝 추가 보스(선택 — 골렘 게이트 패턴).
+- infinite 끝 추가 보스(선택 — 골렘 게이트 패턴, 확장 명세 §3-1 리비전 지옥이 회수 예정).
 
 ---
 

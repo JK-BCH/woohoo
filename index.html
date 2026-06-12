@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.1</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.3</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.1 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.3 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -102,6 +102,7 @@ const MAPS={
 for(const id in MAPS){MAPS[id].w=MAPS[id].tiles[0].length;MAPS[id].h=MAPS[id].tiles.length;}
 let CUR='campus';
 const M=()=>MAPS[CUR];
+const RECLV={stacks:'권장 Lv4+',alley:'권장 Lv5+',quad:'권장 Lv10+',intl1:'권장 Lv10+',asianlib:'권장 Lv13+',union1:'권장 Lv14+',union2:'권장 Lv14+',union3:'권장 Lv14+',union4:'권장 Lv16+',charles:'권장 Lv20+',mit:'권장 Lv22+',infinite:'권장 Lv24+',longwood:'권장 Lv24+',intl2:'권장 Lv33+'};
 const TILE=16, VW=16, VH=12;
 const SOLID={T:1,B:1,W:1,D:1,L:1,R:1,K:1,C:1,V:1,X:1,J:1,O:1,Y:1,A:1,H:1,E:1,M:1};
 const WALKP={
@@ -156,7 +157,7 @@ const NPCS={
   green:[{x:4,y:4,kind:'murphys'},{x:9,y:4,kind:'wine'},{x:14,y:4,kind:'jks'},{x:17,y:4,kind:'postdoc'},{x:16,y:8,kind:'tailgate'}],
   cafe:[{x:4,y:6,kind:'barista'},{x:9,y:6,kind:'mailman'},{x:14,y:6,kind:'bookkeeper'},{x:8,y:9,kind:'laptopper'}],
   asianlib:[{x:22,y:3,kind:'libghost',cond:()=>!S.libboss}],
-  hsq:[{x:11,y:11,kind:'lucas'},{x:12,y:17,kind:'chessman'},{x:17,y:12,kind:'busker'},{x:27,y:20,kind:'tourist'}],
+  hsq:[{x:11,y:11,kind:'lucas'},{x:12,y:17,kind:'chessman'},{x:17,y:12,kind:'busker'},{x:27,y:20,kind:'tourist'},{x:33,y:11,kind:'revgate'}],
   yenching:[{x:5,y:2,kind:'yenmail'},{x:9,y:3,kind:'thesis'},{x:5,y:6,kind:'archivist'}],
   banana:[{x:10,y:2,kind:'banguide'}],
   newbury:[{x:13,y:4,kind:'bostonliq'},{x:18,y:4,kind:'gadget'},{x:7,y:5,kind:'rock'},{x:20,y:5,kind:'shopper'}],
@@ -282,6 +283,45 @@ const SKILLS={
   beopgo:{id:'beopgo',name:'법고창신(法古創新)',mp:16,lv:27,desc:'옛것을 본받아 새것을 연다 — 전체 ×1.3 + 적 전체 약점 노출(2턴), 회피 불가',brief:'전체+약점노출'},
   hwalyeon:{id:'hwalyeon',name:'활연관통(豁然貫通)',mp:20,lv:30,desc:'문득 모든 것이 꿰뚫린다 — 단일 ×3.0, 방어·막기 무시',brief:'×3.0 방어무시'}
 };
+const HAN_DISHES=[
+  {n:'뼈해장 라구 파스타',f:()=>{P.maxhp+=30;P.hp+=30;},txt:'최대 HP가 영구히 +30'},
+  {n:'부야베스 김치찌개',f:()=>{P.atk+=3;},txt:'논증력(ATK)이 영구히 +3'},
+  {n:'비프 웰링턴 수육',f:()=>{P.def+=3;},txt:'철면피(DEF)가 영구히 +3'},
+  {n:'랍스터 비빔국수',f:()=>{P.spd+=2;},txt:'마감력(SPD)이 영구히 +2'},
+  {n:'클램차우더 순두부',f:()=>{P.luk+=3;},txt:'통찰(LUK)이 영구히 +3'}
+];
+// ===== v2.2 수집: 트로피 (순수 수집 — 도감 전시용) =====
+const TROPHIES={
+  slimecore:{n:'서류 슬라임의 코어',src:'slime',rate:0.03,d:'반려 서류의 응어리'},
+  ganderbeak:{n:'수컷 구스의 부리 조각',src:'gander',rate:0.05,d:'쪼임의 기억'},
+  residentbadge:{n:'야간 당직 배지',src:'resident',rate:0.05,d:'36시간의 증표'},
+  chalkpiece:{n:'석좌의 분필',src:'chaired',rate:0.05,d:'30년 전에 끝난 주제'},
+  micghost:{n:'식은 마이크',src:'keynote',rate:0.05,d:'마지막 질문의 잔향'},
+  goldfeather:{n:'보스 구스의 왕관 깃털',src:'bossgoose',rate:1,d:'찰스강의 왕권'},
+  tumorjar:{n:'종양 표본병',src:'stumor',rate:1,d:'…잠깐은 쉬어도 돼'},
+  mokeye:{n:'목(目)의 외눈 잎사귀',src:'sangmok',rate:1,d:'세 그루의 시선'},
+  vgolemcoin:{n:'자판기 골렘의 동전',src:'vgolem',rate:1,d:'거스름돈의 분노'},
+  libindex:{n:'금서 색인 카드',src:'libghost',rate:1,d:'貸出禁止'}
+};
+// ===== v2.2 수집: 칭호 (장착 1개 = 소소한 패시브) =====
+const TITLES={
+  msc:{n:'문학석사',d:'석사 디펜스 통과',eff:'전투 골드 +5%',cond:()=>S.boss1>=1},
+  phd:{n:'철학박사',d:'박사 Prelim 통과',eff:'전투 경험치 +5%',cond:()=>S.boss2>=1},
+  prof:{n:'조교수',d:'임용 커미티 통과',eff:'상점 5% 할인',cond:()=>S.boss3>=1},
+  drinker:{n:'주당 박사',d:'술·음식 도감 완성',eff:'숙취 확률 절반',cond:()=>Object.keys(S.drank||{}).length>=Object.keys(ITEMS).length},
+  scholar:{n:'몬스터 박사',d:'몬스터 도감 완성',eff:'인카운터율 −10%',cond:()=>Object.keys(S.dex||{}).length>=Object.keys(ENEMY_DB).length},
+  vet:{n:'백전노장',d:'누적 100승',eff:'도주 성공률 +10%p',cond:()=>S.winCount>=100},
+  foodie:{n:'요리 단골',d:'합체요리 5회',eff:'아이템 HP 회복 +10%',cond:()=>S.hanCooked>=5},
+  collector:{n:'수집가',d:'트로피 5종',eff:'통찰 가드 +3%p',cond:()=>Object.keys(S.trophies||{}).length>=5},
+  resilient:{n:'현타 극복',d:'현타 3회 극복',eff:'패배 골드 손실 50%→30%',cond:()=>S.hyunta>=3},
+  rich:{n:'백만장자',d:'₩1,000,000 보유 달성',eff:'자판기 할증 면제',cond:()=>S.richSeen>=1},
+  catfriend:{n:'고양이의 친구',d:'올리·꽈이꽈이와 우정',eff:'고양이 조우 시 항상 좋은 일',cond:()=>S.olli>=5&&S.kwai>=5}
+};
+function checkTitles(){
+  const got=[];
+  for(const id in TITLES)if(!S.titles[id]&&TITLES[id].cond()){S.titles[id]=1;got.push(TITLES[id].n);}
+  return got;
+}
 const ENEMY_DB={
   slime:{key:'slime',name:'행정서류 슬라임',hp:25,atk:8,def:2,spd:6,xp:15,gold:1500},
   spirit:{key:'spirit',name:'카톡 알림 정령',hp:20,atk:12,def:1,spd:14,xp:18,gold:1000,drain:5,preempt:true},
@@ -343,12 +383,16 @@ const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
   matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
   gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
-  intlKills:0,tenureSeen:0};
+  intlKills:0,tenureSeen:0,
+  dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
+  revPoints:0,revBest:0,revClears:0,dailyDate:''};
 let wandangIdx=0;
+let REV=null;
 let MODE='title';
 // ============ 유틸 ============
 const $=id=>document.getElementById(id);
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let SPEED=1;try{if(localStorage.getItem('gmcz_speed')==='2')SPEED=2;}catch(e){}
+const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(16,ms/SPEED)));
 const fmt=n=>'₩'+n.toLocaleString('ko-KR');
 function calcDmg(atk,mult,def,luk,ignoreDef){
   let d=Math.floor(atk*mult*(0.9+Math.random()*0.2));
@@ -775,6 +819,12 @@ function buildNpc(){
     px(g,4,4,3,2,'rgba(80,80,120,.6)');px(g,9,4,3,2,'rgba(80,80,120,.6)');px(g,7,5,2,1,'#445');
     px(g,12,7,2,7,'#7a5c3a');px(g,11,6,4,1,'#caa53d');    // 황금 손잡이 지팡이
   });
+  {const c=mkC(16,16),g=c.getContext('2d');   // 리비전의 문 — 보라색 차원문
+    px(g,3,1,10,14,'#2a1840');px(g,4,2,8,12,'#3a2458');
+    px(g,5,3,6,10,'#6a3aa0');px(g,6,4,4,8,'#9a6aff');
+    px(g,7,6,2,4,'rgba(232,224,255,.7)');
+    px(g,3,1,10,1,'#c8a0f0');px(g,5,3,1,10,'rgba(200,160,255,.5)');
+    A.npc.revgate=c;}
   {const c=mkC(16,16),g=c.getContext('2d'); // 루카스 — 회색 턱시도 고양이
     px(g,4,6,8,8,'#5a5a64');px(g,5,11,6,3,'#f4f1e6');
     px(g,4,3,3,4,'#5a5a64');px(g,9,3,3,4,'#5a5a64');px(g,5,4,1,2,'#3a3a44');px(g,10,4,1,2,'#3a3a44');
@@ -1307,12 +1357,14 @@ function tryMove(){
   P.tx=nx;P.ty=ny;P.moving=true;P.mt=0;
 }
 let toast='',toastT=0;
+function autoSave(){try{rawSave('gmcz_save_auto',JSON.stringify(snapshot()));}catch(e){}}
 async function goMap(to,x,y,d){
   MODE='flash';flashColor='rgba(0,0,0,1)';
   flashOn=true;await sleep(240);
   CUR=to;P.x=x;P.y=y;P.tx=x;P.ty=y;P.fx=x*TILE;P.fy=y*TILE;P.moving=false;if(d)P.dir=d;
   toast=M().name;toastT=performance.now();
   flashOn=false;MODE='map';sfx.step();
+  autoSave();
 }
 function stepDone(){
   P.x=P.tx;P.y=P.ty;P.fx=P.x*TILE;P.fy=P.y*TILE;P.moving=false;
@@ -1323,14 +1375,14 @@ function stepDone(){
   }
   if(CUR==='quad'&&tileAt(P.x,P.y)==='G'&&Math.random()<1/40){catEvent();return;}
   const z=encFor();
-  if(z&&z.tiles.includes(tileAt(P.x,P.y))&&Math.random()<z.rate*(S.encDown?0.8:1))startEncounter();
+  if(z&&z.tiles.includes(tileAt(P.x,P.y))&&Math.random()<z.rate*(S.encDown?0.8:1)*(S.title==='scholar'?0.9:1))startEncounter();
 }
 function catEvent(){
   sfx.heal();
   const isOlli=Math.random()<0.5;
   const name=isOlli?'올리':'꽈이꽈이';
   if(isOlli)S.olli++;else S.kwai++;
-  const buff=Math.random()<(isOlli?0.75:0.65);
+  const buff=S.title==='catfriend'||Math.random()<(isOlli?0.75:0.65);
   const lines=['잔디 사이에서 주황 털뭉치가 튀어나왔다!','진저캣 〈'+name+'〉다! ('+(isOlli?S.olli:S.kwai)+'번째 만남)'];
   if(buff){
     const roll=Math.random();
@@ -1569,18 +1621,11 @@ function npcTalk(kind){
   }
   if(kind==='han'){
     sfx.ok();
-    const HAN_DISHES=[
-      {n:'뼈해장 라구 파스타',f:()=>{P.maxhp+=30;P.hp+=30;},txt:'최대 HP가 영구히 +30'},
-      {n:'부야베스 김치찌개',f:()=>{P.atk+=3;},txt:'논증력(ATK)이 영구히 +3'},
-      {n:'비프 웰링턴 수육',f:()=>{P.def+=3;},txt:'철면피(DEF)가 영구히 +3'},
-      {n:'랍스터 비빔국수',f:()=>{P.spd+=2;},txt:'마감력(SPD)이 영구히 +2'},
-      {n:'클램차우더 순두부',f:()=>{P.luk+=3;},txt:'통찰(LUK)이 영구히 +3'}
-    ];
     if(S.matA>0&&S.matB>0){
       const dish=HAN_DISHES[S.hanIdx%HAN_DISHES.length];
       openMenu('<b>한 (Han)</b> — MIT 옆 한인 식료품점<br><span style="color:#aab;font-size:12px">「재료A·B 다 있네? 오늘의 합체요리는 <b style="color:#f0d080">'+dish.n+'</b> — '+dish.txt+'.」<br>재료A: '+S.matA+'개 · 재료B: '+S.matB+'개 · 지금까지 '+S.hanCooked+'그릇</span>',[
         {label:dish.n+'을(를) 만들어 먹는다 (재료A·B 각 1개 소모)',fn:()=>{
-          closeMenu();S.matA--;S.matB--;dish.f();S.hanIdx++;S.hanCooked++;sfx.lvl();updateHud();
+          closeMenu();S.matA--;S.matB--;dish.f();S.cooked[S.hanIdx%HAN_DISHES.length]=1;S.hanIdx++;S.hanCooked++;sfx.lvl();updateHud();
           showDialog('한 (Han)',['(셋이서 냄비를 둘러싸고 한 그릇씩 나눠 먹는다.)','…말이 필요 없네. 보스턴의 밤이 든든해진다.','<b style="color:#ffd866">'+dish.n+'</b> — '+dish.txt+'!','(다음 요리는 「'+HAN_DISHES[(S.hanIdx)%HAN_DISHES.length].n+'」 — 재료를 또 모아 와.)']);
         }},
         {label:'다음에 먹을게',fn:()=>{closeMenu();MODE='map';}}
@@ -1588,6 +1633,26 @@ function npcTalk(kind){
       return;
     }
     showDialog('한 (Han)',['어서 와. 여기는 없는 게 없는 한인 식료품점.','<b>재료A 숙성 육수</b>(락 — 뉴버리)와 <b>재료B 와인 졸임 소스</b>(문 — 보트하우스)를 모아 오면','<b style="color:#ffd866">합체요리</b>를 만들어 주지. 먹는 즉시 몸에 배는, 영구 스펙업이야.','현재 — 재료A: '+S.matA+'개 · 재료B: '+S.matB+'개','다음 요리는 「'+HAN_DISHES[S.hanIdx%HAN_DISHES.length].n+'」 ('+HAN_DISHES[S.hanIdx%HAN_DISHES.length].txt+')']);
+    return;
+  }
+  // ===== v2.3 리비전 지옥 + 일일 보상 =====
+  if(kind==='revgate'){
+    sfx.ok();
+    if(!S.boss2){showDialog('리비전의 문',['보라색으로 일렁이는 문… 안에서 끝없는 「Major Revision」의 신음이 새어 나온다.','「아직… 자네 차례가… 아니야…」','(박사 예비심사 Prelim 통과 후 열린다.)']);return;}
+    const today=new Date().toISOString().slice(0,10);
+    const daily=S.dailyDate!==today;
+    openMenu('<b style="color:#9a6aff">리비전 지옥</b> — 끝나지 않는 논문 수정의 차원.<br><span style="color:#aab;font-size:12px">층이 깊어질수록 적이 강해지고 심사 포인트가 커진다. 5층마다 보스 + 탈출 기회. 쓰러져도 포인트·소지품은 잃지 않는다.<br>최고 기록 <b>'+(S.revBest||0)+'층</b> · 보유 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b></span>',[
+      {label:'1층부터 도전한다',fn:()=>{closeMenu();revStart(1);}},
+      {label:'<b>심사 포인트 교환소</b>',fn:()=>{closeMenu();revShop();}},
+      {label:'<b style="color:#ffd866">오늘의 출석</b> '+(daily?'— 받기':'<small>(내일 다시)</small>'),disabled:!daily,fn:()=>{
+        closeMenu();S.dailyDate=today;
+        const g=15000+Math.floor((P.lv||1)*500);P.gold+=g;P.revPoints=S.revPoints=(S.revPoints||0)+3;
+        const drinks=['yuengling','barolo','buffalo','nightshift'];const dk=drinks[Math.floor(Math.random()*drinks.length)];P.inv[dk]=(P.inv[dk]||0)+1;
+        updateHud();sfx.lvl();
+        showDialog('리비전의 문',['「오늘도 왔군. …끈기 하나는 인정하지.」',fmt(g)+' + 심사 포인트 3점 + 〈'+ITEMS[dk].name+'〉을 받았다.','(매일 1회. 꾸준함이 곧 연구다.)']);
+      }},
+      {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
     return;
   }
   // ===== v2.1 국제관: 2층 게이트 스태프 + 종신의 노교수 =====
@@ -1919,7 +1984,7 @@ function dormMenu(){
   };
   const sp=SPOT[CUR]||SPOT.dorm;
   openMenu(sp.t,[
-    {label:sp.a+' (HP·MP 완전 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();
+    {label:sp.a+' (HP·MP 완전 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();autoSave();
       showDialog('',sp.m);}},
     {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
   ],()=>{closeMenu();MODE='map';});
@@ -1927,7 +1992,7 @@ function dormMenu(){
 function labMenu(){
   sfx.ok();
   const items=[
-    {label:'잠깐 눈을 붙인다 (HP·MP 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();
+    {label:'잠깐 눈을 붙인다 (HP·MP 회복)',fn:()=>{closeMenu();P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();autoSave();
       showDialog('',['연구실 침대에 잠시 누웠다…','HP와 MP가 모두 회복되었다!']);}}
   ];
   if(S.night){
@@ -1963,10 +2028,11 @@ function openChest(x,y){
 }
 function vendingShop(stock){
   sfx.ok();
-  const build=msg=>openMenu('<b style="color:#ffd866">자판기</b> — '+msg+'<br><span style="color:#aab;font-size:12px">정가보다 ₩500 비싸다 · '+fmt(P.gold)+'</span>',
-    stock.map(k=>({label:ITEMS[k].name+' ('+fmt(ITEMS[k].price+500)+')',disabled:P.gold<ITEMS[k].price+500,
-      fn:()=>{P.gold-=ITEMS[k].price+500;P.inv[k]++;updateHud();build('덜컹. '+ITEMS[k].name+'이(가) 나왔다.');}}))
-    .concat([{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
+  const fee=()=>S.title==='rich'?0:500;
+  const build=msg=>openMenu('<b style="color:#ffd866">자판기</b> — '+msg+'<br><span style="color:#aab;font-size:12px">'+(fee()?'정가보다 ₩500 비싸다':'<span style="color:#56d364">[백만장자] 할증 면제</span>')+' · '+fmt(P.gold)+'</span>',
+    stock.map(k=>({label:ITEMS[k].name+(BUYQ>1?' ×'+BUYQ:'')+' ('+fmt((ITEMS[k].price+fee())*BUYQ)+')',disabled:P.gold<(ITEMS[k].price+fee())*BUYQ,
+      fn:()=>{P.gold-=(ITEMS[k].price+fee())*BUYQ;P.inv[k]+=BUYQ;updateHud();build('덜컹. '+ITEMS[k].name+'이(가) 나왔다.');}}))
+    .concat([buyqBtn(()=>build('심사 전 마지막 보급이다.')),{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
     ()=>{closeMenu();MODE='map';});
   build('심사 전 마지막 보급이다.');
 }
@@ -2069,13 +2135,15 @@ function jksShop(){
     const inv=stock.map(k=>ITEMS[k].name+' '+P.inv[k]).join(' · ');
     const head='<b style="color:#ffd866">JK&#39;s Liquor</b> — '+msg+'<br><span style="color:#aab;font-size:12px">'+(rare.length?'<b style="color:#f0d080">★ 히든 재고: '+rare.join(', ')+'</b> <span style="color:#888">(각 1병 한정)</span><br>':'히든 선반이 비어 있다. <span style="color:#888">(전투 5승마다 입고 기회)</span><br>')+inv+' · '+fmt(P.gold)+'</span>';
     openMenu(head,
-      stock.map(k=>({label:ITEMS[k].name+' ('+fmt(shopPrice(k))+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k),
-        fn:()=>{P.gold-=shopPrice(k);P.inv[k]++;S.bought++;
+      stock.map(k=>{
+        const rareOne=(k==='stagg'||k==='wellerfp');const q=rareOne?1:BUYQ;
+        return {label:ITEMS[k].name+(q>1?' ×'+q:'')+' ('+fmt(shopPrice(k)*q)+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k)*q,
+        fn:()=>{P.gold-=shopPrice(k)*q;P.inv[k]+=q;S.bought++;
           if(k==='stagg'){S.jkstag=0;S.jkrare=1;}
           if(k==='wellerfp'){S.jkweller=0;S.jkrare=1;}
           updateHud();
-          build((k==='stagg'||k==='wellerfp')?'…좋은 걸 알아보는군. 그 선반은 당분간 비겠어.':'Cheers.');}}))
-      .concat([{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
+          build(rareOne?'…좋은 걸 알아보는군. 그 선반은 당분간 비겠어.':'Cheers.');}};})
+      .concat([buyqBtn(()=>build('Cheers.')),{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
       ()=>{closeMenu();MODE='map';});
   };
   build('어서 와. 캠퍼스가 시끄러워야(전투) 좋은 물건이 흘러들어오지.');
@@ -2105,20 +2173,23 @@ function jk3Build(msg){
   const opts=[];
   if(S.jk3stock>0)opts.push({label:'<b style="color:#ffd866">'+ITEMS.pappy.name+'</b> ('+fmt(shopPrice('pappy'))+') <small>'+ITEMS.pappy.short+'</small>',disabled:P.gold<shopPrice('pappy'),
     fn:()=>{P.gold-=shopPrice('pappy');P.inv.pappy++;S.jk3stock--;S.bought++;updateHud();sfx.lvl();jk3Build('…그걸 알아보다니. 좋은 혀야.');}});
-  reg.forEach(k=>opts.push({label:ITEMS[k].name+' ('+fmt(shopPrice(k))+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k),
-    fn:()=>{P.gold-=shopPrice(k);P.inv[k]++;S.bought++;updateHud();jk3Build('Cheers.');}}));
+  reg.forEach(k=>opts.push({label:ITEMS[k].name+(BUYQ>1?' ×'+BUYQ:'')+' ('+fmt(shopPrice(k)*BUYQ)+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k)*BUYQ,
+    fn:()=>{P.gold-=shopPrice(k)*BUYQ;P.inv[k]+=BUYQ;S.bought++;updateHud();jk3Build('Cheers.');}}));
+  opts.push(buyqBtn(()=>jk3Build('Cheers.')));
   opts.push({label:'나가기',fn:()=>{closeMenu();MODE='map';}});
   openMenu(head,opts,()=>{closeMenu();MODE='map';});
 }
-function shopPrice(k){return S.cafeStamp?Math.round(ITEMS[k].price*0.9):ITEMS[k].price;}
+function shopPrice(k){let p=S.cafeStamp?Math.round(ITEMS[k].price*0.9):ITEMS[k].price;if(S.title==='prof')p=Math.round(p*0.95);return p;}
+let BUYQ=1;
+function buyqBtn(rebuild){return {label:'구매 단위: <b>'+BUYQ+'병</b> (전환)',fn:()=>{BUYQ=BUYQ===1?5:1;rebuild();}};}
 function openShopWith(stock,title,greet){
   sfx.ok();
   const inv=()=>stock.map(k=>ITEMS[k].name+' '+P.inv[k]).join(' · ');
   const head=m=>'<b style="color:#ffd866">'+title+'</b> — '+m+'<br><span style="color:#aab;font-size:12px">'+inv()+' · '+fmt(P.gold)+'</span>';
   const build=msg=>openMenu(head(msg),
-    stock.map(k=>({label:ITEMS[k].name+' ('+fmt(shopPrice(k))+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k),
-      fn:()=>{P.gold-=shopPrice(k);P.inv[k]++;S.bought++;updateHud();build('좋은 선택이야.');}}))
-    .concat([{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
+    stock.map(k=>({label:ITEMS[k].name+(BUYQ>1?' ×'+BUYQ:'')+' ('+fmt(shopPrice(k)*BUYQ)+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k)*BUYQ,
+      fn:()=>{P.gold-=shopPrice(k)*BUYQ;P.inv[k]+=BUYQ;S.bought++;updateHud();build('좋은 선택이야.');}}))
+    .concat([buyqBtn(()=>build(greet)),{label:'나가기',fn:()=>{closeMenu();MODE='map';}}]),
     ()=>{closeMenu();MODE='map';});
   build(greet);
 }
@@ -2130,6 +2201,7 @@ function updateHud(){
   $('hpfill').style.width=Math.max(0,P.hp/P.maxhp*100)+'%';
   $('mpfill').style.width=Math.max(0,P.mp/P.maxmp*100)+'%';
   $('hGold').textContent=fmt(P.gold);
+  if(P.gold>=1000000&&!S.richSeen)S.richSeen=1;
 }
 // ============ 필드 메뉴 ============
 const FM=$('fieldMenu');
@@ -2180,7 +2252,9 @@ function fmView(view){
       '<button class="gbtn" data-act="item">아이템</button>'+
       '<button class="gbtn" data-act="mapv">지도</button>'+
       '<button class="gbtn" data-act="quest">미션</button>'+
+      '<button class="gbtn" data-act="dex">도감 · 칭호</button>'+
       '<button class="gbtn" data-act="save">세이브 / 로드</button>'+
+      '<button class="gbtn" data-act="speed">전투 속도: ×'+SPEED+' (전환)</button>'+
       '<button class="gbtn" data-act="close">닫기 (X)</button></div>';
   }
   else if(view==='stat'){
@@ -2221,16 +2295,47 @@ function fmView(view){
       return '<tr><td class="'+(d?'qdone':'qing')+'">'+(d?'✔':'▶')+' '+q.name+'</td><td>'+q.desc+' <span style="color:#aab">['+q.prog()+']</span></td></tr>';
     }).join('')+'</table><br><div class="btnrow">'+back+'</div>';
   }
+  else if(view==='dex'){
+    checkTitles();
+    const eKeys=Object.keys(ENEMY_DB),seen=eKeys.filter(k=>S.dex[k]).length;
+    const iKeys=Object.keys(ITEMS),drk=iKeys.filter(k=>S.drank[k]).length;
+    const ckd=HAN_DISHES.filter((d,i)=>S.cooked[i]).length;
+    const tKeys=Object.keys(TROPHIES),tro=tKeys.filter(k=>S.trophies[k]).length;
+    const ttlRows=Object.keys(TITLES).map(id=>{
+      const t=TITLES[id],got=S.titles[id];
+      if(!got)return '<tr><td class="qing">??? </td><td><span style="color:#888">'+t.d+'</span></td><td></td></tr>';
+      const on=S.title===id;
+      return '<tr><td class="'+(on?'qdone':'qing')+'">['+t.n+']</td><td>'+t.eff+'</td><td><button class="gbtn" data-act="ttl-'+id+'" style="padding:2px 8px;font-size:11px">'+(on?'해제':'장착')+'</button></td></tr>';
+    }).join('');
+    const exRows=eKeys.map(k=>{
+      const e=ENEMY_DB[k];
+      return S.dex[k]?'<tr><td>'+e.name+'</td><td style="color:#aab;font-size:11px">HP'+e.hp+' · ATK'+e.atk+' · DEF'+e.def+' · SPD'+e.spd+'</td></tr>'
+        :'<tr><td style="color:#666">???</td><td></td></tr>';
+    }).join('');
+    const drRows=iKeys.map(k=>S.drank[k]?'<tr><td>'+ITEMS[k].name+'</td><td style="color:#aab;font-size:11px">'+ITEMS[k].short+'</td></tr>':'<tr><td style="color:#666">???</td><td></td></tr>').join('');
+    const ckRows=HAN_DISHES.map((d,i)=>S.cooked[i]?'<tr><td>'+d.n+'</td><td style="color:#aab;font-size:11px">'+d.txt+'</td></tr>':'<tr><td style="color:#666">???</td><td></td></tr>').join('');
+    const trRows=tKeys.map(k=>S.trophies[k]?'<tr><td>'+TROPHIES[k].n+'</td><td style="color:#aab;font-size:11px">'+TROPHIES[k].d+'</td></tr>':'<tr><td style="color:#666">???</td><td></td></tr>').join('');
+    html='<h3>도감 · 칭호</h3>'+
+      '<p style="font-size:12px;margin:4px 0"><b>칭호</b> — 장착 중: '+(S.title&&TITLES[S.title]?'<b style="color:#ffd866">['+TITLES[S.title].n+']</b> ('+TITLES[S.title].eff+')':'없음')+'</p><table>'+ttlRows+'</table>'+
+      '<p style="font-size:12px;margin:8px 0 2px"><b>몬스터</b> '+seen+'/'+eKeys.length+'</p><table>'+exRows+'</table>'+
+      '<p style="font-size:12px;margin:8px 0 2px"><b>술 · 음식</b> '+drk+'/'+iKeys.length+'</p><table>'+drRows+'</table>'+
+      '<p style="font-size:12px;margin:8px 0 2px"><b>합체요리</b> '+ckd+'/'+HAN_DISHES.length+'</p><table>'+ckRows+'</table>'+
+      '<p style="font-size:12px;margin:8px 0 2px"><b>트로피</b> '+tro+'/'+tKeys.length+'</p><table>'+trRows+'</table>'+
+      '<br><div class="btnrow">'+back+'</div>';
+  }
   else if(view==='save'){
+    const auto=loadSlotInfo('auto');
     const slots=[1,2,3].map(i=>{
       const d=loadSlotInfo(i);
       return '<tr><td>슬롯 '+i+'</td><td>'+(d?d:'(비어 있음)')+'</td>'+
         '<td><button class="gbtn" data-act="sv-'+i+'" style="padding:3px 8px;font-size:12px" '+(canSave()?'':'disabled')+'>저장</button>'+
         '<button class="gbtn" data-act="ld-'+i+'" style="padding:3px 8px;font-size:12px" '+(d?'':'disabled')+'>로드</button></td></tr>';
-    }).join('');
+    }).join('')+
+      '<tr><td>자동</td><td>'+(auto?auto:'(비어 있음)')+'</td>'+
+      '<td><span style="color:#888;font-size:11px">맵 이동·휴식 시</span> <button class="gbtn" data-act="ld-auto" style="padding:3px 8px;font-size:12px" '+(auto?'':'disabled')+'>로드</button></td></tr>';
     html='<h3>세이브 / 로드</h3><table>'+slots+'</table>'+
       '<p style="font-size:11px;color:#aab;margin-top:6px">'+(S.usbSave?'<span style="color:#56d364">동기의 USB</span> — 어디서든 저장 가능.<br>':(canSave()?'<span style="color:#56d364">세이브 포인트</span> 근처입니다 — 저장 가능.<br>':'<span style="color:#f0d080">저장은 노트북·침대·벤치 근처에서만 가능합니다.</span> (동기의 USB가 있으면 어디서든)<br>'))+(storageOK?'이 기기 브라우저(localStorage)에 저장됩니다. 브라우저 데이터 삭제·시크릿 모드·기기 변경 시 소실되니, 장기 보관은 아래 <b>세이브 코드</b>를 복사해 메모장 등에 백업해두세요.':'⚠ 이 환경은 브라우저 저장이 막혀 있어요 — 아래 세이브 코드를 복사해 보관하세요.')+'</p>'+
-      '<div class="btnrow"><button class="gbtn" data-act="export" '+(canSave()?'':'disabled')+'>세이브 코드 내보내기</button><button class="gbtn" data-act="import">코드로 불러오기</button></div>'+
+      '<div class="btnrow"><button class="gbtn" data-act="export" '+(canSave()?'':'disabled')+'>세이브 코드 내보내기</button><button class="gbtn" data-act="copy" '+(canSave()?'':'disabled')+'>코드 복사</button><button class="gbtn" data-act="import">코드로 불러오기</button></div>'+
       '<textarea id="saveCode" placeholder="세이브 코드가 여기 표시되거나, 코드를 붙여넣고 [코드로 불러오기]"></textarea>'+
       '<div class="btnrow">'+back+'</div>';
   }
@@ -2241,18 +2346,27 @@ function fmView(view){
       const a=b.dataset.act;if(!a)return;sfx.ok();
       if(a==='close')closeFieldMenu();
       else if(a==='back')fmView('main');
-      else if(a==='stat'||a==='item'||a==='mapv'||a==='quest'||a==='save')fmView(a);
+      else if(a==='stat'||a==='item'||a==='mapv'||a==='quest'||a==='save'||a==='dex')fmView(a);
+      else if(a==='speed'){SPEED=SPEED===1?2:1;try{localStorage.setItem('gmcz_speed',String(SPEED));}catch(e){}fmView('main');}
+      else if(a.startsWith('ttl-')){const id=a.slice(4);S.title=(S.title===id?'':id);fmView('dex');}
       else if(a.startsWith('use-')){
         const k=a.slice(4),it=ITEMS[k];
-        P.inv[k]--;
+        P.inv[k]--;S.drank[k]=1;
         if(it.full){P.hp=P.maxhp;P.mp=P.maxmp;}
-        else{if(it.hp)P.hp=Math.min(P.maxhp,P.hp+it.hp);if(it.mp)P.mp=Math.min(P.maxmp,P.mp+it.mp);}
-        if(it.hang&&Math.random()<it.hang)P.hangover=true;
+        else{if(it.hp)P.hp=Math.min(P.maxhp,P.hp+Math.floor(it.hp*(S.title==='foodie'?1.1:1)));if(it.mp)P.mp=Math.min(P.maxmp,P.mp+it.mp);}
+        if(it.hang&&Math.random()<it.hang*(S.title==='drinker'?0.5:1))P.hangover=true;
         sfx.heal();updateHud();fmView('item');
       }
       else if(a.startsWith('sv-')){saveSlot(+a.slice(3));fmView('save');}
-      else if(a.startsWith('ld-')){loadSlot(+a.slice(3));}
+      else if(a.startsWith('ld-')){loadSlot(a.slice(3)==='auto'?'auto':+a.slice(3));}
       else if(a==='export'){$('saveCode').value=exportCode();$('saveCode').select();}
+      else if(a==='copy'){
+        const t=$('saveCode');if(!t.value)t.value=exportCode();
+        t.select();let ok=false;
+        try{navigator.clipboard.writeText(t.value);ok=true;}catch(e){try{ok=document.execCommand('copy');}catch(e2){}}
+        b.textContent=ok?'복사됨 ✓':'복사 실패 — 직접 선택하세요';
+        setTimeout(()=>{b.textContent='코드 복사';},1500);
+      }
       else if(a==='import'){importCode($('saveCode').value);}
     });
   });
@@ -2295,7 +2409,9 @@ function applySnapshot(d){
     mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
     matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
     gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
-    intlKills:0,tenureSeen:0};
+    intlKills:0,tenureSeen:0,
+    dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
+    revPoints:0,revBest:0,revClears:0,dailyDate:''};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
   wandangIdx=d.w||0;updateHud();
@@ -2361,6 +2477,81 @@ function mkE2(key,name,ov){
   b.name=name;b.maxhp=b.hp;b.vset='phd';
   return b;
 }
+// ===== v2.3 리비전 지옥 (무한던전) =====
+const REV_POOL_A=['confstu','interp','posterg','phantom','corn','snowman','mfghost','hanmun'];
+const REV_POOL_B=['goose','gander','tackler','striker','intern','resident','cafghost','emer','keynote'];
+const REV_BOSS=['libghost','vgolem','bossgoose','stumor','golem','senior','chaired'];
+function mkScaled(key,hm,am,suf){
+  const e=mkE(key,suf);
+  e.hp=Math.floor(e.hp*hm);e.maxhp=e.hp;
+  e.atk=Math.floor(e.atk*am);
+  e.gold=Math.floor(e.gold*1.2);e.xp=Math.floor(e.xp*1.1);
+  return e;
+}
+function revEnemies(floor){
+  const hm=1+0.13*(floor-1),am=1+0.05*(floor-1);
+  if(floor%5===0){
+    const key=REV_BOSS[(floor/5-1)%REV_BOSS.length];
+    return [mkScaled(key,hm*1.35,am*1.15,' [리비전 '+floor+'F]')];
+  }
+  const pool=floor<8?REV_POOL_A:REV_POOL_A.concat(REV_POOL_B);
+  const n=floor<4?2:3;
+  const arr=[];
+  for(let i=0;i<n;i++)arr.push(mkScaled(pool[Math.floor(Math.random()*pool.length)],hm,am));
+  return arr;
+}
+async function revStart(floor){
+  REV={floor};
+  MODE='flash';sfx.enc();flashColor='rgba(90,50,140,.55)';
+  for(let i=0;i<3;i++){flashOn=true;await sleep(70);flashOn=false;await sleep(70);}
+  B={enemies:revEnemies(floor),boss:false,over:false,spiked:false,bank:{xp:0,gold:0},rev:floor,
+    intro:'<b style="color:#c8a0f0">리비전 '+floor+'층</b> — 끝나지 않는 「Major Revision」이 몰려온다…'+(floor%5===0?' <b>(보스)</b>':''),
+    onWin:()=>revNext(floor)};
+  MODE='battle';BFX.length=0;
+  battleLoop();
+}
+async function revNext(floor){
+  const pts=floor%5===0?floor*3:floor;
+  S.revPoints=(S.revPoints||0)+pts;
+  if(floor>(S.revBest||0))S.revBest=floor;
+  REV=null;
+  await bmsg('<b style="color:#c8a0f0">리비전 '+floor+'층 돌파!</b> 심사 포인트 +'+pts+' (보유 '+S.revPoints+')',1000);
+  if(floor%5===0){
+    S.revClears=(S.revClears||0)+1;
+    openMenu('<b style="color:#9a6aff">리비전 '+floor+'층 클리어</b> — 더 깊이 갈까?<br><span style="color:#aab;font-size:12px">깊을수록 적이 강해지고 포인트가 커진다. 쓰러져도 포인트는 잃지 않지만, 회차는 끝난다.<br>최고 '+S.revBest+'층 · 보유 '+S.revPoints+'점</span>',[
+      {label:(floor+1)+'층으로 — 계속 수정한다',fn:()=>{closeMenu();revStart(floor+1);}},
+      {label:'여기서 빠져나간다 (교환소로)',fn:()=>{closeMenu();MODE='map';revShop();}}
+    ],null);
+  }else revStart(floor+1);
+}
+async function revDefeat(){
+  B.over=true;sfx.crash();
+  const floor=REV?REV.floor:0;REV=null;
+  await bmsg('<b style="color:#f09595">리비전의 무게에 짓눌렸다…</b>',900);
+  await bmsg('수정 요청은 끝없이 밀려오고, 정신이 아득해진다.',900);
+  P.hp=P.maxhp;P.mp=P.maxmp;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
+  closeMenu();B=null;BFX.length=0;MODE='map';updateHud();
+  showDialog('',['…정신을 차리니 리비전의 문 앞이다.','이번 회차 도달 '+floor+'층. 다행히 <b>심사 포인트('+S.revPoints+'점)와 소지품은 그대로</b>다.','교환소에서 포인트로 보상을 받자. 다음엔 더 깊이.']);
+}
+const REV_SHOP=[
+  {id:'hp',label:'멘탈 단련 — 최대 HP +20 (영구)',cost:8,fn:()=>{P.maxhp+=20;P.hp+=20;}},
+  {id:'mp',label:'논리 단련 — 최대 MP +8 (영구)',cost:8,fn:()=>{P.maxmp+=8;P.mp+=8;}},
+  {id:'atk',label:'논증력 단련 — ATK +2 (영구)',cost:12,fn:()=>{P.atk+=2;}},
+  {id:'def',label:'철면피 단련 — DEF +2 (영구)',cost:12,fn:()=>{P.def+=2;}},
+  {id:'spd',label:'마감력 단련 — SPD +1 (영구)',cost:12,fn:()=>{P.spd+=1;}},
+  {id:'pappy',label:'파피 밴 윙클 23년 1병',cost:14,fn:()=>{P.inv.pappy++;}},
+  {id:'ramen',label:'천상 라면 1그릇 (보유 0일 때만)',cost:10,cond:()=>P.inv.ramen<1,fn:()=>{P.inv.ramen=1;}}
+];
+function revShop(){
+  sfx.ok();
+  const build=msg=>openMenu('<b style="color:#9a6aff">심사 포인트 교환소</b> — '+msg+'<br><span style="color:#aab;font-size:12px">보유 심사 포인트 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b> · 영구 스탯은 반복 구매 가능</span>',
+    REV_SHOP.filter(it=>!it.cond||it.cond()).map(it=>({label:it.label+' <small>('+it.cost+'점)</small>',disabled:(S.revPoints||0)<it.cost,
+      fn:()=>{S.revPoints-=it.cost;it.fn();sfx.lvl();updateHud();build('받아라. 고생의 대가다.');}}))
+    .concat([{label:'나간다',fn:()=>{closeMenu();MODE='map';}}]),
+    ()=>{closeMenu();MODE='map';});
+  build('끝없는 수정 속에서 건진 것들이다.');
+}
 const BOSS_DEF={
   ms:{
     intro:['<b>— 제1차 심사: 프로포절 —</b>','심사위원이 서류를 천천히 넘긴다. 「…시작하세요.」'],
@@ -2398,7 +2589,7 @@ async function startBoss(kind){
 function bmsg(text,ms=720){return new Promise(res=>{
   $('menuBtns').innerHTML='';menuBtns=[];menuCancel=null;
   $('menuMsg').innerHTML=text;$('menuBox').style.display='block';
-  setTimeout(res,ms);
+  setTimeout(res,Math.max(16,ms/SPEED));
 });}
 function bchoice(msg,items,cancelable){return new Promise(res=>{
   openMenu(msg,items.map(it=>({label:it.label,disabled:it.disabled,fn:()=>res(it.value)})),cancelable?()=>res('__cancel__'):null);
@@ -2410,6 +2601,11 @@ function tallyBank(){
     if(B.bank){B.bank.xp+=e.xp;B.bank.gold+=e.gold;}
     if(e.key==='slime')S.slimeKills++;else if(e.key==='spirit')S.spiritKills++;
     if(CUR==='asianlib'&&!S.bansae&&S.saryo<3&&Math.random()<0.25){S.saryo++;B._saryoDrop=(B._saryoDrop||0)+1;}
+    S.dex[e.key]=1;
+    for(const tid in TROPHIES){
+      const t=TROPHIES[tid];
+      if(t.src===e.key&&!S.trophies[tid]&&Math.random()<t.rate){S.trophies[tid]=1;(B._tro=B._tro||[]).push(t.n);}
+    }
   });
 }
 async function battleLoop(){
@@ -2427,7 +2623,7 @@ async function battleLoop(){
     if(act.type==='run'){
       if(B.noRun){await bmsg(B.noRunMsg||'도망칠 수 없다!');continue;}
       const ms=Math.max(...alive().map(e=>eSpdNow(e)));
-      const rc=Math.min(1,0.7+Math.max(0,pSpdNow()-ms)*0.05);
+      const rc=Math.min(1,0.7+Math.max(0,pSpdNow()-ms)*0.05+(S.title==='vet'?0.1:0));
       if(Math.random()<rc){
         await bmsg(rc>=1?'압도적인 마감력 — 여유롭게 읽씹하고 자리를 떴다.':'읽씹하고 자리를 떴다…');
         return endBattle();
@@ -2485,6 +2681,7 @@ async function bossLoop(){
       if(!alive().length)break;
     }
     if(!alive().length){
+      B.enemies.forEach(e=>{S.dex[e.key]=1;});
       if(B.phase===1){
         B.phase=2;sfx.enc();
         await bmsg(BD.p2msg[0],950);
@@ -2594,7 +2791,7 @@ function pSpdNow(){return P.slow>0?Math.max(1,P.spd-6):P.spd;}
 function eSpdNow(e){return e.debSpd>0?Math.max(1,Math.floor(e.spd*0.75)):e.spd;}
 function pMiss(t){return Math.random()>hitChance(pSpdNow(),t.spd);}
 function eMiss(e){return Math.random()>hitChance(eSpdNow(e),pSpdNow());}
-function lukGuard(d){if(Math.random()*100<P.luk)return{d:Math.max(1,Math.floor(d/2)),g:true};return{d,g:false};}
+function lukGuard(d){if(Math.random()*100<P.luk+(S.title==='collector'?3:0))return{d:Math.max(1,Math.floor(d/2)),g:true};return{d,g:false};}
 function enemyGuard(t,d){if(t.noGuard>0)return{d,g:false};if(t.guard&&Math.random()<t.guard)return{d:Math.max(1,Math.floor(d/2)),g:true};return{d,g:false};}
 async function playerAct(act){
   if(P.hangover){
@@ -2764,7 +2961,7 @@ async function playerAct(act){
     if(kills.length)await bmsg(kills.join(', ')+'을(를) 해치웠다!');
   }
   else if(act.type==='item'){
-    const key=act.item,it=ITEMS[key];P.inv[key]--;
+    const key=act.item,it=ITEMS[key];P.inv[key]--;S.drank[key]=1;
     // 천상 라면 — 완전회복 + 적 전체 약화 (음식이라 상목도 못 뺏는다)
     if(key==='ramen'){
       P.hp=P.maxhp;P.mp=P.maxmp;sfx.heal();updateHud();fxAdd('drink',null);
@@ -2786,14 +2983,15 @@ async function playerAct(act){
       await bmsg(healed>0?'상목이 <b>'+healed+'</b> 회복했다… 술이 헛되이 사라졌다!':'상목이 꿀꺽 삼켰다. 효과는 없었지만, 술만 날렸다…');
       return;
     }
+    const hpAmt=it.hp?Math.floor(it.hp*(S.title==='foodie'?1.1:1)):0;
     if(it.full){P.hp=P.maxhp;P.mp=P.maxmp;}
-    else{if(it.hp)P.hp=Math.min(P.maxhp,P.hp+it.hp);if(it.mp)P.mp=Math.min(P.maxmp,P.mp+it.mp);}
+    else{if(hpAmt)P.hp=Math.min(P.maxhp,P.hp+hpAmt);if(it.mp)P.mp=Math.min(P.maxmp,P.mp+it.mp);}
     if(it.buffAtk){P.buffAtk=Math.max(P.buffAtk,it.buffAtk);}
     sfx.heal();updateHud();fxAdd('drink',null);
-    const parts=[];if(it.hp)parts.push('HP +'+it.hp);if(it.mp)parts.push('MP +'+it.mp);
+    const parts=[];if(hpAmt)parts.push('HP +'+hpAmt);if(it.mp)parts.push('MP +'+it.mp);
     const eff=(it.full?'HP·MP 완전 회복!':parts.join(' · '))+(it.buffAtk?' <b style="color:#ffd866">투지가 끓는다! (ATK +25%, '+it.buffAtk+'턴)</b>':'');
     await bmsg(it.name+'을(를) 들이켰다! '+eff+' 크—');
-    if(it.hang&&Math.random()<it.hang){
+    if(it.hang&&Math.random()<it.hang*(S.title==='drinker'?0.5:1)){
       P.hangover=true;
       await bmsg('…속이 울렁거린다. <b>숙취</b>가 밀려온다! (다음 행동 불가)');
     }
@@ -3285,9 +3483,15 @@ async function victoryFinal(){
     else await bmsg('문(Moon)의 의뢰 — 남은 거위: <b>'+S.moonQ+'마리</b>');
   }
   if(B._saryoDrop){await bmsg('〈사료 조각〉을 '+B._saryoDrop+'개 주웠다! (현재 '+S.saryo+'/3)');}
-  await bmsg('승리했다! 경험치 '+B.bank.xp+' · '+fmt(B.bank.gold)+' 획득!');
-  P.gold+=B.bank.gold;P.xp+=B.bank.xp;updateHud();
+  if(B._tro)for(const tn of B._tro)await bmsg('<b style="color:#ffd866">트로피 〈'+tn+'〉</b>을(를) 손에 넣었다! (도감에 전시)');
+  S.winCount=(S.winCount||0)+1;
+  const gMul=S.title==='msc'?1.05:1,xMul=S.title==='phd'?1.05:1;
+  const gG=Math.floor(B.bank.gold*gMul),gX=Math.floor(B.bank.xp*xMul);
+  await bmsg('승리했다! 경험치 '+gX+' · '+fmt(gG)+' 획득!'+(gMul>1?' <span style="color:#56d364">(+5%)</span>':'')+(xMul>1?' <span style="color:#56d364">(EXP+5%)</span>':''));
+  P.gold+=gG;P.xp+=gX;updateHud();
   await gainLevels();
+  const newT=checkTitles();
+  for(const tn of newT)await bmsg('<b style="color:#ffd866">칭호 〈'+tn+'〉 획득!</b> (도감 탭에서 장착)');
   const f=B.onWin;
   endBattle();
   if(f)f();
@@ -3304,7 +3508,7 @@ async function bossVictory(){
   P.xp+=500;updateHud();
   await gainLevels();
   endBattle();
-  P.hp=P.maxhp;P.mp=P.maxmp;updateHud();
+  P.hp=P.maxhp;P.mp=P.maxmp;updateHud();autoSave();
   showDialog('완당 선생',[
     '수고했네. 자네의 격물치지, 잘 보았네.',
     '이제 더 넓은 들판으로 갈 차례야. 일리노이라고… 옥수수가 사람보다 많은 곳이지.',
@@ -3322,7 +3526,7 @@ async function committeeVictory(){
   P.xp+=3000;updateHud();
   await gainLevels();
   endBattle();
-  P.hp=P.maxhp;P.mp=P.maxmp;updateHud();
+  P.hp=P.maxhp;P.mp=P.maxmp;updateHud();autoSave();
   showDialog('완당 선생의 메일',[
     '「자네가 조교수가 되었다는 소식, 방금 들었네.」',
     '「…내가 하와이에 있을 때, 처음 강단에 섰던 그 날이 떠오르는군.」',
@@ -3343,7 +3547,7 @@ async function phdVictory(){
   P.xp+=1500;updateHud();
   await gainLevels();
   endBattle();
-  P.hp=P.maxhp;P.mp=P.maxmp;updateHud();
+  P.hp=P.maxhp;P.mp=P.maxmp;updateHud();autoSave();
   showDialog('완당 선생',[
     '…박사라. 자네가 말일세.',
     '내가 하와이에 있을 때, 디펜스 끝나고 와이키키에서 마신 맥주 맛은… 평생 못 잊지.',
@@ -3352,11 +3556,12 @@ async function phdVictory(){
   ]);
 }
 async function defeat(){
+  if(REV)return revDefeat();
   B.over=true;sfx.crash();
   await bmsg('눈앞이 캄캄해졌다…');
   await bmsg('<b style="color:#f09595">현타가 왔다.</b>',900);
   S.hyunta++;
-  const lost=Math.floor(P.gold*0.5);P.gold-=lost;
+  const lost=Math.floor(P.gold*(S.title==='resilient'?0.3:0.5));P.gold-=lost;
   const broken={};
   for(const k in P.inv){
     let br=0;
@@ -3423,10 +3628,22 @@ function renderMap(){
     const a=Math.min(1,(1600-(performance.now()-toastT))/400);
     ctx.fillStyle='rgba(10,10,24,'+(0.72*a)+')';ctx.fillRect(58,84,140,20);
     ctx.fillStyle='rgba(255,216,102,'+a+')';ctx.font='11px sans-serif';ctx.textAlign='center';
-    ctx.fillText('— '+toast+(CUR==='campus'&&S.night?' · 밤':'')+' —',128,98);ctx.textAlign='left';
+    ctx.fillText('— '+toast+(CUR==='campus'&&S.night?' · 밤':'')+(RECLV[CUR]?' · '+RECLV[CUR]:'')+' —',128,98);ctx.textAlign='left';
   }
 }
 function battleBg(){
+  if(B&&B.rev){
+    const f=B.rev;
+    ctx.fillStyle='#1a1030';ctx.fillRect(0,0,256,110);
+    for(let i=0;i<5;i++){const w=210-i*38;ctx.fillStyle=i%2?'#241640':'#2e1c50';ctx.fillRect(128-w/2,8+i*16,w,14);}
+    ctx.fillStyle='#9a6aff';ctx.fillRect(120,38,16,8);
+    ctx.fillStyle='rgba(200,160,255,.22)';for(let x=0;x<256;x+=18)ctx.fillRect(x,0,1,110);
+    ctx.fillStyle='#c8a0f0';ctx.font='bold 9px serif';ctx.textAlign='center';
+    ctx.fillText('REVISION  '+f+'F',128,28);ctx.textAlign='left';
+    ctx.fillStyle='#150c28';ctx.fillRect(0,104,256,88);
+    ctx.fillStyle='#100920';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
+    return '리비전 지옥 · '+f+'층';
+  }
   if(B&&B.boss&&B.bossKind==='phd'){
     ctx.fillStyle='#3a3c44';ctx.fillRect(0,0,256,110);
     ctx.fillStyle='#4a4c56';for(let x=0;x<256;x+=32)ctx.fillRect(x,0,2,110);

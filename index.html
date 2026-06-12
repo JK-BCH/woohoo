@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.2</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.3</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.2 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.3 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -157,7 +157,7 @@ const NPCS={
   green:[{x:4,y:4,kind:'murphys'},{x:9,y:4,kind:'wine'},{x:14,y:4,kind:'jks'},{x:17,y:4,kind:'postdoc'},{x:16,y:8,kind:'tailgate'}],
   cafe:[{x:4,y:6,kind:'barista'},{x:9,y:6,kind:'mailman'},{x:14,y:6,kind:'bookkeeper'},{x:8,y:9,kind:'laptopper'}],
   asianlib:[{x:22,y:3,kind:'libghost',cond:()=>!S.libboss}],
-  hsq:[{x:11,y:11,kind:'lucas'},{x:12,y:17,kind:'chessman'},{x:17,y:12,kind:'busker'},{x:27,y:20,kind:'tourist'}],
+  hsq:[{x:11,y:11,kind:'lucas'},{x:12,y:17,kind:'chessman'},{x:17,y:12,kind:'busker'},{x:27,y:20,kind:'tourist'},{x:33,y:11,kind:'revgate'}],
   yenching:[{x:5,y:2,kind:'yenmail'},{x:9,y:3,kind:'thesis'},{x:5,y:6,kind:'archivist'}],
   banana:[{x:10,y:2,kind:'banguide'}],
   newbury:[{x:13,y:4,kind:'bostonliq'},{x:18,y:4,kind:'gadget'},{x:7,y:5,kind:'rock'},{x:20,y:5,kind:'shopper'}],
@@ -384,8 +384,10 @@ const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
   gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
   intlKills:0,tenureSeen:0,
-  dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0};
+  dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
+  revPoints:0,revBest:0,revClears:0,dailyDate:''};
 let wandangIdx=0;
+let REV=null;
 let MODE='title';
 // ============ 유틸 ============
 const $=id=>document.getElementById(id);
@@ -817,6 +819,12 @@ function buildNpc(){
     px(g,4,4,3,2,'rgba(80,80,120,.6)');px(g,9,4,3,2,'rgba(80,80,120,.6)');px(g,7,5,2,1,'#445');
     px(g,12,7,2,7,'#7a5c3a');px(g,11,6,4,1,'#caa53d');    // 황금 손잡이 지팡이
   });
+  {const c=mkC(16,16),g=c.getContext('2d');   // 리비전의 문 — 보라색 차원문
+    px(g,3,1,10,14,'#2a1840');px(g,4,2,8,12,'#3a2458');
+    px(g,5,3,6,10,'#6a3aa0');px(g,6,4,4,8,'#9a6aff');
+    px(g,7,6,2,4,'rgba(232,224,255,.7)');
+    px(g,3,1,10,1,'#c8a0f0');px(g,5,3,1,10,'rgba(200,160,255,.5)');
+    A.npc.revgate=c;}
   {const c=mkC(16,16),g=c.getContext('2d'); // 루카스 — 회색 턱시도 고양이
     px(g,4,6,8,8,'#5a5a64');px(g,5,11,6,3,'#f4f1e6');
     px(g,4,3,3,4,'#5a5a64');px(g,9,3,3,4,'#5a5a64');px(g,5,4,1,2,'#3a3a44');px(g,10,4,1,2,'#3a3a44');
@@ -1627,6 +1635,26 @@ function npcTalk(kind){
     showDialog('한 (Han)',['어서 와. 여기는 없는 게 없는 한인 식료품점.','<b>재료A 숙성 육수</b>(락 — 뉴버리)와 <b>재료B 와인 졸임 소스</b>(문 — 보트하우스)를 모아 오면','<b style="color:#ffd866">합체요리</b>를 만들어 주지. 먹는 즉시 몸에 배는, 영구 스펙업이야.','현재 — 재료A: '+S.matA+'개 · 재료B: '+S.matB+'개','다음 요리는 「'+HAN_DISHES[S.hanIdx%HAN_DISHES.length].n+'」 ('+HAN_DISHES[S.hanIdx%HAN_DISHES.length].txt+')']);
     return;
   }
+  // ===== v2.3 리비전 지옥 + 일일 보상 =====
+  if(kind==='revgate'){
+    sfx.ok();
+    if(!S.boss2){showDialog('리비전의 문',['보라색으로 일렁이는 문… 안에서 끝없는 「Major Revision」의 신음이 새어 나온다.','「아직… 자네 차례가… 아니야…」','(박사 예비심사 Prelim 통과 후 열린다.)']);return;}
+    const today=new Date().toISOString().slice(0,10);
+    const daily=S.dailyDate!==today;
+    openMenu('<b style="color:#9a6aff">리비전 지옥</b> — 끝나지 않는 논문 수정의 차원.<br><span style="color:#aab;font-size:12px">층이 깊어질수록 적이 강해지고 심사 포인트가 커진다. 5층마다 보스 + 탈출 기회. 쓰러져도 포인트·소지품은 잃지 않는다.<br>최고 기록 <b>'+(S.revBest||0)+'층</b> · 보유 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b></span>',[
+      {label:'1층부터 도전한다',fn:()=>{closeMenu();revStart(1);}},
+      {label:'<b>심사 포인트 교환소</b>',fn:()=>{closeMenu();revShop();}},
+      {label:'<b style="color:#ffd866">오늘의 출석</b> '+(daily?'— 받기':'<small>(내일 다시)</small>'),disabled:!daily,fn:()=>{
+        closeMenu();S.dailyDate=today;
+        const g=15000+Math.floor((P.lv||1)*500);P.gold+=g;P.revPoints=S.revPoints=(S.revPoints||0)+3;
+        const drinks=['yuengling','barolo','buffalo','nightshift'];const dk=drinks[Math.floor(Math.random()*drinks.length)];P.inv[dk]=(P.inv[dk]||0)+1;
+        updateHud();sfx.lvl();
+        showDialog('리비전의 문',['「오늘도 왔군. …끈기 하나는 인정하지.」',fmt(g)+' + 심사 포인트 3점 + 〈'+ITEMS[dk].name+'〉을 받았다.','(매일 1회. 꾸준함이 곧 연구다.)']);
+      }},
+      {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
   // ===== v2.1 국제관: 2층 게이트 스태프 + 종신의 노교수 =====
   if(kind==='staffer'){
     sfx.ok();
@@ -2382,7 +2410,8 @@ function applySnapshot(d){
     matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
     gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
     intlKills:0,tenureSeen:0,
-    dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0};
+    dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
+    revPoints:0,revBest:0,revClears:0,dailyDate:''};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
   wandangIdx=d.w||0;updateHud();
@@ -2447,6 +2476,81 @@ function mkE2(key,name,ov){
   const b=mkE(key);Object.assign(b,ov);
   b.name=name;b.maxhp=b.hp;b.vset='phd';
   return b;
+}
+// ===== v2.3 리비전 지옥 (무한던전) =====
+const REV_POOL_A=['confstu','interp','posterg','phantom','corn','snowman','mfghost','hanmun'];
+const REV_POOL_B=['goose','gander','tackler','striker','intern','resident','cafghost','emer','keynote'];
+const REV_BOSS=['libghost','vgolem','bossgoose','stumor','golem','senior','chaired'];
+function mkScaled(key,hm,am,suf){
+  const e=mkE(key,suf);
+  e.hp=Math.floor(e.hp*hm);e.maxhp=e.hp;
+  e.atk=Math.floor(e.atk*am);
+  e.gold=Math.floor(e.gold*1.2);e.xp=Math.floor(e.xp*1.1);
+  return e;
+}
+function revEnemies(floor){
+  const hm=1+0.13*(floor-1),am=1+0.05*(floor-1);
+  if(floor%5===0){
+    const key=REV_BOSS[(floor/5-1)%REV_BOSS.length];
+    return [mkScaled(key,hm*1.35,am*1.15,' [리비전 '+floor+'F]')];
+  }
+  const pool=floor<8?REV_POOL_A:REV_POOL_A.concat(REV_POOL_B);
+  const n=floor<4?2:3;
+  const arr=[];
+  for(let i=0;i<n;i++)arr.push(mkScaled(pool[Math.floor(Math.random()*pool.length)],hm,am));
+  return arr;
+}
+async function revStart(floor){
+  REV={floor};
+  MODE='flash';sfx.enc();flashColor='rgba(90,50,140,.55)';
+  for(let i=0;i<3;i++){flashOn=true;await sleep(70);flashOn=false;await sleep(70);}
+  B={enemies:revEnemies(floor),boss:false,over:false,spiked:false,bank:{xp:0,gold:0},rev:floor,
+    intro:'<b style="color:#c8a0f0">리비전 '+floor+'층</b> — 끝나지 않는 「Major Revision」이 몰려온다…'+(floor%5===0?' <b>(보스)</b>':''),
+    onWin:()=>revNext(floor)};
+  MODE='battle';BFX.length=0;
+  battleLoop();
+}
+async function revNext(floor){
+  const pts=floor%5===0?floor*3:floor;
+  S.revPoints=(S.revPoints||0)+pts;
+  if(floor>(S.revBest||0))S.revBest=floor;
+  REV=null;
+  await bmsg('<b style="color:#c8a0f0">리비전 '+floor+'층 돌파!</b> 심사 포인트 +'+pts+' (보유 '+S.revPoints+')',1000);
+  if(floor%5===0){
+    S.revClears=(S.revClears||0)+1;
+    openMenu('<b style="color:#9a6aff">리비전 '+floor+'층 클리어</b> — 더 깊이 갈까?<br><span style="color:#aab;font-size:12px">깊을수록 적이 강해지고 포인트가 커진다. 쓰러져도 포인트는 잃지 않지만, 회차는 끝난다.<br>최고 '+S.revBest+'층 · 보유 '+S.revPoints+'점</span>',[
+      {label:(floor+1)+'층으로 — 계속 수정한다',fn:()=>{closeMenu();revStart(floor+1);}},
+      {label:'여기서 빠져나간다 (교환소로)',fn:()=>{closeMenu();MODE='map';revShop();}}
+    ],null);
+  }else revStart(floor+1);
+}
+async function revDefeat(){
+  B.over=true;sfx.crash();
+  const floor=REV?REV.floor:0;REV=null;
+  await bmsg('<b style="color:#f09595">리비전의 무게에 짓눌렸다…</b>',900);
+  await bmsg('수정 요청은 끝없이 밀려오고, 정신이 아득해진다.',900);
+  P.hp=P.maxhp;P.mp=P.maxmp;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
+  closeMenu();B=null;BFX.length=0;MODE='map';updateHud();
+  showDialog('',['…정신을 차리니 리비전의 문 앞이다.','이번 회차 도달 '+floor+'층. 다행히 <b>심사 포인트('+S.revPoints+'점)와 소지품은 그대로</b>다.','교환소에서 포인트로 보상을 받자. 다음엔 더 깊이.']);
+}
+const REV_SHOP=[
+  {id:'hp',label:'멘탈 단련 — 최대 HP +20 (영구)',cost:8,fn:()=>{P.maxhp+=20;P.hp+=20;}},
+  {id:'mp',label:'논리 단련 — 최대 MP +8 (영구)',cost:8,fn:()=>{P.maxmp+=8;P.mp+=8;}},
+  {id:'atk',label:'논증력 단련 — ATK +2 (영구)',cost:12,fn:()=>{P.atk+=2;}},
+  {id:'def',label:'철면피 단련 — DEF +2 (영구)',cost:12,fn:()=>{P.def+=2;}},
+  {id:'spd',label:'마감력 단련 — SPD +1 (영구)',cost:12,fn:()=>{P.spd+=1;}},
+  {id:'pappy',label:'파피 밴 윙클 23년 1병',cost:14,fn:()=>{P.inv.pappy++;}},
+  {id:'ramen',label:'천상 라면 1그릇 (보유 0일 때만)',cost:10,cond:()=>P.inv.ramen<1,fn:()=>{P.inv.ramen=1;}}
+];
+function revShop(){
+  sfx.ok();
+  const build=msg=>openMenu('<b style="color:#9a6aff">심사 포인트 교환소</b> — '+msg+'<br><span style="color:#aab;font-size:12px">보유 심사 포인트 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b> · 영구 스탯은 반복 구매 가능</span>',
+    REV_SHOP.filter(it=>!it.cond||it.cond()).map(it=>({label:it.label+' <small>('+it.cost+'점)</small>',disabled:(S.revPoints||0)<it.cost,
+      fn:()=>{S.revPoints-=it.cost;it.fn();sfx.lvl();updateHud();build('받아라. 고생의 대가다.');}}))
+    .concat([{label:'나간다',fn:()=>{closeMenu();MODE='map';}}]),
+    ()=>{closeMenu();MODE='map';});
+  build('끝없는 수정 속에서 건진 것들이다.');
 }
 const BOSS_DEF={
   ms:{
@@ -3452,6 +3556,7 @@ async function phdVictory(){
   ]);
 }
 async function defeat(){
+  if(REV)return revDefeat();
   B.over=true;sfx.crash();
   await bmsg('눈앞이 캄캄해졌다…');
   await bmsg('<b style="color:#f09595">현타가 왔다.</b>',900);
@@ -3527,6 +3632,18 @@ function renderMap(){
   }
 }
 function battleBg(){
+  if(B&&B.rev){
+    const f=B.rev;
+    ctx.fillStyle='#1a1030';ctx.fillRect(0,0,256,110);
+    for(let i=0;i<5;i++){const w=210-i*38;ctx.fillStyle=i%2?'#241640':'#2e1c50';ctx.fillRect(128-w/2,8+i*16,w,14);}
+    ctx.fillStyle='#9a6aff';ctx.fillRect(120,38,16,8);
+    ctx.fillStyle='rgba(200,160,255,.22)';for(let x=0;x<256;x+=18)ctx.fillRect(x,0,1,110);
+    ctx.fillStyle='#c8a0f0';ctx.font='bold 9px serif';ctx.textAlign='center';
+    ctx.fillText('REVISION  '+f+'F',128,28);ctx.textAlign='left';
+    ctx.fillStyle='#150c28';ctx.fillRect(0,104,256,88);
+    ctx.fillStyle='#100920';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
+    return '리비전 지옥 · '+f+'층';
+  }
   if(B&&B.boss&&B.bossKind==='phd'){
     ctx.fillStyle='#3a3c44';ctx.fillRect(0,0,256,110);
     ctx.fillStyle='#4a4c56';for(let x=0;x<256;x+=32)ctx.fillRect(x,0,2,110);

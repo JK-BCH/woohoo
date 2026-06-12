@@ -31,7 +31,9 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 ## 1. 제품·배포 상태
 
 - **배포**: GitHub Pages — 리포 `JK-BCH/woohoo`, main 브랜치 root. URL `https://JK-BCH.github.io/woohoo/`
-- **배포본**: **v2.1 (본편 완결 + 국제관 던전)**. 작업본이 `index.html`에 통합됨 — 별도 작업본 파일 없음. (주의: 변경은 feature 브랜치에서 작업 — **main에 머지되어야 GH Pages에 반영**된다.)
+- **배포본**: **v2.3 (본편 완결 + 국제관 + 도감/칭호 + 리비전 지옥)**. 작업본이 `index.html`에 통합됨 — 별도 작업본 파일 없음. **볼륨 확장 로드맵은 `volume_expansion_spec.md` 참조** (v2.2 도감/QoL·v2.3 무한던전 완료). (주의: 변경은 feature 브랜치에서 작업 — **main에 머지되어야 GH Pages에 반영**된다.)
+- **v2.2 수집/QoL**: 도감·칭호 탭(`fmView('dex')`) — 몬스터/술/요리/트로피 도감 + 칭호 11종(`TITLES`, `S.title` 1개 장착 패시브, `checkTitles()`). 트로피 `TROPHIES`(tallyBank 드랍). 전투 배속(`SPEED` 전역·localStorage), 오토세이브(`autoSave()`→'auto'슬롯), 일괄구매(`BUYQ`), 코드복사, 권장Lv표찰(`RECLV`).
+- **v2.3 반복 루프**: 리비전 지옥(무한던전) — hsq NPC `revgate`(boss2 게이트), `revStart/revNext/revDefeat/revShop`. 전역 `REV`(세이브 불필요), B.rev 플래그로 battleBg·defeat 분기. 적은 `mkScaled`로 층 스케일(HP×1.13^/ATK×1.05^), 5층마다 `REV_BOSS`. 보상=심사 포인트(`S.revPoints`), 교환소서 영구 스탯 반복 구매. 일일 출석(`S.dailyDate`, ISO 날짜 비교).
 - **절대 금지**: 리포 이름/도메인 변경. localStorage는 origin 단위라 **모든 플레이어의 세이브가 증발**한다 (세이브 코드로만 이주 가능).
 - 업데이트 절차: `index.html` 덮어쓰기 + CHANGELOG 한 줄 + git tag. GH Pages 캐시 ~10분, 캐시버스팅 불필요.
 

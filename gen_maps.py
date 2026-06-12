@@ -370,6 +370,12 @@ vline(lw,14,1,9,'P')           # 북쪽 출구 → 하버드 스퀘어
 hline(lw,9,4,24,'P')
 for (x,y) in [(6,13),(14,13),(22,13),(2,11),(26,11)]:
     if lw[y][x]=='G': lw[y][x]='T'
+# [v2.10] VSC 방문연구동 (남서) rows13-15 cols2-7, 문 (4,15)
+hline(lw,13,2,7,'R')
+for y in (14,15):
+    for x in range(2,8): lw[y][x]='B'
+put(lw,4,15,'D')
+vline(lw,4,10,12,'P'); put(lw,4,16,'P')   # 진입로 (도로 y9 ↔ 문 앞)
 
 # ---------- [3장] 임용장 12x10 ----------
 jh=grid(12,10,'F'); border(jh,'B')
@@ -427,6 +433,31 @@ for rx in (1,8,15):
 put(h2,2,12,'K'); put(h2,12,12,'K')
 put(h2,20,12,'S')                     # 1층 계단 → hum
 
+# ---------- [v2.10] VSC 방문연구동 18x12 ×3층 (롱우드) ----------
+# 1층: 안전 로비 — 진탕집(좌상단 알코브) + NEBS 흔적 NPC, 인카운터 없음
+v1=grid(18,12,'F'); border(v1,'B')
+put(v1,9,11,'D')                      # 남쪽 문 → longwood (4,16)
+vline(v1,6,1,3,'B'); hline(v1,4,1,6,'B'); v1[4][3]='F'   # 진탕집 알코브 (입구 3,4)
+put(v1,1,1,'W')                       # 진탕집 좌판 (점주=jintang NPC)
+put(v1,5,1,'C')                       # 진탕집 테이블
+for x in (10,12,14): v1[1][x]='K'     # 로비 게시판
+put(v1,9,6,'Q'); put(v1,12,6,'Q')     # 로비 벤치
+put(v1,16,2,'S')                      # 2층 계단
+
+# 2층: 포닥 연구동 (ENC_VSC2, 권장 Lv30+)
+v2=grid(18,12,'F'); border(v2,'B')
+put(v2,16,2,'S'); put(v2,1,2,'S')     # 1층/3층 계단
+for x in (5,8,11): v2[4][x]='C'       # 랩 벤치
+for x in (5,8,11): v2[8][x]='C'
+put(v2,14,9,'K')
+
+# 3층: 시니어 포닥 구역 (ENC_VSC3, 권장 Lv33+) + 미수령 급여 상자
+v3=grid(18,12,'F'); border(v3,'B')
+put(v3,1,2,'S')                       # 2층 계단
+for x in (5,9,13): v3[3][x]='K'       # 그랜트 서가
+for x in (6,10): v3[7][x]='C'
+put(v3,16,9,'X')                      # 상자
+
 MAPS={
  'campus':dict(g=c,name='안암 캠퍼스'),
  'liberal':dict(g=l,name='문과대'),
@@ -458,6 +489,9 @@ MAPS={
  'intl2':dict(g=i2,name='국제관 2층'),
  'hum':dict(g=hm,name='인문대 교수동 1층'),
  'hum2':dict(g=h2,name='인문대 교수동 2층'),
+ 'vsc1':dict(g=v1,name='VSC 방문연구동 1층'),
+ 'vsc2':dict(g=v2,name='VSC 방문연구동 2층'),
+ 'vsc3':dict(g=v3,name='VSC 방문연구동 3층'),
 }
 
 # ---------- 검증 ----------
@@ -487,12 +521,15 @@ CHECK={
  'charles':dict(start=(2,9),walk=[(1,9),(28,9)],doors=[(12,11)],npc=[],arrive=[(2,9),(27,9)]),
  'mit':dict(start=(2,11),walk=[(1,11)],doors=[(15,5)],npc=[],arrive=[(2,11),(15,6)]),
  'infinite':dict(start=(2,3),walk=[(1,3)],doors=[(37,3)],npc=[],arrive=[(2,3),(36,3)]),
- 'longwood':dict(start=(14,2),walk=[(14,1)],doors=[],npc=[],arrive=[(14,2)]),
+ 'longwood':dict(start=(14,2),walk=[(14,1)],doors=[(4,15)],npc=[],arrive=[(14,2),(4,16)]),
  'jobhall':dict(start=(6,8),walk=[(6,9)],doors=[(4,2),(5,2),(6,2),(7,2),(2,2),(9,2)],npc=[],arrive=[(6,8)]),
  'intl1':dict(start=(7,8),walk=[(7,9)],doors=[(1,7)],npc=[(12,3)],arrive=[(7,8),(12,3)]),  # 계단(12,2)은 NPC 게이트 — doors에서 제외 (함정 #10 패턴)
  'intl2':dict(start=(12,3),walk=[(12,2)],doors=[(1,8)],npc=[(2,2)],arrive=[(12,3)]),
  'hum':dict(start=(10,12),walk=[(20,12)],doors=[(10,13)],npc=[(2,2),(4,1),(2,4),(16,1),(10,4),(12,9)],arrive=[(10,12),(19,12)]),
  'hum2':dict(start=(19,12),walk=[(20,12)],doors=[],npc=[(4,1),(10,1),(17,1)],arrive=[(19,12)]),
+ 'vsc1':dict(start=(9,10),walk=[(16,2)],doors=[(9,11),(1,1)],npc=[(3,1),(14,8)],arrive=[(9,10),(15,2)]),
+ 'vsc2':dict(start=(15,2),walk=[(16,2),(1,2)],doors=[],npc=[],arrive=[(15,2),(2,2)]),
+ 'vsc3':dict(start=(2,2),walk=[(1,2)],doors=[(16,9)],npc=[],arrive=[(2,2)]),
 }
 # ---------- v2.5 데코 패스: 장식 타일 자동 배치 (연결성 보존) ----------
 def _reach(g,sx,sy):

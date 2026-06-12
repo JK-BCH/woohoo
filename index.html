@@ -414,7 +414,7 @@ const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
   intlKills:0,tenureSeen:0,
   dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
-  revPoints:0,revBest:0,revClears:0,dailyDate:'',
+  revPoints:0,revBest:0,revClears:0,dailyDate:'',revBuys:0,
   fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
 let wandangIdx=0;
 let REV=null;
@@ -1706,12 +1706,12 @@ function npcTalk(kind){
     if(!S.boss2){showDialog('리비전의 문',['보라색으로 일렁이는 문… 안에서 끝없는 「Major Revision」의 신음이 새어 나온다.','「아직… 자네 차례가… 아니야…」','(박사 예비심사 Prelim 통과 후 열린다.)']);return;}
     const today=new Date().toISOString().slice(0,10);
     const daily=S.dailyDate!==today;
-    openMenu('<b style="color:#9a6aff">리비전 지옥</b> — 끝나지 않는 논문 수정의 차원.<br><span style="color:#aab;font-size:12px">층이 깊어질수록 적이 강해지고 심사 포인트가 커진다. 5층마다 보스 + 탈출 기회. 쓰러져도 포인트·소지품은 잃지 않는다.<br>최고 기록 <b>'+(S.revBest||0)+'층</b> · 보유 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b></span>',[
+    openMenu('<b style="color:#9a6aff">리비전 지옥</b> — 끝나지 않는 논문 수정의 차원.<br><span style="color:#aab;font-size:12px">심사 포인트는 <b>탈출·탈락 시 도달 층의 제곱에 비례해 정산</b> — 얕게 여러 번보다 깊게 한 번. 5층마다 보스 + 탈출 기회. 쓰러져도 정산·소지품은 보장.<br>최고 기록 <b>'+(S.revBest||0)+'층</b> · 보유 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b></span>',[
       {label:'1층부터 도전한다',fn:()=>{closeMenu();revStart(1);}},
       {label:'<b>심사 포인트 교환소</b>',fn:()=>{closeMenu();revShop();}},
       {label:'<b style="color:#ffd866">오늘의 출석</b> '+(daily?'— 받기':'<small>(내일 다시)</small>'),disabled:!daily,fn:()=>{
         closeMenu();S.dailyDate=today;
-        const g=15000+Math.floor((P.lv||1)*500);P.gold+=g;P.revPoints=S.revPoints=(S.revPoints||0)+3;
+        const g=15000+Math.floor((P.lv||1)*500);P.gold+=g;S.revPoints=(S.revPoints||0)+3;
         const drinks=['yuengling','barolo','buffalo','nightshift'];const dk=drinks[Math.floor(Math.random()*drinks.length)];P.inv[dk]=(P.inv[dk]||0)+1;
         updateHud();sfx.lvl();
         showDialog('리비전의 문',['「오늘도 왔군. …끈기 하나는 인정하지.」',fmt(g)+' + 심사 포인트 3점 + 〈'+ITEMS[dk].name+'〉을 받았다.','(매일 1회. 꾸준함이 곧 연구다.)']);
@@ -2615,7 +2615,7 @@ function applySnapshot(d){
     gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
     intlKills:0,tenureSeen:0,
     dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
-    revPoints:0,revBest:0,revClears:0,dailyDate:'',
+    revPoints:0,revBest:0,revClears:0,dailyDate:'',revBuys:0,
     fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
@@ -2716,44 +2716,50 @@ async function revStart(floor){
   MODE='battle';BFX.length=0;
   battleLoop();
 }
+function revCalcPts(f){return Math.max(0,Math.floor(f*f/5));} // 도달 층 비례(제곱 가중) — 저층 노가다 무력화
 async function revNext(floor){
-  const pts=floor%5===0?floor*3:floor;
-  S.revPoints=(S.revPoints||0)+pts;
   if(floor>(S.revBest||0))S.revBest=floor;
   REV=null;
-  await bmsg('<b style="color:#c8a0f0">리비전 '+floor+'층 돌파!</b> 심사 포인트 +'+pts+' (보유 '+S.revPoints+')',1000);
+  await bmsg('<b style="color:#c8a0f0">리비전 '+floor+'층 돌파!</b> <span style="color:#aab">(포인트는 탈출·탈락 시 도달 층 기준 정산)</span>',1000);
   if(floor%5===0){
     S.revClears=(S.revClears||0)+1;
-    openMenu('<b style="color:#9a6aff">리비전 '+floor+'층 클리어</b> — 더 깊이 갈까?<br><span style="color:#aab;font-size:12px">깊을수록 적이 강해지고 포인트가 커진다. 쓰러져도 포인트는 잃지 않지만, 회차는 끝난다.<br>최고 '+S.revBest+'층 · 보유 '+S.revPoints+'점</span>',[
-      {label:(floor+1)+'층으로 — 계속 수정한다',fn:()=>{closeMenu();revStart(floor+1);}},
-      {label:'여기서 빠져나간다 (교환소로)',fn:()=>{closeMenu();MODE='map';revShop();}}
+    const out=revCalcPts(floor);
+    openMenu('<b style="color:#9a6aff">리비전 '+floor+'층 클리어</b> — 더 깊이 갈까?<br><span style="color:#aab;font-size:12px">포인트는 <b>도달 층의 제곱</b>에 비례 — 깊이 갈수록 기하급수. 쓰러지면 직전 층 기준으로 정산된다.<br>지금 탈출 시 <b style="color:#c8a0f0">+'+out+'점</b> · 최고 '+S.revBest+'층 · 보유 '+(S.revPoints||0)+'점</span>',[
+      {label:(floor+1)+'층으로 — 계속 수정한다 <small>(더 깊이 = 더 큰 정산)</small>',fn:()=>{closeMenu();revStart(floor+1);}},
+      {label:'여기서 빠져나간다 <small>(+'+out+'점 정산 → 교환소)</small>',fn:()=>{closeMenu();
+        S.revPoints=(S.revPoints||0)+out;MODE='map';
+        showDialog('',['리비전 '+floor+'층에서 탈출했다.','<b style="color:#c8a0f0">심사 포인트 +'+out+'</b> (보유 '+S.revPoints+'점)'],()=>revShop());}}
     ],null);
   }else revStart(floor+1);
 }
 async function revDefeat(){
   B.over=true;sfx.crash();
   const floor=REV?REV.floor:0;REV=null;
+  const cleared=Math.max(0,floor-1);
+  const out=revCalcPts(cleared);
+  S.revPoints=(S.revPoints||0)+out;
   await bmsg('<b style="color:#f09595">리비전의 무게에 짓눌렸다…</b>',900);
   await bmsg('수정 요청은 끝없이 밀려오고, 정신이 아득해진다.',900);
   P.hp=P.maxhp;P.mp=P.maxmp;
   P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   closeMenu();B=null;BFX.length=0;MODE='map';updateHud();
-  showDialog('',['…정신을 차리니 리비전의 문 앞이다.','이번 회차 도달 '+floor+'층. 다행히 <b>심사 포인트('+S.revPoints+'점)와 소지품은 그대로</b>다.','교환소에서 포인트로 보상을 받자. 다음엔 더 깊이.']);
+  showDialog('',['…정신을 차리니 리비전의 문 앞이다.','이번 회차 '+cleared+'층 돌파 — <b style="color:#c8a0f0">심사 포인트 +'+out+'</b> (보유 '+S.revPoints+'점)','소지품은 그대로다. 다음엔 더 깊이.']);
 }
 const REV_SHOP=[
-  {id:'hp',label:'멘탈 단련 — 최대 HP +20 (영구)',cost:8,fn:()=>{P.maxhp+=20;P.hp+=20;}},
-  {id:'mp',label:'논리 단련 — 최대 MP +8 (영구)',cost:8,fn:()=>{P.maxmp+=8;P.mp+=8;}},
-  {id:'atk',label:'논증력 단련 — ATK +2 (영구)',cost:12,fn:()=>{P.atk+=2;}},
-  {id:'def',label:'철면피 단련 — DEF +2 (영구)',cost:12,fn:()=>{P.def+=2;}},
-  {id:'spd',label:'마감력 단련 — SPD +1 (영구)',cost:12,fn:()=>{P.spd+=1;}},
-  {id:'pappy',label:'파피 밴 윙클 23년 1병',cost:14,fn:()=>{P.inv.pappy++;}},
-  {id:'ramen',label:'천상 라면 1그릇 (보유 0일 때만)',cost:10,cond:()=>P.inv.ramen<1,fn:()=>{P.inv.ramen=1;}}
+  {id:'hp',label:'멘탈 단련 — 최대 HP +20 (영구)',cost:30,stat:true,fn:()=>{P.maxhp+=20;P.hp+=20;}},
+  {id:'mp',label:'논리 단련 — 최대 MP +8 (영구)',cost:30,stat:true,fn:()=>{P.maxmp+=8;P.mp+=8;}},
+  {id:'atk',label:'논증력 단련 — ATK +2 (영구)',cost:50,stat:true,fn:()=>{P.atk+=2;}},
+  {id:'def',label:'철면피 단련 — DEF +2 (영구)',cost:50,stat:true,fn:()=>{P.def+=2;}},
+  {id:'spd',label:'마감력 단련 — SPD +1 (영구)',cost:50,stat:true,fn:()=>{P.spd+=1;}},
+  {id:'pappy',label:'파피 밴 윙클 23년 1병',cost:25,fn:()=>{P.inv.pappy++;}},
+  {id:'ramen',label:'천상 라면 1그릇 (보유 0일 때만)',cost:15,cond:()=>P.inv.ramen<1,fn:()=>{P.inv.ramen=1;}}
 ];
+function revCost(it){return it.stat?Math.round(it.cost*(1+0.25*(S.revBuys||0))):it.cost;} // 단련은 살수록 비싸진다
 function revShop(){
   sfx.ok();
-  const build=msg=>openMenu('<b style="color:#9a6aff">심사 포인트 교환소</b> — '+msg+'<br><span style="color:#aab;font-size:12px">보유 심사 포인트 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b> · 영구 스탯은 반복 구매 가능</span>',
-    REV_SHOP.filter(it=>!it.cond||it.cond()).map(it=>({label:it.label+' <small>('+it.cost+'점)</small>',disabled:(S.revPoints||0)<it.cost,
-      fn:()=>{S.revPoints-=it.cost;it.fn();sfx.lvl();updateHud();build('받아라. 고생의 대가다.');}}))
+  const build=msg=>openMenu('<b style="color:#9a6aff">심사 포인트 교환소</b> — '+msg+'<br><span style="color:#aab;font-size:12px">보유 심사 포인트 <b style="color:#c8a0f0">'+(S.revPoints||0)+'점</b> · 단련은 반복 구매 가능하나 <b>살수록 비싸진다</b> (누적 '+(S.revBuys||0)+'회, +25%/회)</span>',
+    REV_SHOP.filter(it=>!it.cond||it.cond()).map(it=>({label:it.label+' <small>('+revCost(it)+'점)</small>',disabled:(S.revPoints||0)<revCost(it),
+      fn:()=>{S.revPoints-=revCost(it);if(it.stat)S.revBuys=(S.revBuys||0)+1;it.fn();sfx.lvl();updateHud();build('받아라. 고생의 대가다.');}}))
     .concat([{label:'나간다',fn:()=>{closeMenu();MODE='map';}}]),
     ()=>{closeMenu();MODE='map';});
   build('끝없는 수정 속에서 건진 것들이다.');

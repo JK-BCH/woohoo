@@ -3,7 +3,7 @@
 import json, sys
 from collections import deque
 
-SOLID=set('TBWDLRKCVXJOYAHEMNQZ')  # S,F,G,P 통행 가능 (N가로등 Q벤치 Z화단 = 장식)
+SOLID=set('TBWDLRKCVXJOYAHEMNQZU')  # S,F,G,P 통행 가능 (N가로등 Q벤치 Z화단 U축구골대 = 장식)
 
 def grid(w,h,fill='G'):
     return [[fill]*w for _ in range(h)]
@@ -339,6 +339,8 @@ vline(mt,15,9,11,'P')
 # 잔디(축구장 느낌 — 인카운터존 예정)
 for (x,y) in [(5,15),(26,15),(10,18),(21,18),(27,5),(4,5)]:
     if mt[y][x]=='G': mt[y][x]='T'
+# 축구골대 2개 — 잔디밭이 진짜 축구장이 된다 (축구망령들의 홈그라운드)
+put(mt,6,16,'U'); put(mt,25,16,'U')
 
 # ---------- [3장] 무한복도 38x7 ----------
 ic=grid(38,7,'F'); border(ic,'B')

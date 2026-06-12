@@ -2188,16 +2188,18 @@ function travelMenu(){
     ()=>{closeMenu();MODE='map';});
 }
 function hiddenPagoda(x,y){
-  // 히든: 소원 돌탑 — 1회성 보상 (구 디버그 돌탑 자리)
+  // [DEBUG] 디버그 돌탑 — 만질 때마다 모든 스탯 +1000 (반복 가능), 만렙·전 스킬
   sfx.crash();
-  if(S.debugMax){showDialog('',['돌탑은 고요하다.','소원은 한 번뿐이다.']);return;}
-  showDialog('',['수풀 속, 오래된 소원 돌탑이 서 있다.','졸업을 빌었던 손길들이 돌마다 눌러 담겨 있다.'],()=>{
-    openMenu('돌 하나를 얹고 소원을 빈다?',[
-      {label:'소원을 빈다',fn:()=>{closeMenu();
+  showDialog('',['수풀 속, 정체불명의 돌탑이 서 있다.','…만지면 엄청난 힘이 깃들 것 같다.'],()=>{
+    openMenu('돌탑에 손을 댄다? <span style="color:#aab;font-size:12px">[DEBUG]</span>',[
+      {label:'손을 댄다 (모든 스탯 +1000)',fn:()=>{closeMenu();
         S.debugMax=1;
-        P.luk+=5;P.inv.makgeolli=(P.inv.makgeolli||0)+3;
+        if(P.lv<35)P.lv=35;
+        P.maxhp+=1000;P.maxmp+=1000;P.atk+=1000;P.def+=1000;P.spd+=1000;P.luk+=1000;
+        P.hp=P.maxhp;P.mp=P.maxmp;
+        P.skills=Object.keys(SKILLS);
         sfx.lvl();updateHud();
-        showDialog('',['돌탑이 희미하게 빛났다…','<b>통찰(LUK)이 영구히 +5!</b>','돌탑 아래에서 <b>막걸리 3병</b>도 나왔다.','…먼저 졸업한 누군가가 두고 간 걸지도.']);}},
+        showDialog('',['돌탑에서 엄청난 기운이 흘러들어온다…!','<b>[DEBUG] 모든 스탯 +1000! 만렙(Lv35) + 전 스킬 습득!</b>','(만질 때마다 누적된다.)']);}},
       {label:'물러난다',fn:()=>{closeMenu();MODE='map';}}
     ],()=>{closeMenu();MODE='map';});
   });

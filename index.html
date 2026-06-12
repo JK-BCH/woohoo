@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.5</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.6</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.5 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.6 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -108,7 +108,7 @@ const MAPS={
  banana:{name:"바나나 라운지",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFEFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFCFFCFFCFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]},
  newbury:{name:"뉴버리 스트릿",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGRRRRRRGGQGGZGGQGGGRRRRT","TGGBBBBBBGGGGWGZGGWGGBBBBT","TGGBBBBBBGQGGGGGGGGGGBBBBT","TGTGGPGGGGGGGPGGGGPGGGGGGT","TGGGGPGGGGGGGPGGGGPGGGGGGT","TGPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGTGGGGGTGGGGGTGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  charles:{name:"찰스 리버",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TGGYGGGGYGGGGGYGGGGGYGGGGYGGGT","TPPPPPPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGQGGZGGQGGZGGQGGZGGGT","TGGGRRRRRRGGEGGGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGYGGGGGGYGGGGGGGGGGT","TGGGGYGGGGGGGGGGGGGGGGGGYGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
- mit:{name:"MIT",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGNGGQGGZGGRRRRRRRRRRGGNGGQGGZGT","TGGNGGQGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGGGGGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGTGGGGGGBBBBDBBBBBGGGGGGTGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TPPPPPPPPPPPPPPPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGTGGGGGGGGGGGGGGGGGGGGTGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGTGGGGGGGGGGTGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
+ mit:{name:"MIT",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGNGGQGGZGGRRRRRRRRRRGGNGGQGGZGT","TGGNGGQGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGGGGGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGTGGGGGGBBBBDBBBBBGGGGGGTGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TPPPPPPPPPPPPPPPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGTGGGGGGGGGGGGGGGGGGGGTGGGGT","TGGGGGUGGGGGGGGGGGGGGGGGGUGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGTGGGGGGGGGGTGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  infinite:{name:"무한복도",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFFB","BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"]},
  longwood:{name:"롱우드 지역",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGNGGGGGGGGGGGPGGGGGGGGGGGGT","TGGRRRRRRRRRGGPQGRRRRRRRRRGT","TGGBBBBBBBBBGNPGGBBBBBBBBBGT","TGGBBBBBBBBBGGPGGBBBBBBBBBGT","TGGBBBBBBBBBGGPQGBBBBBBBBBGT","TGGGGGGGGGGGGNPGGGGGGGGGGGGT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGGGPPPPPPPPPPPPPPPPPPPPPGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGTGGGGGGGGGGGGGGGGGGGGGGGTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGTGGGGGGGTGGGGGGGTGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  jobhall:{name:"임용 심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
@@ -120,7 +120,7 @@ let CUR='campus';
 const M=()=>MAPS[CUR];
 const RECLV={stacks:'권장 Lv4+',alley:'권장 Lv5+',quad:'권장 Lv10+',intl1:'권장 Lv10+',asianlib:'권장 Lv13+',union1:'권장 Lv14+',union2:'권장 Lv14+',union3:'권장 Lv14+',union4:'권장 Lv16+',charles:'권장 Lv20+',mit:'권장 Lv22+',infinite:'권장 Lv24+',longwood:'권장 Lv24+',intl2:'권장 Lv33+'};
 const TILE=16, VW=16, VH=12;
-const SOLID={T:1,B:1,W:1,D:1,L:1,R:1,K:1,C:1,V:1,X:1,J:1,O:1,Y:1,A:1,H:1,E:1,M:1,N:1,Q:1,Z:1};
+const SOLID={T:1,B:1,W:1,D:1,L:1,R:1,K:1,C:1,V:1,X:1,J:1,O:1,Y:1,A:1,H:1,E:1,M:1,N:1,Q:1,Z:1,U:1};
 const WALKP={
   campus:{'6,28':{to:'alley',x:7,y:2,d:'down'}},
   liberal:{'10,14':{to:'campus',x:7,y:8,d:'down'}},
@@ -231,7 +231,7 @@ const ENC_CHARLES={rate:1/20,tiles:'G',groups:[
 const ENC_MIT={rate:1/20,tiles:'G',groups:[
   {w:35,e:['tackler']},{w:25,e:['striker']},{w:25,e:['tackler','striker']},{w:15,e:['striker','striker']}]};
 const ENC_INF={rate:1/16,tiles:'F',groups:[
-  {w:30,e:['tackler','tackler']},{w:30,e:['tackler','striker']},{w:25,e:['striker','striker']},{w:15,e:['tackler','tackler','striker']}]};
+  {w:24,e:['tackler','tackler']},{w:24,e:['tackler','striker']},{w:18,e:['striker','striker']},{w:12,e:['tackler','tackler','striker']},{w:14,e:['labstu']},{w:8,e:['labstu','labstu']}]};
 const ENC_LW={rate:1/18,tiles:'G',groups:[
   {w:30,e:['intern']},{w:25,e:['cafghost']},{w:20,e:['intern','cafghost']},{w:15,e:['resident']},{w:10,e:['resident','intern']}]};
 const ENC_INTL1={rate:1/16,tiles:'F',groups:[
@@ -391,6 +391,7 @@ const ENEMY_DB={
   gander:{key:'gander',name:'성난 수컷 구스',hp:320,atk:62,def:18,spd:17,xp:330,gold:11000},
   tackler:{key:'tackler',name:'축구망령 풀백',hp:300,atk:58,def:20,spd:15,xp:320,gold:10000,guard:0.15},
   striker:{key:'striker',name:'축구망령 스트라이커',hp:280,atk:58,def:16,spd:21,xp:310,gold:10500},
+  labstu:{key:'labstu',name:'실험 망친 공대생',hp:290,atk:60,def:14,spd:17,xp:330,gold:11000},
   intern:{key:'intern',name:'불면 인턴',hp:260,atk:56,def:16,spd:14,xp:280,gold:9000},
   resident:{key:'resident',name:'번아웃 레지던트',hp:360,atk:60,def:22,spd:12,xp:360,gold:12000,guard:0.2},
   cafghost:{key:'cafghost',name:'카페인 유령',hp:230,atk:58,def:12,spd:22,xp:300,gold:9500},
@@ -646,6 +647,16 @@ function buildTiles(){
   for(let i=0;i<7;i++){const fx=2+i*2,fy=8+((i*3)%3);px(zg,fx,fy,2,2,fc[i%5]);px(zg,fx,fy,1,1,'#fff6c0');}
   px(zg,4,7,1,2,'#3a8136');px(zg,9,7,1,2,'#3a8136');px(zg,12,7,1,2,'#3a8136');
   t.Z=fb;
+  // 축구골대 (MIT 잔디밭)
+  const goal=mkC(16,16),ug=goal.getContext('2d');
+  ug.drawImage(t.G0,0,0);
+  px(ug,2,3,1,11,'#f4f4f8');px(ug,13,3,1,11,'#f4f4f8');   // 양 기둥
+  px(ug,2,3,12,1,'#f4f4f8');                                // 크로스바
+  ug.fillStyle='rgba(244,244,248,.45)';                      // 그물
+  for(let i=4;i<14;i+=3)ug.fillRect(3,i,10,1);
+  for(let i=4;i<13;i+=3)ug.fillRect(i,4,1,10);
+  px(ug,1,13,2,2,'#d8d8e0');px(ug,12,13,2,2,'#d8d8e0');     // 받침
+  t.U=goal;
   // ===== v2.5 맵별 건물 팔레트 (벽 B / 지붕 R 변종) =====
   function mkWall(wall,mortar,hi,glass,frame){
     const c=mkC(16,16),g=c.getContext('2d');
@@ -670,12 +681,42 @@ function buildTiles(){
   t.R2=mkRoof('#2a2a32','#3a3a44','#18181e');
   t.B3=mkWall('#9a9aa4','#6e6e78','#b4b4be','#9cd8e8','#4a5a6a');
   t.R3=mkRoof('#6a6a74','#84848f','#48484f');
+  // 4=현대도시 — 유리 커튼월 타워 + 옥상 설비 + 아스팔트 + 보도블럭
+  const b4=mkC(16,16),b4g=b4.getContext('2d');
+  px(b4g,0,0,16,16,'#1c2436');
+  for(let y=0;y<16;y+=4)for(let x=0;x<16;x+=4){
+    px(b4g,x+1,y+1,3,3,(x+y)%8?'#2e4060':'#3a5278');     // 유리 패널
+    px(b4g,x+1,y+1,3,1,'#5a7aa8');                        // 하늘 반사
+  }
+  px(b4g,0,0,16,1,'#4a5a74');
+  b4g.fillStyle='rgba(180,220,255,.25)';b4g.beginPath();   // 사선 반사광
+  b4g.moveTo(10,0);b4g.lineTo(16,0);b4g.lineTo(2,16);b4g.lineTo(0,16);b4g.closePath();b4g.fill();
+  t.B4=b4;
+  const r4=mkC(16,16),r4g=r4.getContext('2d');
+  px(r4g,0,0,16,16,'#3c3c46');px(r4g,0,0,16,1,'#56565f');
+  px(r4g,2,2,12,1,'#2a2a32');px(r4g,2,13,12,1,'#2a2a32'); // 옥상 라인
+  px(r4g,4,5,5,5,'#5a5a66');px(r4g,5,6,3,3,'#6e6e7a');    // 에어컨 실외기
+  px(r4g,10,6,3,3,'#56565f');px(r4g,11,5,1,1,'#e8533a');  // 환풍구+경고등
+  t.R4=r4;
+  const p4=mkC(16,16),p4g=p4.getContext('2d');
+  px(p4g,0,0,16,16,'#3a3a40');                             // 아스팔트
+  px(p4g,3,2,1,1,'#4a4a52');px(p4g,11,6,1,1,'#4a4a52');px(p4g,6,12,1,1,'#4a4a52');px(p4g,13,14,1,1,'#30303a');
+  px(p4g,7,4,2,4,'#d8c850');                               // 차선
+  t.P4=p4;
+  const g4=mkC(16,16),g4g=g4.getContext('2d');
+  px(g4g,0,0,16,16,'#8a8a92');                             // 보도블럭
+  for(let y=0;y<16;y+=8)for(let x=0;x<16;x+=8){
+    px(g4g,x,y,8,8,(x+y)%16?'#84848c':'#90909a');px(g4g,x,y,8,1,'#9a9aa4');px(g4g,x,y,1,8,'#9a9aa4');
+    px(g4g,x,y+7,8,1,'#6e6e76');px(g4g,x+7,y,1,8,'#6e6e76');
+  }
+  t.G4=g4;
 }
 const MAP_THEME={
   quad:1,green:1,cafe:1,bookstore:1,dorm:1,union1:1,union2:1,union3:1,union4:1,prelim:1,asianlib:1,
-  hsq:2,yenching:2,banana:2,newbury:2,charles:2,longwood:2,jobhall:2,intl1:2,intl2:2,
-  mit:3,infinite:3
+  hsq:2,yenching:2,banana:2,newbury:2,charles:2,jobhall:2,intl1:2,intl2:2,
+  alley:4,longwood:4,mit:4,infinite:3
 };
+const URBAN_G={alley:1,longwood:1};  // 테마4 중 바닥 G→보도블럭 렌더 (mit 잔디는 축구장이라 유지)
 function buildChar(){
   const HAIR='#2b2b33',SKIN='#f0c8a0',HOOD='#26456e',HOODL='#3a6ea5',PANTS='#2b2b33',BAG='#7a4a2b';
   function frame(dir,step){
@@ -1129,6 +1170,23 @@ function buildEnemies(){
   px(skg,10,24,6,8,'rgba(240,240,245,.7)');px(skg,21,24,6,10,'rgba(240,240,245,.7)');
   px(skg,2,30,9,9,'rgba(244,241,230,.95)');px(skg,4,32,3,3,'#1a1a22');px(skg,8,35,2,2,'#1a1a22');
   A.enemy.striker=sk2;
+  // 무한복도: 실험 망친 공대생 — 그을린 실험가운 + 고글 + 연기 나는 플라스크
+  const ls=mkC(32,42),lsg=ls.getContext('2d');
+  px(lsg,9,2,14,7,'#2b2b33');px(lsg,8,3,3,4,'#3a3a44');px(lsg,21,3,3,4,'#3a3a44'); // 폭발 헤어
+  px(lsg,7,1,2,2,'#3a3a44');px(lsg,23,1,2,2,'#3a3a44');
+  px(lsg,10,8,12,7,'#e8c8a8');
+  px(lsg,11,9,4,3,'#c8a040');px(lsg,17,9,4,3,'#c8a040');px(lsg,15,10,2,1,'#c8a040'); // 고글
+  px(lsg,12,10,2,1,'#fff6c0');px(lsg,18,10,2,1,'#fff6c0');
+  px(lsg,13,13,3,1,'#4a4a52');px(lsg,18,7,2,2,'#4a4a52');   // 그을음
+  px(lsg,6,15,20,18,'#e8e4dc');px(lsg,6,15,20,2,'#f4f1e6'); // 실험가운
+  px(lsg,14,17,4,14,'#c8c4bc');
+  px(lsg,8,20,4,3,'#5a5a52');px(lsg,19,25,5,3,'#5a5a52');px(lsg,11,29,3,2,'#5a5a52'); // 탄 자국
+  px(lsg,2,22,5,8,'#3a6ea5');px(lsg,3,21,3,1,'#5a8ec4');    // 플라스크
+  px(lsg,3,24,3,5,'#56d364');
+  px(lsg,4,17,1,4,'rgba(200,200,210,.6)');px(lsg,3,14,1,3,'rgba(200,200,210,.45)'); // 연기
+  px(lsg,5,12,1,2,'rgba(200,200,210,.3)');
+  px(lsg,8,33,6,7,'#2b2b33');px(lsg,18,33,6,7,'#2b2b33');
+  A.enemy.labstu=ls;
   // 3장: 불면 인턴 — 수술복 + 다크서클 + 차트
   const it2=mkC(30,42),itg=it2.getContext('2d');
   px(itg,8,2,14,6,'#2b2b33');px(itg,8,7,14,8,'#e8c8a8');
@@ -2107,6 +2165,7 @@ function tryInteract(){
   if(t==='N'){sfx.ok();showDialog('',[(CUR==='campus'&&S.night)?'가로등이 길을 노랗게 밝히고 있다.':'가로등. 밤이 되면 불이 켜질 것이다.']);return;}
   if(t==='Q'){sfx.ok();showDialog('',['벤치다. 잠깐 앉아 다리를 쉰다.','…다시 갈 길을 간다.']);return;}
   if(t==='Z'){sfx.ok();showDialog('',['작은 화단. 꽃이 소담하게 피어 있다.']);return;}
+  if(t==='U'){sfx.ok();showDialog('',['축구골대다. 그물이 바람에 흔들린다.','…어디선가 휘슬 소리가 들린 것 같다.']);return;}
 }
 function dormMenu(){
   sfx.ok();
@@ -2650,7 +2709,7 @@ function drawMini(){
   const m=M(),mc=$('mini'),g=mc.getContext('2d');
   const sc=Math.max(3,Math.min(7,Math.floor(220/m.w)));
   const col={G:'#3f7d3a',P:'#c9b07e',T:'#244c22',B:'#8d8d99',R:'#8c3030',D:'#ffd866',L:'#58a6ff',W:'#f08080',
-    F:'#b08a5a',K:'#5c3a22',C:'#6b4226',S:'#58a6ff',V:'#d8553a',X:'#ffd866',O:'#58e0ff',J:'#8c3030',Y:'#caa53d',A:'#58a6ff',H:'#3f7d3a',E:'#9cc4ea',M:'#2a5482'};
+    F:'#b08a5a',K:'#5c3a22',C:'#6b4226',S:'#58a6ff',V:'#d8553a',X:'#ffd866',O:'#58e0ff',J:'#8c3030',Y:'#caa53d',A:'#58a6ff',H:'#3f7d3a',E:'#9cc4ea',M:'#2a5482',N:'#ffe9a8',Q:'#7a4a2b',Z:'#e8607a',U:'#f4f4f8'};
   for(let y=0;y<m.h;y++)for(let x=0;x<m.w;x++){g.fillStyle=col[m.tiles[y][x]]||'#000';g.fillRect(x*sc,y*sc,sc,sc);}
   (NPCS[CUR]||[]).forEach(n=>{if(!n.cond||n.cond()){g.fillStyle='#fff';g.fillRect(n.x*sc+1,n.y*sc+1,Math.max(1,sc-2),Math.max(1,sc-2));}});
   g.fillStyle='#e24b4a';g.beginPath();g.arc(P.x*sc+sc/2,P.y*sc+sc/2,Math.max(2,sc*0.6),0,Math.PI*2);g.fill();
@@ -2755,7 +2814,7 @@ function mkE2(key,name,ov){
 }
 // ===== v2.3 리비전 지옥 (무한던전) =====
 const REV_POOL_A=['confstu','interp','posterg','phantom','corn','snowman','mfghost','hanmun'];
-const REV_POOL_B=['goose','gander','tackler','striker','intern','resident','cafghost','emer','keynote'];
+const REV_POOL_B=['goose','gander','tackler','striker','labstu','intern','resident','cafghost','emer','keynote'];
 const REV_BOSS=['libghost','vgolem','bossgoose','stumor','golem','senior','chaired'];
 function mkScaled(key,hm,am,suf){
   const e=mkE(key,suf);
@@ -3563,6 +3622,29 @@ async function enemyAct(e){
     await eHitP(e,1.0,'축구망령이 어깨싸움을 걸어왔다!');
     return;
   }
+  // ===== 무한복도: 실험 망친 공대생 — 폭주 시약(자해 동반)·혼란 연기 =====
+  if(e.key==='labstu'){
+    const roll=Math.random();
+    if(roll<0.3){
+      if(await tryCounter(e))return;
+      sfx.crash();
+      const hit=await eHitP(e,1.4,'공대생이 <b>폭주한 시약</b>을 집어던졌다! 펑!');
+      if(hit!==null){
+        e.hp=Math.max(1,e.hp-Math.round(e.maxhp*0.08));e.shake=1;
+        await bmsg('폭발 반경에 본인도 휘말렸다… 공대생이 그을렸다!');
+      }
+      return;
+    }
+    if(roll<0.55){
+      P.confuse=Math.max(P.confuse,2);
+      await bmsg('플라스크에서 정체불명의 <b>연기</b>가 피어오른다…');
+      await bmsg('머리가 어질어질하다 — <span style="color:#f0c060"><b>혼란</b></span>! (2턴)');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,e.name+'이(가) 깨진 플라스크를 휘둘렀다!');
+    return;
+  }
   // ===== 3장 롱우드: 의료가 — 과로 스택·MP 누수 =====
   if(e.key==='intern'&&Math.random()<0.3){
     if(await tryCounter(e))return;
@@ -3737,7 +3819,7 @@ async function enemyAct(e){
     return;
   }
   if(await tryCounter(e))return;
-  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!',bwh1:'주사기를 들이밀었다!',bwh2:'영상으로 약점을 짚었다!',bwh3:'청진기로 후려쳤다!',bwh4:'제세동 패들을 들이댔다!',bwh5:'메스를 휘둘렀다!',confstu:'발표 자료 뭉치를 휘둘렀다!',interp:'헤드셋 하울링을 일으켰다!',posterg:'포스터 보드로 밀쳤다!',emer:'반투명한 손으로 내리눌렀다!',keynote:'레이저 포인터를 쏘았다!',chaired:'가운 자락으로 후려쳤다!'};
+  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!',bwh1:'주사기를 들이밀었다!',bwh2:'영상으로 약점을 짚었다!',bwh3:'청진기로 후려쳤다!',bwh4:'제세동 패들을 들이댔다!',bwh5:'메스를 휘둘렀다!',confstu:'발표 자료 뭉치를 휘둘렀다!',interp:'헤드셋 하울링을 일으켰다!',posterg:'포스터 보드로 밀쳤다!',emer:'반투명한 손으로 내리눌렀다!',keynote:'레이저 포인터를 쏘았다!',chaired:'가운 자락으로 후려쳤다!',labstu:'깨진 플라스크를 휘둘렀다!'};
   await eHitP(e,1.0,e.name+'이(가) '+(verbs[e.key]||'들이받았다!'));
 }
 async function gainLevels(){
@@ -3878,9 +3960,13 @@ function camera(){
   return {cx,cy};
 }
 function tileImg(t,x,y){
-  if(t==='G'){const h=(x*31+y*17)%7;return h===0?A.tiles.G2:(h%2?A.tiles.G0:A.tiles.G1);}
+  if(t==='G'){
+    if(URBAN_G[CUR])return A.tiles.G4;
+    const h=(x*31+y*17)%7;return h===0?A.tiles.G2:(h%2?A.tiles.G0:A.tiles.G1);
+  }
   if(t==='X'&&S.chests[CUR+':'+x+','+y])return A.tiles.Xo;
   if((t==='B'||t==='R')&&MAP_THEME[CUR])return A.tiles[t+MAP_THEME[CUR]];
+  if(t==='P'&&MAP_THEME[CUR]===4)return A.tiles.P4;
   return A.tiles[t]||A.tiles.G0;
 }
 function renderMap(){

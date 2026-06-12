@@ -422,6 +422,7 @@ let MODE='title';
 // ============ 유틸 ============
 const $=id=>document.getElementById(id);
 let SPEED=1;try{if(localStorage.getItem('gmcz_speed')==='2')SPEED=2;}catch(e){}
+const ADMIN=(()=>{try{return /[?&]admin\b/.test(location.search);}catch(e){return false;}})();
 const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(16,ms/SPEED)));
 const fmt=n=>'₩'+n.toLocaleString('ko-KR');
 function calcDmg(atk,mult,def,luk,ignoreDef){
@@ -2102,16 +2103,19 @@ function vendingShop(stock){
 }
 // ===== v2.4 낚시 미니게임 =====
 let FISH=null;
+const FISH_PATS={linear:'직진',sine:'너울',jerky:'변칙',feint:'급류'};
 function startFishing(){
   MODE='fishing';
-  FISH={x:0,dir:1,spd:0.55+Math.random()*0.35,phase:'cast',res:null};
+  const keys=Object.keys(FISH_PATS);
+  FISH={x:Math.random(),dir:Math.random()<0.5?1:-1,spd:0.7+Math.random()*0.5,phase:'cast',
+    pat:keys[Math.floor(Math.random()*keys.length)],t:Math.random()*10};
 }
 function fishingAct(){
   if(!FISH)return;
   if(FISH.phase!=='cast'){MODE='map';FISH=null;return;}
   const d=Math.abs(FISH.x-0.5);
   let grade;
-  if(d<0.045)grade='전설';else if(d<0.13)grade='희귀';else if(d<0.30)grade='일반';else grade='잡템';
+  if(d<0.035)grade='전설';else if(d<0.10)grade='희귀';else if(d<0.26)grade='일반';else grade='잡템';
   if(grade==='전설'&&Math.random()<0.5)grade='희귀'; // 전설은 정중앙+추가 확률
   const pool=FISH_BY_GRADE[grade];
   const key=pool[Math.floor(Math.random()*pool.length)];
@@ -2131,7 +2135,20 @@ function fishingAct(){
   showDialog('낚시',lines);
 }
 function renderFishing(dt){
-  FISH.x+=FISH.dir*FISH.spd*(dt/1000);
+  const s=dt/1000;
+  if(FISH.pat==='linear'){
+    FISH.x+=FISH.dir*FISH.spd*1.3*s;
+  }else if(FISH.pat==='sine'){
+    FISH.t+=s*FISH.spd*2.4;
+    FISH.x=0.5+0.48*Math.sin(FISH.t*2.2);
+  }else if(FISH.pat==='jerky'){
+    if(Math.random()<0.018)FISH.dir*=-1;
+    if(Math.random()<0.03)FISH.spd=0.5+Math.random()*1.0;
+    FISH.x+=FISH.dir*FISH.spd*1.2*s;
+  }else{ // feint — 중앙 근처에서 가속, 가장자리에서 감속
+    const c=1-Math.abs(FISH.x-0.5)*2;
+    FISH.x+=FISH.dir*FISH.spd*(0.35+1.9*c)*s;
+  }
   if(FISH.x>=1){FISH.x=1;FISH.dir=-1;}else if(FISH.x<=0){FISH.x=0;FISH.dir=1;}
   const grd=ctx.createLinearGradient(0,0,0,192);
   grd.addColorStop(0,'#a8c8e8');grd.addColorStop(0.5,'#5a82a8');grd.addColorStop(1,'#2a5482');
@@ -2143,11 +2160,15 @@ function renderFishing(dt){
   const bx=28,bw=200,by=140;
   ctx.fillStyle='rgba(10,10,24,.7)';ctx.fillRect(bx-4,by-10,bw+8,30);
   ctx.fillStyle='#2a2a3a';ctx.fillRect(bx,by,bw,12);
-  ctx.fillStyle='#3a8a4a';ctx.fillRect(bx+bw*0.30,by,bw*0.40,12);
-  ctx.fillStyle='#ffd866';ctx.fillRect(bx+bw*0.45,by,bw*0.10,12);
+  ctx.fillStyle='#3a8a4a';ctx.fillRect(bx+bw*0.24,by,bw*0.52,12);
+  ctx.fillStyle='#ffd866';ctx.fillRect(bx+bw*0.40,by,bw*0.20,12);
+  ctx.fillStyle='#e24b4a';ctx.fillRect(bx+bw*0.465,by,bw*0.07,12);
   ctx.fillStyle='#fff';ctx.fillRect(bx+bw*FISH.x-1,by-4,3,20);
-  ctx.fillStyle='#fff';ctx.font='9px sans-serif';ctx.textAlign='center';
-  ctx.fillText('Z: 챔질!  (가운데 노랑일수록 大物)',128,178);ctx.textAlign='left';
+  ctx.fillStyle='rgba(10,10,24,.7)';ctx.fillRect(78,118,100,13);
+  ctx.fillStyle='#ffd866';ctx.font='bold 9px sans-serif';ctx.textAlign='center';
+  ctx.fillText('입질 패턴: '+FISH_PATS[FISH.pat],128,128);
+  ctx.fillStyle='#fff';ctx.font='9px sans-serif';
+  ctx.fillText('Z: 챔질!  (빨강=전설 · 노랑=희귀)',128,178);ctx.textAlign='left';
 }
 function travelMenu(){
   sfx.ok();
@@ -2187,19 +2208,35 @@ function travelMenu(){
       .concat([{label:'다음에',fn:()=>{closeMenu();MODE='map';}}]),
     ()=>{closeMenu();MODE='map';});
 }
+// 관리자 치트 — 콘솔 cheat() 또는 URL에 ?admin 붙이고 돌탑
+window.cheat=function(){
+  if(P.lv<35)P.lv=35;
+  P.maxhp+=1000;P.maxmp+=1000;P.atk+=1000;P.def+=1000;P.spd+=1000;P.luk+=1000;
+  P.hp=P.maxhp;P.mp=P.maxmp;
+  P.skills=Object.keys(SKILLS);
+  P.gold+=1000000;
+  updateHud();
+  return '[ADMIN] 모든 스탯 +1000 · 만렙 · 전 스킬 · +₩1,000,000 (반복 가능)';
+};
 function hiddenPagoda(x,y){
-  // [DEBUG] 디버그 돌탑 — 만질 때마다 모든 스탯 +1000 (반복 가능), 만렙·전 스킬
+  // 소원 돌탑 — 1회 웰러 풀프루프 1병. ?admin 모드에선 관리자 치트.
   sfx.crash();
-  showDialog('',['수풀 속, 정체불명의 돌탑이 서 있다.','…만지면 엄청난 힘이 깃들 것 같다.'],()=>{
-    openMenu('돌탑에 손을 댄다? <span style="color:#aab;font-size:12px">[DEBUG]</span>',[
+  if(ADMIN){
+    openMenu('돌탑에 손을 댄다? <span style="color:#aab;font-size:12px">[ADMIN]</span>',[
       {label:'손을 댄다 (모든 스탯 +1000)',fn:()=>{closeMenu();
+        sfx.lvl();showDialog('',['돌탑에서 엄청난 기운이…!','<b>'+window.cheat()+'</b>']);}},
+      {label:'물러난다',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
+  if(S.debugMax){showDialog('',['돌탑은 고요하다.','소원은 한 번뿐이다.']);return;}
+  showDialog('',['수풀 속, 오래된 소원 돌탑이 서 있다.','졸업을 빌었던 손길들이 돌마다 눌러 담겨 있다.'],()=>{
+    openMenu('돌 하나를 얹고 소원을 빈다?',[
+      {label:'소원을 빈다',fn:()=>{closeMenu();
         S.debugMax=1;
-        if(P.lv<35)P.lv=35;
-        P.maxhp+=1000;P.maxmp+=1000;P.atk+=1000;P.def+=1000;P.spd+=1000;P.luk+=1000;
-        P.hp=P.maxhp;P.mp=P.maxmp;
-        P.skills=Object.keys(SKILLS);
+        P.inv.wellerfp=(P.inv.wellerfp||0)+1;
         sfx.lvl();updateHud();
-        showDialog('',['돌탑에서 엄청난 기운이 흘러들어온다…!','<b>[DEBUG] 모든 스탯 +1000! 만렙(Lv35) + 전 스킬 습득!</b>','(만질 때마다 누적된다.)']);}},
+        showDialog('',['돌탑이 희미하게 빛났다…','돌탑 아래에서 <b>〈웰러 풀프루프〉 1병</b>이 나왔다!','…먼저 졸업한 누군가가 두고 간 걸지도.']);}},
       {label:'물러난다',fn:()=>{closeMenu();MODE='map';}}
     ],()=>{closeMenu();MODE='map';});
   });
@@ -2375,7 +2412,19 @@ const QUESTS=[
   {name:'[3장] 교수 임용 커미티',desc:'Job Talk 최종 심사 — 조교수가 되는 것 (권장 Lv32+ · 요리 누적 필수)',prog:()=>S.boss3?'1/1':'0/1',done:()=>S.boss3>=1,ch3:true},
   {name:'[종장] 종신의 문턱',desc:'조교수 임용 후, 안암 국제관 2층의 그분을 만나다 (권장 Lv 33+)',prog:()=>S.tenureSeen?'1/1':'0/1',done:()=>S.tenureSeen>=1,ch3:true}
 ];
-function openFieldMenu(){sfx.ok();MODE='fieldmenu';fmView('main');FM.style.display='block';}
+let questOpen=null;
+function questRegion(q){
+  if(q.name.includes('국제관')||q.name.startsWith('[종장]'))return 'anam';
+  if(q.ch3)return 'boston';
+  if(q.ch2)return 'illinois';
+  return 'anam';
+}
+function curRegion(){
+  if(['quad','green','cafe','bookstore','dorm','union1','union2','union3','union4','prelim','asianlib'].includes(CUR))return 'illinois';
+  if(['hsq','yenching','banana','newbury','charles','mit','infinite','longwood','jobhall'].includes(CUR))return 'boston';
+  return 'anam';
+}
+function openFieldMenu(){sfx.ok();MODE='fieldmenu';questOpen=null;fmView('main');FM.style.display='block';}
 function closeFieldMenu(){FM.style.display='none';menuBtns=[];menuCancel=null;MODE='map';}
 function fmView(view){
   let html='';
@@ -2408,12 +2457,13 @@ function fmView(view){
       '</table><br><div class="btnrow">'+back+'</div>';
   }
   else if(view==='item'){
-    const rows=Object.keys(ITEMS).map(k=>{
+    const held=Object.keys(ITEMS).filter(k=>P.inv[k]>0);
+    const rows=held.map(k=>{
       const it=ITEMS[k];
       const full=P.hp>=P.maxhp&&(!it.mp||P.mp>=P.maxmp)&&!it.full;
       const fullAll=it.full&&P.hp>=P.maxhp&&P.mp>=P.maxmp;
-      return '<button class="gbtn" data-act="use-'+k+'" '+(P.inv[k]<1||full||fullAll||it.battle?'disabled':'')+'>'+it.name+' ×'+P.inv[k]+' <small>'+it.short+'</small></button>';
-    }).join('');
+      return '<button class="gbtn" data-act="use-'+k+'" '+(full||fullAll||it.battle?'disabled':'')+'>'+it.name+' ×'+P.inv[k]+' <small>'+it.short+'</small></button>';
+    }).join('')||'<p style="color:#aab;font-size:12px">가방이 비었다. 논문 초고뿐이다.</p>';
     html='<h3>아이템</h3><div class="btnrow">'+rows+'</div>'+
     '<p style="color:#aab;font-size:12px;margin-top:8px">장비: '+wpn().name+' (ATK+'+wpn().atk+') · 『주자어류』(스킬북)'+(S.chests['stacks:1,18']?' · 고문헌 노트(ATK+3)':'')+(S.chests['dorm:9,2']?' · 프로틴 셰이커(HP+20)':'')+(S.chests['union2:12,7']?' · 롱패딩 점퍼(DEF+5)':'')+(S.chests['union4:11,4']?' · 일리니 보온 텀블러(턴당 MP+5)':'')+(S.charm?' · 주황 털뭉치 부적(LUK+10·SPD+3)':'')+(S.encDown?' · 학회 명찰(인카운터↓)':'')+(S.cafeStamp?' · 단골 도장 카드(술값 10%↓)':'')+(S.scanboost?' · 돋보기 안경(약점+1턴)':'')+(S.usbSave?' · 동기의 USB(필드 세이브)':'')+(P.hangover?'<br><span style="color:#f0d080">⚠ 숙취 — 다음 전투 첫 행동 불가</span>':'')+'</p><br><div class="btnrow">'+back+'</div>';
   }
@@ -2424,10 +2474,24 @@ function fmView(view){
       '<div class="btnrow">'+back+'</div>';
   }
   else if(view==='quest'){
-    html='<h3>미션</h3><table>'+QUESTS.filter(q=>(!q.ch2||S.boss1)&&(!q.ch3||S.boss2)).map(q=>{
-      const d=q.done();
-      return '<tr><td class="'+(d?'qdone':'qing')+'">'+(d?'✔':'▶')+' '+q.name+'</td><td>'+q.desc+' <span style="color:#aab">['+q.prog()+']</span></td></tr>';
-    }).join('')+'</table><br><div class="btnrow">'+back+'</div>';
+    const open=questOpen||curRegion();
+    const REGS=[['anam','안암 (서울)'],['illinois','일리노이'],['boston','보스턴']];
+    html='<h3>미션</h3>';
+    for(const [rid,rname] of REGS){
+      const all=QUESTS.filter(q=>questRegion(q)===rid);
+      const vis=all.filter(q=>(!q.ch2||S.boss1)&&(!q.ch3||S.boss2));
+      const done=vis.filter(q=>q.done()).length;
+      const locked=vis.length===0;
+      html+='<button class="gbtn" data-act="qr-'+rid+'" style="width:100%;text-align:left;margin:3px 0" '+(locked?'disabled':'')+'>'+
+        (open===rid?'▼':'▶')+' <b>'+rname+'</b> <small style="color:#aab">'+(locked?'(아직 잠겨 있다)':done+'/'+vis.length+' 완료'+(rid===curRegion()?' · <span style="color:#56d364">현재 위치</span>':''))+'</small></button>';
+      if(open===rid&&!locked){
+        html+='<table>'+vis.map(q=>{
+          const d=q.done();
+          return '<tr><td class="'+(d?'qdone':'qing')+'">'+(d?'✔':'▶')+' '+q.name+'</td><td>'+q.desc+' <span style="color:#aab">['+q.prog()+']</span></td></tr>';
+        }).join('')+'</table>';
+      }
+    }
+    html+='<br><div class="btnrow">'+back+'</div>';
   }
   else if(view==='dex'){
     checkTitles();
@@ -2488,6 +2552,7 @@ function fmView(view){
       else if(a==='stat'||a==='item'||a==='mapv'||a==='quest'||a==='save'||a==='dex')fmView(a);
       else if(a==='speed'){SPEED=SPEED===1?2:1;try{localStorage.setItem('gmcz_speed',String(SPEED));}catch(e){}fmView('main');}
       else if(a.startsWith('ttl-')){const id=a.slice(4);S.title=(S.title===id?'':id);fmView('dex');}
+      else if(a.startsWith('qr-')){const r=a.slice(3);questOpen=(questOpen||curRegion())===r?'__none':r;fmView('quest');}
       else if(a.startsWith('use-')){
         const k=a.slice(4),it=ITEMS[k];
         P.inv[k]--;S.drank[k]=1;
@@ -2970,10 +3035,10 @@ async function playerAct(act){
       fxAdd('book',t);fxAdd('slash',t);fxAdd('wave',null);sfx.book();sfx.slash();await sleep(700);
     }else if(act.type==='bakhak'){
       bmsg('<b>박학심문(博學審問)!</b> 넓게 배운 것으로 깊이 찌른다!',1);
-      fxAdd('book',t);fxAdd('slash',t);sfx.slash();await sleep(560);
+      fxAdd('rune',t);fxAdd('slash',t);sfx.book();sfx.slash();await sleep(640);
     }else if(act.type==='hwalyeon'){
       bmsg('<b>활연관통(豁然貫通)!</b> 모든 것이 한 줄로 꿰뚫린다!',1);
-      fxAdd('scan',t);fxAdd('slash',t);fxAdd('wave',null);sfx.book();sfx.slash();await sleep(700);
+      fxAdd('beam',t);sfx.book();sfx.slash();await sleep(660);
     }else{
       bmsg('연구의 논박! 펜이 번뜩인다!',1);
       fxAdd('slash',t);sfx.slash();await sleep(380);
@@ -3088,7 +3153,7 @@ async function playerAct(act){
   else if(act.type==='dongdo'){
     P.mp-=SKILLS.dongdo.mp;updateHud();
     bmsg('<b>동도서기(東道西器)!</b> 동방의 도와 서방의 기가 함께 휩쓴다!',1);
-    fxAdd('wave',null);sfx.book();await sleep(560);
+    fxAdd('burst',null);sfx.book();sfx.slash();await sleep(620);
     const kills=[];
     for(const t of alive()){
       let r=calcDmg(atkNow(),1.6,t.def,P.luk);let d=r.d;
@@ -4096,6 +4161,35 @@ function renderFx(){
     else if(f.type==='eatk'&&age<260){
       const p=age/260;ctx.fillStyle='rgba(226,75,74,'+(0.5-p*0.5)+')';
       ctx.fillRect(0,150+p*42,256,42-p*42);
+    }
+    else if(f.type==='rune'&&age<700){ // 박학심문 — 회전하는 한자 링 (보라·금)
+      const p=age/700,a=p*4.2;
+      ctx.strokeStyle='rgba(154,106,255,'+(1-p)+')';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(x,y,14+p*16,a,a+Math.PI*1.5);ctx.stroke();
+      ctx.fillStyle='rgba(255,216,102,'+(1-p)+')';ctx.font='bold 11px serif';ctx.textAlign='center';
+      const R=20+p*10,CH=['博','學','審','問'];
+      for(let j=0;j<4;j++)ctx.fillText(CH[j],x+Math.cos(a+j*Math.PI/2)*R,y+Math.sin(a+j*Math.PI/2)*R+4);
+      ctx.textAlign='left';
+    }
+    else if(f.type==='beam'&&age<620){ // 활연관통 — 하늘에서 내리꽂히는 관통 빔
+      const p=age/620,w=p<0.3?(p/0.3)*16:16*(1-(p-0.3)/0.7);
+      ctx.fillStyle='rgba(255,255,255,'+(0.9-p*0.9)+')';ctx.fillRect(x-w/2,0,w,y+18);
+      ctx.fillStyle='rgba(255,216,102,'+(0.7-p*0.7)+')';ctx.fillRect(x-w/4,0,w/2,y+18);
+      ctx.strokeStyle='rgba(255,255,255,'+(1-p)+')';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(x,y,4+p*30,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='rgba(255,216,102,'+(1-p)+')';ctx.font='bold 12px serif';ctx.textAlign='center';
+      ctx.fillText('貫',x,y-26-p*10);ctx.fillText('通',x,y-12-p*10);ctx.textAlign='left';
+    }
+    else if(f.type==='burst'&&age<600){ // 동도서기 — 동·서 이중색 방사 침
+      const p=age/600,cx=128,cy=150;
+      for(let j=0;j<16;j++){
+        const a=j/16*Math.PI*2+p*0.6,r1=12+p*92,r2=r1+14;
+        ctx.strokeStyle=(j%2?'rgba(127,196,255,':'rgba(226,120,100,')+(1-p)+')';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1*0.55);
+        ctx.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2*0.55);ctx.stroke();
+      }
+      ctx.fillStyle='rgba(255,255,255,'+(1-p)+')';ctx.font='bold 12px serif';ctx.textAlign='center';
+      ctx.fillText('東',cx-30+p*-40,cy-30);ctx.fillText('西',cx+30+p*40,cy-30);ctx.textAlign='left';
     }
     if(age>820)BFX.splice(i,1);
   }

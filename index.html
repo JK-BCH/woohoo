@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.6</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.7</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.6 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.7 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -162,7 +162,7 @@ const DOORP={
   infinite:{'37,3':{to:'banana',x:7,y:8,d:'up'}}
 };
 const NPCS={
-  campus:[{x:17,y:6,kind:'wandang'},{x:16,y:9,kind:'flyerstu'},{x:10,y:18,kind:'oldprof'}],
+  campus:[{x:17,y:6,kind:'wandang'},{x:16,y:9,kind:'flyerstu'},{x:10,y:18,kind:'oldprof'},{x:16,y:12,kind:'gambler'}],
   liberal:[{x:16,y:4,kind:'ta'},{x:16,y:8,kind:'sleepgrad'}],
   library:[{x:18,y:6,kind:'librarian'},{x:9,y:12,kind:'cramstu'}],
   stacks:[{x:1,y:17,kind:'golem',cond:()=>!S.golem}],
@@ -861,6 +861,13 @@ function buildNpc(){
   A.npc.bostonliq=mkPerson('#5a4632','#2a6e54',g=>{
     px(g,5,8,6,5,'#1f5240');px(g,6,9,4,1,'#fff');
     px(g,11,9,2,4,'#7a4848');
+  });
+  // 야바위꾼 — 중절모 + 어두운 코트 + 종이컵 3개
+  A.npc.gambler=mkPerson('#1a1622','#3a2a4a',g=>{
+    px(g,3,1,10,2,'#15121c');px(g,4,3,8,1,'#15121c');px(g,2,3,12,1,'#0e0c14'); // 중절모
+    px(g,5,5,2,1,'#222');px(g,9,5,2,1,'#222');                                  // 음흉한 눈
+    px(g,4,8,8,1,'#6a4a8a');                                                     // 코트 라펠
+    px(g,4,10,2,2,'#e8dcc0');px(g,7,10,2,2,'#e8dcc0');px(g,10,10,2,2,'#e8dcc0'); // 종이컵 3개
   });
   // 전자기기점 점원 — 파란 폴로
   A.npc.gadget=mkPerson('#1a1a22','#3a6ea5',g=>{
@@ -1657,8 +1664,37 @@ function flavorTalk(kind){
   showDialog(f.n,f.d[flavorIdx[kind]%f.d.length]);
   flavorIdx[kind]++;
 }
+// ===== 길거리 야바위 (안암 캠퍼스) — 골드 싱크: 비매품 제외 전 주류 가중 뽑기 =====
+// 한 판 ₩30,000, 기대 회수 ~₩8,000 (강력한 인플레 방지). pappy는 극악, 완전회복은 낮게,
+// 단 초반에도 운 좋으면 고급주 수급 가능. 가중치 합 = 1000.
+const GACHA_COST=30000;
+const GACHA_POOL=[
+  {k:'soju',w:180},{k:'beer',w:160},{k:'makgeolli',w:150},{k:'miller',w:110},
+  {k:'yuengling',w:90},{k:'buffalo',w:70},{k:'poktanju',w:70},{k:'barolo',w:60},
+  {k:'nightshift',w:50},{k:'barbaresco',w:30},{k:'stagg',w:15},{k:'wellerfp',w:13},{k:'pappy',w:2}
+];
+let gamblerSeen=false;
+function gamblerDraw(){
+  const tot=GACHA_POOL.reduce((s,x)=>s+x.w,0);let r=Math.random()*tot;
+  for(const x of GACHA_POOL){if((r-=x.w)<0)return x.k;}return 'soju';
+}
+function gamblerGame(){
+  sfx.ok();
+  const build=msg=>openMenu('<b style="color:#c89a3a">길거리 야바위</b> — '+msg+'<br><span style="color:#aab;font-size:12px">종이컵 셋 중 하나를 고르면 그 안의 술이 네 것 — 뭐가 나올진 아무도 몰라.<br>한 판 <b>'+fmt(GACHA_COST)+'</b> · 보유 '+fmt(P.gold)+'</span>',[
+    {label:'<b>한 판 건다</b> ('+fmt(GACHA_COST)+')',disabled:P.gold<GACHA_COST,fn:()=>{
+      P.gold-=GACHA_COST;const k=gamblerDraw();P.inv[k]=(P.inv[k]||0)+1;S.bought=(S.bought||0)+1;updateHud();
+      const top=(k==='pappy'||k==='stagg'||k==='wellerfp');sfx[top?'lvl':(ITEMS[k].full?'heal':'ok')]();
+      const cmt=k==='pappy'?'…파, 파피?! 야 이건 내 실수야! …쳇, 가져가.':top?'으윽, 하필 그 컵을. 운 좋은 줄 알아.':ITEMS[k].full?'호오, 제법 좋은 게 걸렸군.':'크크, 또 도전해보지 않겠어?';
+      build('<b style="color:#ffd866">'+ITEMS[k].name+'</b> 당첨! '+cmt);
+    }},
+    {label:'그만한다',fn:()=>{closeMenu();MODE='map';}}
+  ],()=>{closeMenu();MODE='map';});
+  if(!gamblerSeen){gamblerSeen=true;showDialog('야바위꾼',['어이, 거기 대학원생. 주머니 가벼운 거 다 알아.','종이컵 세 개, 그 안엔 술이 한 병씩 숨어 있지. 골라봐 — 운만 좋으면 한 판에 인생 역전이야.','뭐, 대부분은… 소주 한 병이지만 말이야. 크크.'],()=>build('자, 운을 시험해볼까?'));}
+  else build('또 왔군. 이번엔 뭐가 나올까?');
+}
 function npcTalk(kind){
   if(kind==='flyerstu'||kind==='oldprof'||kind==='sleepgrad'||kind==='cramstu'||kind==='regular'||kind==='frisbee'||kind==='tailgate'||kind==='laptopper'||kind==='roommate'||kind==='studygrp'||kind==='busker'||kind==='tourist'||kind==='shopper'||kind==='rower'||kind==='hacker'||kind==='mdfriend'||kind==='archivist'||kind==='lostfresh'){flavorTalk(kind);return;}
+  if(kind==='gambler'){gamblerGame();return;}
   if(kind==='fisher'){
     sfx.ok();
     const cnt=Object.keys(S.fish||{}).length;
@@ -1757,7 +1793,7 @@ function npcTalk(kind){
     return;
   }
   if(kind==='bostonliq'){
-    openShopWith(['miller','yuengling','barolo','barbaresco','wellerfp'],
+    openShopWith(['miller','yuengling','barolo','barbaresco'],
       '<b style="color:#ffd866">백베이 보틀숍</b>','보스턴 물가에 놀라지 마시고. 와인은 피에몬테 직수입입니다.');
     return;
   }

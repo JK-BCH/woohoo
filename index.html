@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.4</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.5</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.4 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.5 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -608,7 +608,36 @@ function buildTiles(){
   px(jg2,0,4,16,9,'#6e1f1f');px(jg2,0,4,16,2,'#8c3030');px(jg2,0,12,16,1,'#4a1414');
   px(jg2,2,6,3,2,'#f4f1e6');px(jg2,7,7,3,2,'#f4f1e6');px(jg2,12,6,3,2,'#f4f1e6');
   t.J=j;
+  // ===== v2.5 맵별 건물 팔레트 (벽 B / 지붕 R 변종) =====
+  function mkWall(wall,mortar,hi,glass,frame){
+    const c=mkC(16,16),g=c.getContext('2d');
+    px(g,0,0,16,16,wall);px(g,0,0,16,1,hi);
+    for(let y=1;y<16;y+=4)px(g,0,y+2,16,1,mortar);
+    for(let r2=0;r2<4;r2++)for(let x=((r2%2)*4);x<16;x+=8)px(g,x,r2*4,1,3,mortar);
+    px(g,2,5,4,4,frame);px(g,3,6,2,2,glass);
+    px(g,10,5,4,4,frame);px(g,11,6,2,2,glass);
+    return c;
+  }
+  function mkRoof(base,hi,lo){
+    const c=mkC(16,16),g=c.getContext('2d');
+    px(g,0,0,16,16,base);
+    for(let y=0;y<16;y+=4){px(g,0,y,16,1,hi);px(g,0,y+3,16,1,lo);}
+    for(let x=0;x<16;x+=4)px(g,x,0,1,16,lo);
+    return c;
+  }
+  // 1=일리노이(적벽돌) 2=보스턴(레드브릭+흰창틀) 3=MIT(콘크리트+유리)
+  t.B1=mkWall('#9a4a38','#6e3327','#b86452','#9cc4ea','#39507a');
+  t.R1=mkRoof('#6e2a2a','#8a3a3a','#481a1a');
+  t.B2=mkWall('#a8483a','#7a3026','#c06450','#cfe6ff','#e8e4dc');
+  t.R2=mkRoof('#2a2a32','#3a3a44','#18181e');
+  t.B3=mkWall('#9a9aa4','#6e6e78','#b4b4be','#9cd8e8','#4a5a6a');
+  t.R3=mkRoof('#6a6a74','#84848f','#48484f');
 }
+const MAP_THEME={
+  quad:1,green:1,cafe:1,bookstore:1,dorm:1,union1:1,union2:1,union3:1,union4:1,prelim:1,asianlib:1,
+  hsq:2,yenching:2,banana:2,newbury:2,charles:2,longwood:2,jobhall:2,intl1:2,intl2:2,
+  mit:3,infinite:3
+};
 function buildChar(){
   const HAIR='#2b2b33',SKIN='#f0c8a0',HOOD='#26456e',HOODL='#3a6ea5',PANTS='#2b2b33',BAG='#7a4a2b';
   function frame(dir,step){
@@ -3810,6 +3839,7 @@ function camera(){
 function tileImg(t,x,y){
   if(t==='G'){const h=(x*31+y*17)%7;return h===0?A.tiles.G2:(h%2?A.tiles.G0:A.tiles.G1);}
   if(t==='X'&&S.chests[CUR+':'+x+','+y])return A.tiles.Xo;
+  if((t==='B'||t==='R')&&MAP_THEME[CUR])return A.tiles[t+MAP_THEME[CUR]];
   return A.tiles[t]||A.tiles.G0;
 }
 function renderMap(){
@@ -3820,6 +3850,17 @@ function renderMap(){
     const t=tileAt(x,y);
     if(t===null)continue;
     ctx.drawImage(tileImg(t,x,y),Math.round(x*TILE-cam.cx),Math.round(y*TILE-cam.cy));
+  }
+  // 물 타일 물결 애니메이션 (강·분수)
+  for(let y=y0;y<=y0+VH;y++)for(let x=x0;x<=x0+VW;x++){
+    if(tileAt(x,y)!=='M')continue;
+    const sx=Math.round(x*TILE-cam.cx),sy=Math.round(y*TILE-cam.cy);
+    const ph=animT/600+x*0.55+y*0.4;
+    ctx.fillStyle='rgba(200,230,255,'+(0.10+0.07*Math.sin(ph))+')';
+    const yy=(Math.floor(animT/130+x*3+y*2)%16);
+    ctx.fillRect(sx+2,sy+yy,11,1);
+    ctx.fillStyle='rgba(255,255,255,'+(0.06+0.05*Math.sin(ph*1.7+1))+')';
+    ctx.fillRect(sx+5,sy+((yy+8)%16),6,1);
   }
   for(const n of (NPCS[CUR]||[])){
     if(n.cond&&!n.cond())continue;
@@ -3835,6 +3876,19 @@ function renderMap(){
   }
   if(CUR==='stacks'){
     ctx.fillStyle='rgba(14,10,30,.34)';ctx.fillRect(0,0,256,192);
+  }
+  // 지역 환경 파티클 (에셋 0 — 절차적)
+  const reg=MAP_THEME[CUR];
+  if(reg===1&&!['union1','union2','union3','union4','prelim','asianlib','bookstore','dorm'].includes(CUR)){
+    ctx.fillStyle='rgba(255,255,255,.7)'; // 일리노이 눈발
+    for(let i=0;i<28;i++){const px2=(i*53+(animT/40+i*7))%256,py2=((i*97+animT/22)%200);ctx.fillRect(px2|0,py2|0,1+(i%2),1+(i%2));}
+  }else if(reg===2&&['hsq','newbury','charles','longwood'].includes(CUR)){
+    ctx.fillStyle='rgba(216,140,80,.6)'; // 보스턴 낙엽
+    for(let i=0;i<12;i++){const px2=((i*83+animT/55)%260)-4,py2=((i*61+animT/30+Math.sin(animT/300+i)*10)%200);ctx.fillRect(px2|0,py2|0,2,2);}
+  }
+  if(CUR==='campus'&&S.night){
+    for(let i=0;i<10;i++){const a=0.3+0.3*Math.sin(animT/300+i*1.3);ctx.fillStyle='rgba(180,255,140,'+a+')';
+      const px2=((i*101+Math.sin(animT/500+i)*30)%256),py2=((i*67+Math.cos(animT/400+i)*20)%170)+10;ctx.fillRect(px2|0,py2|0,2,2);}
   }
   if(toast&&performance.now()-toastT<1600){
     const a=Math.min(1,(1600-(performance.now()-toastT))/400);

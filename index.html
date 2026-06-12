@@ -1544,9 +1544,10 @@ function pressB(){
 }
 // ============ 포커스 메뉴 ============
 let menuBtns=[],menuIdx=0,menuCancel=null;
-function bindBtns(container,cancelFn){
+function bindBtns(container,cancelFn,focusIdx){
   menuBtns=[...container.querySelectorAll('button.gbtn')];
-  menuIdx=menuBtns.findIndex(b=>!b.disabled);if(menuIdx<0)menuIdx=0;
+  if(focusIdx!=null&&menuBtns[focusIdx]&&!menuBtns[focusIdx].disabled)menuIdx=focusIdx;
+  else{menuIdx=menuBtns.findIndex(b=>!b.disabled);if(menuIdx<0)menuIdx=0;}
   menuCancel=cancelFn||null;setFocus();
 }
 function setFocus(){menuBtns.forEach((b,i)=>{b.classList.toggle('focused',i===menuIdx);if(i===menuIdx&&b.scrollIntoView)b.scrollIntoView({block:'nearest'});});}
@@ -1556,7 +1557,7 @@ function menuKey(k){
   if(['ArrowLeft','ArrowUp','a','w'].includes(k)){let g=0;do{menuIdx=(menuIdx-1+menuBtns.length)%menuBtns.length;}while(menuBtns[menuIdx].disabled&&++g<20);setFocus();}
 }
 function clickFocused(){const b=menuBtns[menuIdx];if(b&&!b.disabled)b.click();}
-function openMenu(msg,items,cancelFn){
+function openMenu(msg,items,cancelFn,focusIdx){
   if(MODE==='map')MODE='menu';
   $('menuMsg').innerHTML=msg;
   const box=$('menuBtns');box.innerHTML='';
@@ -1566,7 +1567,7 @@ function openMenu(msg,items,cancelFn){
     b.addEventListener('click',()=>{if(!b.disabled){sfx.ok();it.fn();}});
     box.appendChild(b);
   });
-  bindBtns(box,cancelFn);
+  bindBtns(box,cancelFn,focusIdx);
   $('menuBox').style.display='block';
 }
 function closeMenu(){$('menuBox').style.display='none';$('menuBtns').innerHTML='';menuBtns=[];menuCancel=null;}
@@ -3111,8 +3112,8 @@ function bmsg(text,ms=720){return new Promise(res=>{
   $('menuMsg').innerHTML=text;$('menuBox').style.display='block';
   setTimeout(res,Math.max(16,ms/SPEED));
 });}
-function bchoice(msg,items,cancelable){return new Promise(res=>{
-  openMenu(msg,items.map(it=>({label:it.label,disabled:it.disabled,fn:()=>res(it.value)})),cancelable?()=>res('__cancel__'):null);
+function bchoice(msg,items,cancelable,focusIdx){return new Promise(res=>{
+  openMenu(msg,items.map(it=>({label:it.label,disabled:it.disabled,fn:()=>res(it.value)})),cancelable?()=>res('__cancel__'):null,focusIdx);
 });}
 function alive(){return B.enemies.filter(e=>e.hp>0);}
 function fxAdd(type,e){BFX.push({type,e,t0:performance.now()});}
@@ -3255,7 +3256,7 @@ async function playerCommand(){
       };
       // 계열 진화: 상위 스킬을 익히면 하위(sup 보유)는 기본 접힘 — 토글로 전체 열람 가능
       const folded=P.skills.filter(id=>SKILLS[id].sup&&P.skills.includes(SKILLS[id].sup));
-      let c;
+      let c,refocusToggle=false;
       while(true){
         const acts=[{label:'평타 (논박) <small>약 '+dmgRange(1)+'뎀</small>',value:'attack'}];
         P.skills.forEach(id=>{
@@ -3268,8 +3269,10 @@ async function playerCommand(){
         });
         if(folded.length)acts.push({label:SHOW_ALL_SK?'▲ 계승된 스킬 접기 (−'+folded.length+')':'▼ 모든 스킬 보기 (+'+folded.length+')',value:'__togglesk__'});
         acts.push({label:'← 뒤로',value:'__cancel__'});
-        c=await bchoice('어떤 수로 갈까? <span style="color:#aab;font-size:11px">(예상뎀은 첫 번째 적 기준 · 크리티컬 제외)</span>',acts,true);
-        if(c==='__togglesk__'){SHOW_ALL_SK=!SHOW_ALL_SK;continue;}
+        // 토글 직후엔 이 빌드의 토글 버튼(끝에서 2번째)에 포커스를 고정 — 평타로 튕겨 오발하지 않게
+        const focusIdx=(refocusToggle&&folded.length)?acts.length-2:null;refocusToggle=false;
+        c=await bchoice('어떤 수로 갈까? <span style="color:#aab;font-size:11px">(예상뎀은 첫 번째 적 기준 · 크리티컬 제외)</span>',acts,true,focusIdx);
+        if(c==='__togglesk__'){SHOW_ALL_SK=!SHOW_ALL_SK;refocusToggle=true;continue;}
         break;
       }
       if(c==='__cancel__')continue;

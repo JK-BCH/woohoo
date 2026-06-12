@@ -2,7 +2,7 @@
 
 > 대학원생 성장 RPG. 쯔꾸루 감성, **단일 index.html**(바닐라 JS + Canvas, 외부 에셋 0).
 > 이 문서 하나로 아키텍처·컨벤션·완료 내역·남은 작업·함정을 모두 파악할 수 있게 작성했다.
-> 함께 인계되는 파일: `index.html`(**배포본 v2.0 — 1·2·3장 본편 완결**, 작업본 통합 완료), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `grad_school_rpg_balancing.xlsx`(밸런스 시트), `README.md`/`CHANGELOG.md`(배포 리포용).
+> 함께 인계되는 파일: `index.html`(**배포본 v2.0 — 1·2·3장 본편 완결**, 작업본 통합 완료), `gen_maps.py`(맵 생성·검증), `verify.js`(8축 통합 검증), `chapter3_boston_design.md`(3장 설계서), `README.md`/`CHANGELOG.md`(배포 리포용). (밸런스 시트 `grad_school_rpg_balancing.xlsx`는 리포 미포함 — 시뮬 스크립트로 재현)
 
 ---
 

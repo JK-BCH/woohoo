@@ -295,18 +295,18 @@ const ITEMS={
 const SKILLS={
   gyeokmul:{id:'gyeokmul',name:'격물치지',mp:6,lv:2,desc:'사물을 파고든다 — 단일 ×1.8 + 약점 노출(받는 피해 +20%, 3턴)',brief:'단일 ×1.8+약점'},
   geogyeong:{id:'geogyeong',name:'부동심(不動心)',mp:4,lv:3,desc:'흔들리지 않는 마음 — 방어 ×2 (3턴)',brief:'방어 ×2 (3턴)'},
-  gungri:{id:'gungri',name:'온고지신(溫故知新)',mp:0,lv:4,desc:'옛 기록을 익혀 새 힘을 — 논리(MP) +8 + 간이 스캔',brief:'MP +8 + 스캔'},
+  gungri:{id:'gungri',name:'온고지신(溫故知新)',mp:0,lv:4,desc:'옛 기록을 익혀 새 힘을 — 논리(MP) +8 + 간이 스캔',brief:'MP +8 + 스캔',sup:'susin'},
   gakju:{id:'gakju',name:'술이부작(述而不作)',mp:5,lv:5,desc:'경전 인용 태세 — 받는 공격 1회 무효 + 1.5배 반격',brief:'1회 무효+반격'},
   sadan:{id:'sadan',name:'사단지심(四端之心)',mp:8,lv:6,desc:'측은·수오·사양·시비 — 무작위 대상 정확히 4연타 ×0.55',brief:'4연타 ×0.55'},
   igi:{id:'igi',name:'치국평천하(治國平天下)',mp:12,lv:8,desc:'천하를 다스려 기세를 꺾는다 — 전체 ×1.0 + 적 전체 논증력 −15%(2턴), 회피 불가',brief:'전체+ATK디버프'},
-  jihaeng:{id:'jihaeng',name:'지행합일(知行合一)',mp:10,lv:11,desc:'앎이 곧 일격 — 단일 ×2.2 (최대 화력)',brief:'단일 ×2.2'},
+  jihaeng:{id:'jihaeng',name:'지행합일(知行合一)',mp:10,lv:11,desc:'앎이 곧 일격 — 단일 ×2.2 (최대 화력)',brief:'단일 ×2.2',sup:'bakhak'},
   silsa:{id:'silsa',name:'실사구시(實事求是)',mp:0,lv:12,desc:'사실로 못 박는다 — 대상 약점 노출 + 막기 봉인(3턴) + 정밀 스캔',brief:'약점+가드봉인'},
   ilgwan:{id:'ilgwan',name:'일이관지(一以貫之)',mp:0,lv:13,desc:'현재 MP의 절반을 쏟아붓는 단 한 번의 관통 — 소모 MP에 비례해 강력 (배율 최대 ×4)',brief:'MP½ 비례 한방'},
-  haeche:{id:'haeche',name:'해체신서(解體新書)',mp:12,lv:14,desc:'구조를 해부 — 단일 ×1.8, 방어·막기 모두 무시',brief:'×1.8 방어무시'},
+  haeche:{id:'haeche',name:'해체신서(解體新書)',mp:12,lv:14,desc:'구조를 해부 — 단일 ×1.8, 방어·막기 모두 무시',brief:'×1.8 방어무시',sup:'hwalyeon'},
   gyeongse:{id:'gyeongse',name:'경세치용(經世致用)',mp:10,lv:16,desc:'배움을 현실의 힘으로 — 논증력 +25% (3턴)',brief:'ATK +25%(3턴)'},
-  dongdo:{id:'dongdo',name:'동도서기(東道西器)',mp:18,lv:18,desc:'동서 합력의 대기술 — 전체 ×1.6 순수 화력, 회피 불가',brief:'전체 ×1.6'},
+  dongdo:{id:'dongdo',name:'동도서기(東道西器)',mp:18,lv:18,desc:'동서 합력의 대기술 — 전체 ×1.6 순수 화력, 회피 불가',brief:'전체 ×1.6',sup:'beopgo'},
   susin:{id:'susin',name:'수신제가(修身齊家)',mp:0,lv:21,desc:'먼저 나를 다스린다 — 자신의 모든 디버프 해제 + 논리(MP) +12',brief:'디버프 해제+MP12'},
-  bakhak:{id:'bakhak',name:'박학심문(博學審問)',mp:14,lv:24,desc:'넓게 배우고 깊이 따진다 — 단일 ×2.6',brief:'단일 ×2.6'},
+  bakhak:{id:'bakhak',name:'박학심문(博學審問)',mp:14,lv:24,desc:'넓게 배우고 깊이 따진다 — 단일 ×2.6',brief:'단일 ×2.6',sup:'hwalyeon'},
   beopgo:{id:'beopgo',name:'법고창신(法古創新)',mp:16,lv:27,desc:'옛것을 본받아 새것을 연다 — 전체 ×1.3 + 적 전체 약점 노출(2턴), 회피 불가',brief:'전체+약점노출'},
   hwalyeon:{id:'hwalyeon',name:'활연관통(豁然貫通)',mp:20,lv:30,desc:'문득 모든 것이 꿰뚫린다 — 단일 ×3.0, 방어·막기 무시',brief:'×3.0 방어무시'}
 };
@@ -454,6 +454,7 @@ let MODE='title';
 // ============ 유틸 ============
 const $=id=>document.getElementById(id);
 let SPEED=1;try{if(localStorage.getItem('gmcz_speed')==='2')SPEED=2;}catch(e){}
+let SHOW_ALL_SK=false;   // 계열 진화 — 계승된 하위 스킬을 전투 메뉴에 모두 펼칠지 (세션 한정, 세이브 불필요)
 const ADMIN=(()=>{try{return /[?&]admin\b/.test(location.search);}catch(e){return false;}})();
 const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(16,ms/SPEED)));
 const fmt=n=>'₩'+n.toLocaleString('ko-KR');
@@ -2760,7 +2761,7 @@ function fmView(view){
       '<tr><td>마감력 (SPD)</td><td>'+P.spd+'</td></tr>'+
       '<tr><td>통찰 (LUK)</td><td>'+P.luk+' <span style="color:#aab">(크리티컬 '+P.luk+'%)</span></td></tr>'+
       '<tr><td>소지금</td><td>'+fmt(P.gold)+'</td></tr>'+
-      '<tr><td>스킬</td><td>'+(P.skills.length?P.skills.map(s=>SKILLS[s].name+' <span style="color:#aab;font-size:11px">'+SKILLS[s].desc+'</span>').join('<br>'):'(아직 없음 — Lv2부터 습득)')+'</td></tr>'+
+      '<tr><td>스킬</td><td>'+(P.skills.length?P.skills.map(s=>SKILLS[s].name+' <span style="color:#aab;font-size:11px">'+SKILLS[s].desc+'</span>'+(P.skills.includes(SKILLS[s].sup)?' <span style="color:#778;font-size:11px">⤷ '+SKILLS[SKILLS[s].sup].name+' 계승(전투 메뉴 접힘)</span>':'')).join('<br>'):'(아직 없음 — Lv2부터 습득)')+'</td></tr>'+
       '<tr><td>열쇠 아이템</td><td>'+([S.card?'24시간 출입카드':null,S.stackKey?'서고 열쇠':null].filter(Boolean).join(' · ')||'(없음)')+'</td></tr>'+
       '<tr><td>전투 기록</td><td>슬라임 '+S.slimeKills+' · 정령 '+S.spiritKills+' · 채점 '+S.gradeRuns+'회 · 현타 '+S.hyunta+'회</td></tr>'+
       '</table><br><div class="btnrow">'+back+'</div>';
@@ -3251,15 +3252,24 @@ async function playerCommand(){
         else txt+=' · '+s.brief;
         return txt;
       };
-      const acts=[{label:'평타 (논박) <small>약 '+dmgRange(1)+'뎀</small>',value:'attack'}];
-      P.skills.forEach(id=>{
-        const s=SKILLS[id];
-        const mute=P.silence>0;
-        const noMp=id==='ilgwan'?ilgwanSpend()<5:P.mp<s.mp;
-        acts.push({label:s.name+' <small>'+(mute&&id!=='susin'?'침묵 <span style="color:#56d364">(수신제가로 해제 가능)</span>':info(id))+'</small>',value:'sk_'+id,disabled:id==='susin'?false:(mute||noMp)});
-      });
-      acts.push({label:'← 뒤로',value:'__cancel__'});
-      const c=await bchoice('어떤 수로 갈까? <span style="color:#aab;font-size:11px">(예상뎀은 첫 번째 적 기준 · 크리티컬 제외)</span>',acts,true);
+      // 계열 진화: 상위 스킬을 익히면 하위(sup 보유)는 기본 접힘 — 토글로 전체 열람 가능
+      const folded=P.skills.filter(id=>SKILLS[id].sup&&P.skills.includes(SKILLS[id].sup));
+      let c;
+      while(true){
+        const acts=[{label:'평타 (논박) <small>약 '+dmgRange(1)+'뎀</small>',value:'attack'}];
+        P.skills.forEach(id=>{
+          if(!SHOW_ALL_SK&&folded.includes(id))return;
+          const s=SKILLS[id];
+          const mute=P.silence>0;
+          const noMp=id==='ilgwan'?ilgwanSpend()<5:P.mp<s.mp;
+          acts.push({label:s.name+' <small>'+(mute&&id!=='susin'?'침묵 <span style="color:#56d364">(수신제가로 해제 가능)</span>':info(id))+'</small>',value:'sk_'+id,disabled:id==='susin'?false:(mute||noMp)});
+        });
+        if(folded.length)acts.push({label:SHOW_ALL_SK?'▲ 계승된 스킬 접기 (−'+folded.length+')':'▼ 모든 스킬 보기 (+'+folded.length+')',value:'__togglesk__'});
+        acts.push({label:'← 뒤로',value:'__cancel__'});
+        c=await bchoice('어떤 수로 갈까? <span style="color:#aab;font-size:11px">(예상뎀은 첫 번째 적 기준 · 크리티컬 제외)</span>',acts,true);
+        if(c==='__togglesk__'){SHOW_ALL_SK=!SHOW_ALL_SK;continue;}
+        break;
+      }
       if(c==='__cancel__')continue;
       const targeted={attack:'attack',sk_gyeokmul:'gyeokmul',sk_gungri:'gungri',sk_jihaeng:'jihaeng',sk_silsa:'silsa',sk_haeche:'haeche',sk_ilgwan:'ilgwan',sk_bakhak:'bakhak',sk_hwalyeon:'hwalyeon'};
       if(targeted[c]){
@@ -4042,6 +4052,8 @@ async function gainLevels(){
       if(SKILLS[id].lv===P.lv&&!P.skills.includes(id)){
         P.skills.push(id);
         await bmsg('『주자어류』 새 장이 펼쳐졌다 — 스킬 <b>'+SKILLS[id].name+'</b> 습득!');
+        const inh=P.skills.filter(k=>SKILLS[k].sup===id);
+        if(inh.length)await bmsg('<small style="color:#aab">'+inh.map(k=>SKILLS[k].name).join(' · ')+'의 가르침이 <b>'+SKILLS[id].name+'</b>(으)로 계승되었다 — 전투 메뉴에서 접힌다. (「모든 스킬 보기」로 계속 사용 가능)</small>');
       }
     }
   }

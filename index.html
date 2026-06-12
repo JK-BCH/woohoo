@@ -67,9 +67,7 @@
     <div id="title">
       <h1>격물치지</h1>
       <div class="sub">— 어느 대학원생의 모험 · v2.9 —<br><br>
-        이동: 방향키/WASD 또는 가상패드<br>
-        결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
-        안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
+        이동: 방향키/WASD · 결정: <b>Z</b> · 취소/메뉴: <b>X</b></div>
       <div id="titleBtns" style="display:flex;flex-direction:column;gap:8px;align-items:center;"></div>
     </div>
   </div>
@@ -296,14 +294,14 @@ const SKILLS={
   gyeokmul:{id:'gyeokmul',name:'격물치지',mp:6,lv:2,desc:'사물을 파고든다 — 단일 ×1.8 + 약점 노출(받는 피해 +20%, 3턴)',brief:'단일 ×1.8+약점'},
   geogyeong:{id:'geogyeong',name:'부동심(不動心)',mp:4,lv:3,desc:'흔들리지 않는 마음 — 방어 ×2 (3턴)',brief:'방어 ×2 (3턴)'},
   gungri:{id:'gungri',name:'온고지신(溫故知新)',mp:0,lv:4,desc:'옛 기록을 익혀 새 힘을 — 논리(MP) +8 + 간이 스캔',brief:'MP +8 + 스캔',sup:'susin'},
-  gakju:{id:'gakju',name:'술이부작(述而不作)',mp:5,lv:5,desc:'경전 인용 태세 — 받는 공격 1회 무효 + 1.5배 반격',brief:'1회 무효+반격'},
-  sadan:{id:'sadan',name:'사단지심(四端之心)',mp:8,lv:6,desc:'측은·수오·사양·시비 — 무작위 대상 정확히 4연타 ×0.55',brief:'4연타 ×0.55'},
+  gakju:{id:'gakju',name:'술이부작(述而不作)',mp:3,lv:5,desc:'경전 인용 태세 — 받는 공격 1회 무효 + 2배 반격(약점 노출 동반), 연속 사용 불가',brief:'무효+강반격'},
+  sadan:{id:'sadan',name:'사단지심(四端之心)',mp:8,lv:6,desc:'측은·수오·사양·시비 — 무작위 4연타 ×0.55, 타격마다 약화(ATK↓/약점/SPD↓/막기봉인)',brief:'4연타+약화'},
   igi:{id:'igi',name:'치국평천하(治國平天下)',mp:12,lv:8,desc:'천하를 다스려 기세를 꺾는다 — 전체 ×1.0 + 적 전체 논증력 −15%(2턴), 회피 불가',brief:'전체+ATK디버프'},
   jihaeng:{id:'jihaeng',name:'지행합일(知行合一)',mp:10,lv:11,desc:'앎이 곧 일격 — 단일 ×2.2 (최대 화력)',brief:'단일 ×2.2',sup:'bakhak'},
   silsa:{id:'silsa',name:'실사구시(實事求是)',mp:0,lv:12,desc:'사실로 못 박는다 — 대상 약점 노출 + 막기 봉인(3턴) + 정밀 스캔',brief:'약점+가드봉인'},
   ilgwan:{id:'ilgwan',name:'일이관지(一以貫之)',mp:0,lv:13,desc:'현재 MP의 절반을 쏟아붓는 단 한 번의 관통 — 소모 MP에 비례해 강력 (배율 최대 ×4)',brief:'MP½ 비례 한방'},
   haeche:{id:'haeche',name:'해체신서(解體新書)',mp:12,lv:14,desc:'구조를 해부 — 단일 ×1.8, 방어·막기 모두 무시',brief:'×1.8 방어무시',sup:'hwalyeon'},
-  gyeongse:{id:'gyeongse',name:'경세치용(經世致用)',mp:10,lv:16,desc:'배움을 현실의 힘으로 — 논증력 +25% (3턴)',brief:'ATK +25%(3턴)'},
+  gyeongse:{id:'gyeongse',name:'경세치용(經世致用)',mp:10,lv:16,desc:'배움을 현실의 힘으로 — 논증력 +25% (4턴, 술 기운과 중첩)',brief:'ATK+25%(4턴)·중첩'},
   dongdo:{id:'dongdo',name:'동도서기(東道西器)',mp:18,lv:18,desc:'동서 합력의 대기술 — 전체 ×1.6 순수 화력, 회피 불가',brief:'전체 ×1.6',sup:'beopgo'},
   susin:{id:'susin',name:'수신제가(修身齊家)',mp:0,lv:21,desc:'먼저 나를 다스린다 — 자신의 모든 디버프 해제 + 논리(MP) +12',brief:'디버프 해제+MP12'},
   bakhak:{id:'bakhak',name:'박학심문(博學審問)',mp:14,lv:24,desc:'넓게 배우고 깊이 따진다 — 단일 ×2.6',brief:'단일 ×2.6',sup:'hwalyeon'},
@@ -438,7 +436,7 @@ const ENEMY_DB={
 // ============ 상태 ============
 const P={lv:1,xp:0,maxhp:50,hp:50,maxmp:20,mp:20,atk:10,def:5,spd:8,luk:5,
   gold:10000,inv:{soju:2,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0,pappy:0,ramen:0,nightshift:0},skills:[],weapon:'pen',x:19,y:12,fx:19*TILE,fy:12*TILE,
-  dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,counter:false,hangover:false,slow:0,mpLeak:0,confuse:0,overwork:0};
+  dir:'down',moving:false,mt:0,tx:19,ty:12,buffGyeong:0,silence:0,debuffAtk:0,buffAtk:0,buffGse:0,counter:false,gakjuCd:0,hangover:false,slow:0,mpLeak:0,confuse:0,overwork:0};
 const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0,
   mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
@@ -2918,7 +2916,7 @@ function applySnapshot(d){
   Object.assign(P,d.P);P.skills=[...d.P.skills];P.weapon=d.P.weapon||'pen';
   P.inv=Object.assign({soju:0,beer:0,makgeolli:0,poktanju:0,miller:0,yuengling:0,barolo:0,barbaresco:0,buffalo:0,stagg:0,wellerfp:0,banchan:0,pappy:0,ramen:0,nightshift:0},d.P.inv);
   P.tx=P.x;P.ty=P.y;P.fx=P.x*TILE;P.fy=P.y*TILE;P.moving=false;
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.buffGse=0;P.counter=false;P.gakjuCd=0;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   const def={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,card:0,stackKey:0,golem:0,hoesik:0,night:0,gradeRuns:0,chests:{},olli:0,kwai:0,charm:0,jkrare:0,boss2:0,debugMax:0,ch2first:0,jkkills:0,jkstag:0,jkweller:0,union:0,postdocQ:0,minseo:0,coffees:{},cafeStamp:0,bansae:0,saryo:0,bookQ:0,scanboost:0,encDown:0,usbSave:0,libboss:0,ch3first:0,paper3:0,boss3:0,
     mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
     matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
@@ -3051,7 +3049,7 @@ async function revDefeat(){
   await bmsg('<b style="color:#f09595">리비전의 무게에 짓눌렸다…</b>',900);
   await bmsg('수정 요청은 끝없이 밀려오고, 정신이 아득해진다.',900);
   P.hp=P.maxhp;P.mp=P.maxmp;
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.buffGse=0;P.counter=false;P.gakjuCd=0;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   closeMenu();B=null;BFX.length=0;MODE='map';updateHud();
   showDialog('',['…정신을 차리니 리비전의 문 앞이다.','이번 회차 '+cleared+'층 돌파 — <b style="color:#c8a0f0">심사 포인트 +'+out+'</b> (보유 '+S.revPoints+'점)','소지품은 그대로다. 다음엔 더 깊이.']);
 }
@@ -3155,7 +3153,7 @@ async function battleLoop(){
     const order=[{p:true,spd:pSpdNow()},...alive().map(e=>({e,spd:eSpdNow(e)}))].sort((a,b)=>b.spd-a.spd);
     for(const o of order){
       if(B.over)break;
-      if(o.p){if(act.type!=='run')await playerAct(act);}
+      if(o.p){if(act.type!=='run')await playerAct(act);if(P.hp<=0)return defeat();}
       else if(o.e.hp>0){await enemyAct(o.e);if(P.hp<=0)return defeat();}
       if(!alive().length)break;
     }
@@ -3176,11 +3174,13 @@ function roundEnd(){
   if(S.chests['union4:11,4']&&P.mp<P.maxmp){P.mp=Math.min(P.maxmp,P.mp+5);updateHud();}
   if(P.buffGyeong>0)P.buffGyeong--;
   if(P.buffAtk>0)P.buffAtk--;
+  if(P.buffGse>0)P.buffGse--;
   if(P.debuffAtk>0)P.debuffAtk--;
   if(P.silence>0)P.silence--;
   if(P.slow>0)P.slow--;
   if(P.confuse>0)P.confuse--;
   if(P.mpLeak>0){P.mp=Math.max(0,P.mp-6);P.mpLeak--;updateHud();}
+  if(P.gakjuCd>0)P.gakjuCd--;
   if(S.bell){if(P.slow>0)P.slow--;if(P.confuse>0)P.confuse--;if(P.silence>0)P.silence--;if(P.mpLeak>0)P.mpLeak--;} // 루카스의 방울: 디버프 지속 절반
   P.counter=false;
   if(B){
@@ -3198,7 +3198,7 @@ async function bossLoop(){
     const order=[{p:true,spd:pSpdNow()},...alive().map(e=>({e,spd:eSpdNow(e)}))].sort((a,b)=>b.spd-a.spd);
     for(const o of order){
       if(B.over)break;
-      if(o.p)await playerAct(act);
+      if(o.p){await playerAct(act);if(P.hp<=0)return defeat();}
       else if(o.e.hp>0){await enemyAct(o.e);if(P.hp<=0)return defeat();}
       if(!alive().length)break;
     }
@@ -3227,7 +3227,8 @@ async function playerCommand(){
     const tags=[];
     if(P.buffGyeong>0)tags.push('<span style="color:#7fc4ff">거경 '+P.buffGyeong+'턴</span>');
     if(P.debuffAtk>0)tags.push('<span style="color:#f0a0a0">기죽음 ATK↓</span>');
-    if(P.buffAtk>0)tags.push('<span style="color:#ffd866">경세 ATK↑ '+P.buffAtk+'턴</span>');
+    if(P.buffAtk>0)tags.push('<span style="color:#ffd866">투지 ATK↑ '+P.buffAtk+'턴</span>');
+    if(P.buffGse>0)tags.push('<span style="color:#ffd866">경세 ATK↑ '+P.buffGse+'턴</span>');
     if(P.silence>0)tags.push('<span style="color:#f0d080">침묵(스킬 불가)</span>');
     if(P.slow>0)tags.push('<span style="color:#9cc4ea">둔화 SPD↓ '+P.slow+'턴</span>');
     if(P.mpLeak>0)tags.push('<span style="color:#c8a0f0">MP누수 −6/턴 '+P.mpLeak+'턴</span>');
@@ -3262,7 +3263,8 @@ async function playerCommand(){
           const s=SKILLS[id];
           const mute=P.silence>0;
           const noMp=id==='ilgwan'?ilgwanSpend()<5:P.mp<s.mp;
-          acts.push({label:s.name+' <small>'+(mute&&id!=='susin'?'침묵 <span style="color:#56d364">(수신제가로 해제 가능)</span>':info(id))+'</small>',value:'sk_'+id,disabled:id==='susin'?false:(mute||noMp)});
+          const cdGakju=id==='gakju'&&P.gakjuCd>0;
+          acts.push({label:s.name+' <small>'+(mute&&id!=='susin'?'침묵 <span style="color:#56d364">(수신제가로 해제 가능)</span>':(cdGakju?'재정비 중 — 다음 턴 가능':info(id)))+'</small>',value:'sk_'+id,disabled:id==='susin'?false:(mute||noMp||cdGakju)});
         });
         if(folded.length)acts.push({label:SHOW_ALL_SK?'▲ 계승된 스킬 접기 (−'+folded.length+')':'▼ 모든 스킬 보기 (+'+folded.length+')',value:'__togglesk__'});
         acts.push({label:'← 뒤로',value:'__cancel__'});
@@ -3306,7 +3308,7 @@ async function pickTarget(m){
   items.push({label:'← 뒤로',value:'__cancel__'});
   return await bchoice('누구를 논파할까?',items,true);
 }
-function atkNow(){return Math.floor((P.atk+wpn().atk)*(P.debuffAtk>0?0.85:1)*(P.buffAtk>0?1.25:1));}
+function atkNow(){return Math.floor((P.atk+wpn().atk)*(P.debuffAtk>0?0.85:1)*(1+(P.buffAtk>0?0.25:0)+(P.buffGse>0?0.25:0)));}
 function dmgRange(mult,ig,tgt){
   const a=atkNow();
   const t=tgt||(B?B.enemies.filter(e=>e.hp>0)[0]:null);
@@ -3376,6 +3378,7 @@ async function playerAct(act){
     await bmsg(t.name+'에게 '+d+'의 데미지!'+(cfg.pierce?' <span style="color:#9fd">(방어·막기 무시)</span>':'')+(act.type==='ilgwan'?' <span style="color:#9fd">(×'+cfg.mult.toFixed(1)+' 관통)</span>':'')+(gq.g?' <span style="color:#aab">(상대가 막아냈다 — 절반)</span>':'')+(r.crit?' <b style="color:#ffd866">크리티컬!</b>':''));
     if(act.type==='gyeokmul'&&t.hp>0){t.weak=S.scanboost?4:3;await bmsg(t.name+'의 논리적 약점이 드러났다! (받는 피해 증가'+(S.scanboost?' · 돋보기 연장':'')+')');}
     if(t.hp<=0){fxAdd('pop',t);await bmsg(t.name+'을(를) 해치웠다!');}
+    else await fieldbossRetal(t);
   }
   else if(act.type==='geogyeong'){
     P.mp-=SKILLS.geogyeong.mp;P.buffGyeong=3;updateHud();
@@ -3430,30 +3433,33 @@ async function playerAct(act){
     await bmsg('<span style="color:#ffd866">약점 노출(+20% 피해)</span> + <span style="color:#9fd">막기 봉인</span> (3턴)!');
   }
   else if(act.type==='gyeongse'){
-    P.mp-=SKILLS.gyeongse.mp;P.buffAtk=3;updateHud();
+    P.mp-=SKILLS.gyeongse.mp;P.buffGse=4;updateHud();
     fxAdd('shield',null);sfx.book();
-    await bmsg('<b>경세치용(經世致用)!</b> 배움을 현실의 힘으로 — 논증력 +25% (3턴)');
+    await bmsg('<b>경세치용(經世致用)!</b> 배움을 현실의 힘으로 — 논증력 +25% (4턴)'+(P.buffAtk>0?' <b style="color:#ffd866">술 기운과 합쳐져 +50%!</b>':' <span style="color:#aab">(술 기운과 중첩 가능)</span>'));
   }
   else if(act.type==='gakju'){
-    P.mp-=SKILLS.gakju.mp;P.counter=true;updateHud();
+    P.mp-=SKILLS.gakju.mp;P.counter=true;P.gakjuCd=2;updateHud();
     fxAdd('paper',null);sfx.shield();
-    await bmsg('<b>술이부작(述而不作)</b> — 인용 태세! 이번 턴, 들어오는 지적을 경전으로 받아친다.');
+    await bmsg('<b>술이부작(述而不作)</b> — 인용 태세! 이번 턴, 들어오는 지적을 경전으로 받아친다. <span style="color:#aab">(다음 턴은 재정비)</span>');
   }
   else if(act.type==='sadan'){
     P.mp-=SKILLS.sadan.mp;updateHud();
     bmsg('<b>사단지심(四端之心)!</b> 네 가지 마음이 쏟아진다!',1);
-    const SADAN=['측은지심','수오지심','사양지심','시비지심'];
+    // 리워크: 타격마다 사단(四端)에 대응하는 약화 1종 부여 (2틱) — 디버프 살포기 정체성
+    const SADAN=[['측은지심','debAtk','<span style="color:#7fc4ff">논증력 −15%</span>'],['수오지심','weak','<span style="color:#ffd866">약점 노출</span>'],['사양지심','debSpd','<span style="color:#9cc4ea">속도 −25%</span>'],['시비지심','noGuard','<span style="color:#9fd">막기 봉인</span>']];
     const hits=4;
     for(let h=0;h<hits;h++){
       const a=alive();if(!a.length)break;
       const t=a[Math.floor(Math.random()*a.length)];
       fxAdd('slash',t);sfx.slash();await sleep(220);
-      if(pMiss(t)){await bmsg(SADAN[h%4]+' — 빗나갔다!',360);continue;}
+      if(pMiss(t)){await bmsg(SADAN[h%4][0]+' — 빗나갔다!',360);continue;}
       let r=calcDmg(atkNow(),0.55,t.def,P.luk);let d=r.d;
       if(t.weak>0)d=Math.floor(d*1.2);
       const gq=enemyGuard(t,d);d=gq.d;
       t.hp=Math.max(0,t.hp-d);t.shake=8;t.flash=5;sfx.hit();
-      await bmsg(SADAN[h%4]+'! '+t.name+'에게 '+d+'!'+(gq.g?' (막힘)':''),360);
+      let fxTag='';
+      if(t.hp>0){const f=SADAN[h%4][1];t[f]=Math.max(t[f]||0,2);fxTag=' · '+SADAN[h%4][2];}
+      await bmsg(SADAN[h%4][0]+'! '+t.name+'에게 '+d+'!'+(gq.g?' (막힘)':'')+fxTag,360);
       if(t.hp<=0){fxAdd('pop',t);await bmsg(t.name+'을(를) 해치웠다!',420);}
     }
   }
@@ -3528,15 +3534,26 @@ async function playerAct(act){
     }
   }
 }
+async function fieldbossRetal(t){
+  // 보스 구스 — 피격 시 45% 반사 쪼기 (도전 메뉴의 「반격 주의」 기믹)
+  if(!t||t.hp<=0||t.key!=='bossgoose'||Math.random()>=0.45)return;
+  await sleep(260);
+  await eHitP(t,1.0,'보스 구스가 <b>반사적으로 쪼아 반격한다</b>! 꽈악!');
+}
 async function tryCounter(e){
   if(!P.counter)return false;
   P.counter=false;
   fxAdd('paper',null);sfx.slash();
   await bmsg(e.name+'의 공격 — <b>술이부작</b>! 「공자께서 이르시길—」 인용으로 받아쳤다!');
-  const r=calcDmg(atkNow(),1.5,e.def,P.luk);
+  const r=calcDmg(atkNow(),2.0,e.def,P.luk);
   e.hp=Math.max(0,e.hp-r.d);e.shake=10;e.flash=6;sfx.hit();
   await bmsg('반격! '+e.name+'에게 '+r.d+'의 데미지!');
   if(e.hp<=0){fxAdd('pop',e);await bmsg(e.name+'을(를) 해치웠다!');}
+  else{
+    e.weak=Math.max(e.weak||0,2);
+    await bmsg('인용이 허점을 짚었다 — <span style="color:#ffd866">'+e.name+'의 약점 노출!</span> (1턴)');
+    await fieldbossRetal(e);
+  }
   return true;
 }
 async function eHitP(e,mult,prefix,noDodge,noGuard){
@@ -3896,6 +3913,47 @@ async function enemyAct(e){
     if(hit!==null){P.mpLeak=Math.max(P.mpLeak,3);await bmsg('각성이 풀리지 않는다… <span style="color:#c8a0f0"><b>MP 누수</b></span>! (매턴 논리 −6, 3턴)');}
     return;
   }
+  // ===== 3장 필드보스: 보스 구스 — 둔화 강타 3턴 주기 + 30% 둔화 (피격 반격은 fieldbossRetal) =====
+  if(e.key==='bossgoose'){
+    if(e.tc%3===0){
+      if(await tryCounter(e))return;
+      const hit=await eHitP(e,1.25,'보스 구스의 <b>날개 폭풍</b>! 강변의 갈대가 전부 눕는다!');
+      if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('바람에 떠밀려 걸음이 무겁다… <span style="color:#9cc4ea"><b>둔화</b></span>! (SPD 저하, 2턴)');}
+      return;
+    }
+    if(Math.random()<0.3){
+      if(await tryCounter(e))return;
+      const hit=await eHitP(e,1.0,'보스 구스의 <b>위협 돌진</b>! 꽈아아악!');
+      if(hit!==null){P.slow=Math.max(P.slow,2);await bmsg('<span style="color:#9cc4ea"><b>둔화</b></span>! (SPD 저하, 2턴)');}
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,'보스 구스가 왕관 같은 볏을 세우고 들이받았다!');
+    return;
+  }
+  // ===== 3장 필드보스: 스트레스 종양 — 과로 스택 + 4턴 고정뎀 + 반피 격노 =====
+  if(e.key==='stumor'){
+    if(!e.enraged&&e.hp<e.maxhp/2){
+      e.enraged=1;e.atk=Math.floor(e.atk*1.15);e.flash=6;sfx.crash();
+      await bmsg('종양이 검붉게 부풀어 오른다 — <b>격노!</b> 「쉴 수 없잖아?」 (공격력 상승)');
+      return;
+    }
+    if(e.tc%4===0){
+      sfx.crash();P.hp=Math.max(0,P.hp-38);if(P.overwork<5)P.overwork++;updateHud();
+      await bmsg('종양: <b>「마감은… 늘어난다.」</b>',900);
+      await bmsg('피할 수 없는 중압 — <b>38</b>의 고정 데미지 + <span style="color:#f09595"><b>과로 +1</b></span>! (현재 '+P.overwork+'스택)');
+      return;
+    }
+    if(Math.random()<0.35){
+      // 떠넘기기는 공격이 아니라 부탁 — 술이부작(인용 반격)으로 받아칠 수 없다
+      const hit=await eHitP(e,0.8,'종양이 검은 촉수로 <b>업무를 떠넘긴다</b>!');
+      if(hit!==null&&P.overwork<5){P.overwork++;await bmsg('<span style="color:#f09595"><b>과로 +1</b></span>! (받는 피해 +8%/스택, 현재 ×'+P.overwork+')');}
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,0.97,'종양이 무겁게 짓눌러 왔다!');
+    return;
+  }
   // ===== 3장 중간보스: 목(目) 삼형제 =====
   if(e.key==='sangmok'){
     if(e.tc%3===0){
@@ -4155,7 +4213,7 @@ async function defeat(){
     if(br>0){P.inv[k]-=br;broken[k]=br;}
   }
   P.hp=P.maxhp;P.mp=P.maxmp;
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.buffGse=0;P.counter=false;P.gakjuCd=0;P.hangover=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   CUR='campus';
   P.x=29;P.y=16;P.tx=29;P.ty=16;P.fx=29*TILE;P.fy=16*TILE;P.dir='up';P.moving=false;
   updateHud();closeMenu();B=null;BFX.length=0;MODE='map';
@@ -4167,7 +4225,7 @@ async function defeat(){
   showDialog('',lines);
 }
 function endBattle(){
-  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.counter=false;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
+  P.buffGyeong=0;P.silence=0;P.debuffAtk=0;P.buffAtk=0;P.buffGse=0;P.counter=false;P.gakjuCd=0;P.slow=0;P.mpLeak=0;P.confuse=0;P.overwork=0;
   closeMenu();B=null;BFX.length=0;MODE='map';
 }
 // ============ 렌더 ============

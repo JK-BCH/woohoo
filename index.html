@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.7</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.8</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,11 +66,11 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.7 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.8 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
-      <button class="gbtn" id="startBtn" style="font-size:16px;padding:10px 28px;">▶ 입학</button>
+      <div id="titleBtns" style="display:flex;flex-direction:column;gap:8px;align-items:center;"></div>
     </div>
   </div>
   <div id="pads">
@@ -86,7 +86,7 @@
 "use strict";
 // ============ 맵 데이터 ============
 const MAPS={
- campus:{name:"안암 캠퍼스",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGNGGQGGZGGNGGGRRRRRRRRRRGQGGZGGNGGQGGGT","TGGTGGZGGNGGQTGBBBBBBBBBBGTZGGGGGGGGTGGT","TGGGGGGGGGGGGGGBBBBDBBBBBGGGGGGGGGGGGGGT","TGGGRRRRRRRRGGGGGGGPGGGGGGGRRRRRRRRGGGGT","TGGGBBBBBBBBGGGGGGGPGGGGGGGBBBBBBBBGGGGT","TGGGBBBDBBBBGGGGGGGPGGGGGGGBBBBDBBBGGGGT","TGGGGGGPPPPPPPPPPPPPPPPPPPPPPPPPGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGTGGGGGGGGGGGGTGGPGGGGGGGGGGGGGGGGTGGT","TGGGGGGGGGGGGTGGGGGPGGGGTGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGRRRRRGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBBBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBLBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPPPPPPPPPPPGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGTGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGTGGT","TGGGGGGGGGTGGGGGGGGPGGGTGGGGGGGGGGGGGGGT","TGGGGGGGGGAGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGGGGPPPPPPPPPPPPPPGGGGGGGGGTGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGRRRRRRRRGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGBBBBBBBBGGGGGGGGGTGGGGGGTGGGGGT","TGGTGGPGGBBBDBBBBGGGGGGGGGGGGGGGGGGGTGGT","TGGGGGPPPPPPPGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGHT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
+ campus:{name:"안암 캠퍼스",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGNGGQGGZGGNGGGRRRRRRRRRRGQGGZGGNGGQGGGT","TGGTGGZGGNGGQTGBBBBBBBBBBGTZGGGGGGGGTGGT","TGGGGGGGGGGGGGGBBBBDBBBBBGGGGGGGGGGGGGGT","TGGGRRRRRRRRGGGGGGGPGGGGGGGRRRRRRRRGGGGT","TGGGBBBBBBBBGGGGGGGPGGGGGGGBBBBBBBBGGGGT","TGGGBBBDBBBBGGGGGGGPGGGGGGGBBBBDBBBGGGGT","TGGGGGGPPPPPPPPPPPPPPPPPPPPPPPPPGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGTGGGGGGGGGGGGTGGPGGGGGGGGGGGGGGGGTGGT","TGGGGGGGGGGGGTGGGGGPGGGGTGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGRRRRRGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBBBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBLBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPPPPPPPPPPPGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGRRRRRRRGGT","TGGTGGGGGGGGGGGGGGGPGGGGGGGGGGBBBBBBBGGT","TGGGGGGGGGTGGGGGGGGPGGGTGGGGGGBBBDBBBGGT","TGGGGGGGGGAGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGGGGPPPPPPPPPPPPPPGGGGGGGGGTGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGRRRRRRRRGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGBBBBBBBBGGGGGGGGGTGGGGGGTGGGGGT","TGGTGGPGGBBBDBBBBGGGGGGGGGGGGGGGGGGGTGGT","TGGGGGPPPPPPPGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGHT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  liberal:{name:"문과대",tiles:["BBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFCCCCCCFFCCCFFFFFB","BFFFFFFFFFFFFFCCCCCB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFCCCCCCFFCCCFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBFBBBBBBBBB"]},
  library:{name:"중앙도서관 열람실",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFSFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFCCCCCFFFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFCCCCCFCCCCCFFFFFFFFFB","BFFFCCCCCFCCCCCFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBFBBBBBBBBBBBB"]},
  stacks:{name:"깊은 서고 B2",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFKFFFXFFFKFFFFFSFB","BFFFKFFFKFFFFFFFKFFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFFFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFFFFFKFFFB","BFFFFFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFFFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFFFFFKFFFFFFFKFFFB","BFKFFFFFFFFFKFFFFFFXFFFFB","BXKFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBBBBBBBBBBBBBB"]},
@@ -107,18 +107,19 @@ const MAPS={
  yenching:{name:"옌칭연구소",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFEFFFFFFFFOFB","BFFFFCFFCFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]},
  banana:{name:"바나나 라운지",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFEFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFCFFCFFCFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]},
  newbury:{name:"뉴버리 스트릿",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGRRRRRRGGQGGZGGQGGGRRRRT","TGGBBBBBBGGGGWGZGGWGGBBBBT","TGGBBBBBBGQGGGGGGGGGGBBBBT","TGTGGPGGGGGGGPGGGGPGGGGGGT","TGGGGPGGGGGGGPGGGGPGGGGGGT","TGPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGTGGGGGTGGGGGTGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTT"]},
- charles:{name:"찰스 리버",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TGGYGGGGYGGGGGYGGGGGYGGGGYGGGT","TPPPPPPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGQGGZGGQGGZGGQGGZGGGT","TGGGRRRRRRGGEGGGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGYGGGGGGYGGGGGGGGGGT","TGGGGYGGGGGGGGGGGGGGGGGGYGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
+ charles:{name:"찰스 리버",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TMMMMMMMMMMMMMMMMMMMMMMMMMMMMT","TGGYGGGGYGGGGGYGGGGGYGGGGYGGGT","TPPPPPPPPPPPPPPPPPPPPPPPPPPPPT","TGGGGGGGGGQGGZGGGGGGGGQGGZGGGT","TGQGRRRRRRGGEGZGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGBBBBBBGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGYGGGGGGYGGGGGGGGGGT","TGGGGYGGGGGGGGGGGGGGGGGGYGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  mit:{name:"MIT",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGNGGQGGZGGRRRRRRRRRRGGNGGQGGZGT","TGGNGGQGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGGGGGGGGBBBBBBBBBBGGGGGGGGGGT","TGGGTGGGGGGBBBBDBBBBBGGGGGGTGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGPPPPPPPPPPPPPPGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGT","TPPPPPPPPPPPPPPPGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGTGGGGGGGGGGGGGGGGGGGGTGGGGT","TGGGGGUGGGGGGGGGGGGGGGGGGUGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGTGGGGGGGGGGTGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  infinite:{name:"무한복도",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD","BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFFB","BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"]},
  longwood:{name:"롱우드 지역",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGNGGGGGGGGGGGPGGGGGGGGGGGGT","TGGRRRRRRRRRGGPQGRRRRRRRRRGT","TGGBBBBBBBBBGNPGGBBBBBBBBBGT","TGGBBBBBBBBBGGPGGBBBBBBBBBGT","TGGBBBBBBBBBGGPQGBBBBBBBBBGT","TGGGGGGGGGGGGNPGGGGGGGGGGGGT","TGGGGGGGGGGGGGPGGGGGGGGGGGGT","TGGGPPPPPPPPPPPPPPPPPPPPPGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGTGGGGGGGGGGGGGGGGGGGGGGGTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGTGGGGGGGTGGGGGGGTGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGGGGGGGGGT","TTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  jobhall:{name:"임용 심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
  intl1:{name:"국제관 1층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFBB","BFFFFFFFFFFBSB","BFFFFFFFFFFFFB","BFFKFFKFFKFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BXFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]},
  intl2:{name:"국제관 2층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFCFFCFFCFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BXFFFFFFFFFFFB","BBBBBBBBBBBBBB"]},
+ hum:{name:"인문대 교수동",tiles:["BBBBBBBBBBBBBBBBBBBBBB","BFFFOFFBFFKFKFBFFFFFFB","BFEFFCFBFFFFFFBFFFFFFB","BFFFFFFBFFFFFFBFCFCFCB","BFXFFFFBFFFFFFBFCFCFCB","BFFFFFFBFFFFFFBFFFFFFB","BBBBFBBBFFFFFFBBBFBBBB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBDBBBBBBBBBBB"]},
 };
 for(const id in MAPS){MAPS[id].w=MAPS[id].tiles[0].length;MAPS[id].h=MAPS[id].tiles.length;}
 let CUR='campus';
 const M=()=>MAPS[CUR];
-const RECLV={stacks:'권장 Lv4+',alley:'권장 Lv5+',quad:'권장 Lv10+',intl1:'권장 Lv10+',asianlib:'권장 Lv13+',union1:'권장 Lv14+',union2:'권장 Lv14+',union3:'권장 Lv14+',union4:'권장 Lv16+',charles:'권장 Lv20+',mit:'권장 Lv22+',infinite:'권장 Lv24+',longwood:'권장 Lv24+',intl2:'권장 Lv33+'};
+const RECLV={stacks:'권장 Lv4+',alley:'권장 Lv5+',quad:'권장 Lv10+',intl1:'권장 Lv10+',asianlib:'권장 Lv13+',union1:'권장 Lv14+',union2:'권장 Lv14+',union3:'권장 Lv14+',union4:'권장 Lv16+',charles:'권장 Lv20+',mit:'권장 Lv22+',infinite:'권장 Lv24+',longwood:'권장 Lv24+',intl2:'권장 Lv33+',hum:'권장 Lv33+'};
 const TILE=16, VW=16, VH=12;
 const SOLID={T:1,B:1,W:1,D:1,L:1,R:1,K:1,C:1,V:1,X:1,J:1,O:1,Y:1,A:1,H:1,E:1,M:1,N:1,Q:1,Z:1,U:1};
 const WALKP={
@@ -153,7 +154,8 @@ const WALKP={
   intl2:{'12,2':{to:'intl1',x:12,y:3,d:'down'}}
 };
 const DOORP={
-  campus:{'19,4':{to:'hall',x:6,y:8,d:'up'},'7,7':{to:'liberal',x:10,y:13,d:'up'},'31,7':{to:'library',x:12,y:18,d:'up'},'12,25':{to:'intl1',x:7,y:8,d:'up'}},
+  campus:{'19,4':{to:'hall',x:6,y:8,d:'up'},'7,7':{to:'liberal',x:10,y:13,d:'up'},'31,7':{to:'library',x:12,y:18,d:'up'},'12,25':{to:'intl1',x:7,y:8,d:'up'},'33,19':{to:'hum',x:10,y:12,d:'up',lock:()=>!S.boss3,msg:['인문대 교수동 — 신축 건물이다.','「교원 전용 · 외부인 출입 제한」','…언젠가, 이 문이 너를 위해 열릴 날이 올까.']}},
+  hum:{'10,13':{to:'campus',x:33,y:20,d:'down'}},
   quad:{'17,4':{to:'prelim',x:6,y:8,d:'up'},'6,10':{to:'asianlib',x:12,y:16,d:'up'},'27,10':{to:'union1',x:7,y:8,d:'up'},'11,18':{to:'dorm',x:6,y:7,d:'up'}},
   cafe:{'19,5':{to:'bookstore',x:8,y:8,d:'up'}},
   hsq:{'7,4':{to:'yenching',x:7,y:8,d:'up'},
@@ -189,7 +191,8 @@ const NPCS={
   union4:[{x:9,y:4,kind:'vgolem',cond:()=>!S.union}],
   prelim:[],
   intl1:[{x:12,y:3,kind:'staffer',cond:()=>!S.boss3}],
-  intl2:[{x:2,y:2,kind:'tenure'}]
+  intl2:[{x:2,y:2,kind:'tenure'}],
+  hum:[{x:10,y:4,kind:'colleague'},{x:12,y:9,kind:'humta'},{x:17,y:2,kind:'lectern'}]
 };
 const CHEST_DB={
   'stacks:1,18':{note:1,text:'희귀 사료 상자를 열었다!|〈고문헌 노트〉를 얻었다. 논증력(ATK)이 영구히 +3!'},
@@ -203,7 +206,8 @@ const CHEST_DB={
   'union2:12,7':{stat:{def:5},text:'스터디룸 구석의 상자를 열었다.|〈롱패딩 점퍼〉를 얻었다! 일리노이의 겨울도 끄떡없다. 철면피(DEF)가 영구히 +5!'},
   'union4:11,4':{regen:1,text:'라운지의 상자를 열었다.|〈일리니 보온 텀블러〉를 얻었다!|전투 중 매 턴, 따뜻한 커피가 논리(MP)를 5씩 데워준다.'},
   'intl1:1,7':{gold:25000,text:'학회장 구석의 상자를 열었다.|₩25,000을 얻었다. 미수령 출장비… 임자가 임자다.'},
-  'intl2:1,8':{stat:{mp:20},text:'VIP 라운지의 상자를 열었다.|〈석학의 만년필 잉크〉를 얻었다! 논리가 마르지 않는다 — 최대 MP가 영구히 +20!'}
+  'intl2:1,8':{stat:{mp:20},text:'VIP 라운지의 상자를 열었다.|〈석학의 만년필 잉크〉를 얻었다! 논리가 마르지 않는다 — 최대 MP가 영구히 +20!'},
+  'hum:2,4':{stat:{hp:30},text:'연구실 입주 선물 상자를 열었다.|〈인체공학 의자〉다! 단과대 예산으로 산 첫 가구 — 허리가, 그리고 멘탈이 펴진다.|최대 HP가 영구히 +30!'}
 };
 const ENC_DAY={rate:1/22,tiles:'G',groups:[
   {w:20,e:['slime']},{w:25,e:['slime','slime']},{w:15,e:['slime','slime','slime']},
@@ -238,6 +242,8 @@ const ENC_INTL1={rate:1/16,tiles:'F',groups:[
   {w:25,e:['confstu']},{w:20,e:['interp']},{w:20,e:['confstu','interp']},{w:15,e:['posterg']},{w:12,e:['posterg','confstu']},{w:8,e:['confstu','interp','posterg']}]};
 const ENC_INTL2={rate:1/14,tiles:'F',groups:[
   {w:30,e:['emer']},{w:25,e:['keynote']},{w:20,e:['emer','keynote']},{w:15,e:['chaired']},{w:10,e:['chaired','emer']}]};
+const ENC_HUM={rate:1/16,tiles:'F',groups:[
+  {w:28,e:['evalghost']},{w:24,e:['recpile']},{w:22,e:['meetghost']},{w:14,e:['evalghost','recpile']},{w:12,e:['meetghost','evalghost']}]};
 function encFor(){
   if(CUR==='campus')return S.night?ENC_NIGHT:ENC_DAY;
   if(CUR==='liberal')return ENC_LIB;
@@ -251,6 +257,7 @@ function encFor(){
   if(CUR==='longwood')return ENC_LW;
   if(CUR==='intl1')return ENC_INTL1;
   if(CUR==='intl2')return ENC_INTL2;
+  if(CUR==='hum')return ENC_HUM;
   if(ENC_UNION[CUR])return ENC_UNION[CUR];
   return null;
 }
@@ -414,6 +421,10 @@ const ENEMY_DB={
   emer:{key:'emer',name:'명예교수의 환영',hp:700,atk:86,def:30,spd:20,xp:800,gold:30000},
   keynote:{key:'keynote',name:'기조연설 망령',hp:650,atk:94,def:26,spd:24,xp:850,gold:32000},
   chaired:{key:'chaired',name:'석좌교수의 위엄',hp:900,atk:90,def:34,spd:18,xp:1000,gold:40000,guard:0.2},
+  evalghost:{key:'evalghost',name:'강의평가 악플 정령',hp:680,atk:88,def:26,spd:23,xp:820,gold:31000},
+  recpile:{key:'recpile',name:'추천서 마감 더미',hp:780,atk:80,def:34,spd:13,xp:840,gold:30000,guard:0.15},
+  meetghost:{key:'meetghost',name:'끝나지 않는 회의',hp:730,atk:90,def:28,spd:17,xp:880,gold:33000},
+  quizstu:{key:'quizstu',name:'질문 폭격 학부생',hp:450,atk:72,def:20,spd:19,xp:300,gold:8000},
   libghost:{key:'libghost',name:'금서 목록의 망령',hp:560,atk:50,def:18,spd:14,xp:450,gold:18000,guard:0.15},
   vgolem:{key:'vgolem',name:'폭주 자판기 골렘',hp:280,atk:40,def:18,spd:9,xp:300,gold:12000,guard:0.2},
   judge:{key:'judge',name:'심사위원',hp:180,atk:18,def:8,spd:9,xp:0,gold:0,guard:0.12},
@@ -429,7 +440,7 @@ const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
   matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
   gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
-  intlKills:0,tenureSeen:0,
+  intlKills:0,tenureSeen:0,lecture1:0,
   dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
   revPoints:0,revBest:0,revClears:0,dailyDate:'',revBuys:0,
   fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
@@ -965,6 +976,21 @@ function buildNpc(){
     px(g,4,4,3,2,'rgba(80,80,120,.6)');px(g,9,4,3,2,'rgba(80,80,120,.6)');px(g,7,5,2,1,'#445');
     px(g,12,7,2,7,'#7a5c3a');px(g,11,6,4,1,'#caa53d');    // 황금 손잡이 지팡이
   });
+  // 인문대: 동료 신임 조교수 — 단정한 재킷 + 사원증
+  A.npc.colleague=mkPerson('#3a2a22','#5a3a4a',g=>{
+    px(g,7,8,2,4,'#e8dcc0');px(g,7,11,2,1,'#caa53d');     // 사원증 목걸이
+  });
+  // 인문대: 행정조교 — 카디건 + 서류 뭉치
+  A.npc.humta=mkPerson('#2b2b33','#7a8a5a',g=>{
+    px(g,11,9,3,4,'#f4f1e6');px(g,11,10,3,1,'#aab');px(g,11,12,3,1,'#aab');
+  });
+  // 인문대: 강의 단상 (지형물 NPC)
+  {const c=mkC(16,16),g=c.getContext('2d');
+    g.drawImage(A.tiles.F,0,0);
+    px(g,3,4,10,9,'#5c3a22');px(g,3,4,10,2,'#7a4a2b');     // 단상 본체
+    px(g,4,6,8,1,'#caa53d');                                // 교표 라인
+    px(g,5,2,6,2,'#2b2b33');px(g,6,1,4,1,'#3a3a44');       // 마이크·노트북
+    A.npc.lectern=c;}
   A.npc.fisher=mkPerson('#5a4632','#3a6e5a',g=>{
     px(g,3,1,10,3,'#caa53d');px(g,2,3,12,1,'#b5923a');   // 밀짚모자
     px(g,12,2,2,12,'#7a5c3a');px(g,13,1,1,3,'#5a4226');  // 낚싯대
@@ -1351,6 +1377,38 @@ function buildEnemies(){
   chg.fillStyle='#ffd866';chg.font='bold 7px serif';chg.fillText('Chair',12,45);
   px(chg,11,48,8,4,'#101018');px(chg,23,48,8,4,'#101018');
   A.enemy.chaired=ch2;
+  // 인문대: 강의평가 악플 정령 — 별점 1개 + 떠다니는 악플 말풍선
+  const ev2=mkC(38,42),evg=ev2.getContext('2d');
+  px(evg,8,10,22,24,'rgba(90,60,120,.7)');px(evg,11,13,16,18,'rgba(120,80,160,.6)');
+  px(evg,13,16,3,3,'#ff6a6a');px(evg,22,16,3,3,'#ff6a6a');                       // 붉은 눈
+  px(evg,2,2,12,7,'rgba(244,241,230,.95)');px(evg,5,9,3,3,'rgba(244,241,230,.9)'); // 말풍선
+  evg.fillStyle='#c0392b';evg.font='bold 6px sans-serif';evg.fillText('★☆☆☆☆',3,8);
+  px(evg,25,3,11,6,'rgba(244,241,230,.85)');evg.fillStyle='#555';evg.font='5px sans-serif';evg.fillText('어려워요',26,8);
+  px(evg,12,34,4,5,'rgba(90,60,120,.5)');px(evg,22,34,4,5,'rgba(90,60,120,.5)');
+  A.enemy.evalghost=ev2;
+  // 인문대: 추천서 마감 더미 — 봉투·서류 탑 + 빨간 D-DAY 도장
+  const rp=mkC(34,42),rpg=rp.getContext('2d');
+  for(let i=0;i<6;i++){const y=36-i*6;px(rpg,5+(i%2)*2,y,24,6,i%2?'#e8dcc0':'#f4f1e6');px(rpg,5+(i%2)*2,y,24,1,'#c4b89a');}
+  px(rpg,8,6,18,8,'#f4f1e6');px(rpg,8,6,18,1,'#c4b89a');px(rpg,9,8,9,1,'#888');px(rpg,9,10,12,1,'#aaa');
+  rpg.fillStyle='#c0392b';rpg.font='bold 7px sans-serif';rpg.fillText('D-1',22,13);
+  px(rpg,12,2,3,3,'#333');px(rpg,20,2,3,3,'#333');                                // 눈
+  A.enemy.recpile=rp;
+  // 인문대: 끝나지 않는 회의 — 회의 테이블 + 안건 무한 루프
+  const mg2=mkC(40,40),mgg=mg2.getContext('2d');
+  px(mgg,4,22,32,8,'#6b4226');px(mgg,4,22,32,2,'#8a5a35');                        // 테이블
+  px(mgg,6,30,4,8,'#4a2d18');px(mgg,30,30,4,8,'#4a2d18');
+  for(let i=0;i<3;i++){px(mgg,7+i*11,12,8,9,'rgba(60,60,90,.7)');px(mgg,9+i*11,8,4,4,'rgba(232,200,168,.7)');} // 유령 참석자들
+  px(mgg,14,1,12,5,'rgba(244,241,230,.9)');mgg.fillStyle='#c0392b';mgg.font='bold 5px sans-serif';mgg.fillText('안건 ∞',15,5);
+  A.enemy.meetghost=mg2;
+  // 인문대: 질문 폭격 학부생 — 번쩍 든 손 + 물음표
+  const qs=mkC(30,40),qsg=qs.getContext('2d');
+  px(qsg,8,6,14,7,'#2b2b33');px(qsg,8,12,14,8,'#e8c8a8');
+  px(qsg,11,15,2,2,'#333');px(qsg,17,15,2,2,'#333');
+  px(qsg,6,20,18,14,'#d8553a');px(qsg,3,20,4,4,'#e8c8a8');px(qsg,23,12,4,10,'#d8553a'); // 번쩍 든 팔
+  px(qsg,24,6,4,6,'#e8c8a8');
+  qsg.fillStyle='#ffd866';qsg.font='bold 10px sans-serif';qsg.fillText('?',25,5);
+  px(qsg,9,34,5,5,'#2b2b33');px(qsg,17,34,5,5,'#2b2b33');
+  A.enemy.quizstu=qs;
   // 청중 3종 — 착석한 사람들
   function mkAud(hair,top,extra){
     const c=mkC(32,40),g=c.getContext('2d');
@@ -1596,6 +1654,7 @@ const WANDANG_IL=[
   ['잔디밭의 주황 털뭉치들? 올리와 꽈이꽈이라네.','녀석들과 자주 마주치면 좋은 일이 생긴다는 소문이야.']
 ];
 let yenMailIdx=0;
+let humIdx=0;
 // ===== 플레이버 NPC (기능 없음 — 순환 대사) =====
 const FLAVOR={
   flyerstu:{n:'전단지 학부생',d:[
@@ -1695,6 +1754,39 @@ function gamblerGame(){
 function npcTalk(kind){
   if(kind==='flyerstu'||kind==='oldprof'||kind==='sleepgrad'||kind==='cramstu'||kind==='regular'||kind==='frisbee'||kind==='tailgate'||kind==='laptopper'||kind==='roommate'||kind==='studygrp'||kind==='busker'||kind==='tourist'||kind==='shopper'||kind==='rower'||kind==='hacker'||kind==='mdfriend'||kind==='archivist'||kind==='lostfresh'){flavorTalk(kind);return;}
   if(kind==='gambler'){gamblerGame();return;}
+  // ===== [v2.8] 인문대 교수동 (S.boss3 해금) =====
+  if(kind==='colleague'){
+    sfx.ok();
+    const lines=[
+      ['어, 연구 교수님! …아직 「교수님」 소리가 어색하죠? 저도요.','저는 사회학과 신임이에요. 우리 동기네요, 임용 동기.'],
+      ['강의평가 보셨어요? 저는 무서워서 아직 못 열었어요.','복도에 떠도는 그… 별점 정령들, 다 우리 같은 신임들 멘탈이 만들어낸 거래요.'],
+      ['추천서 시즌이에요. 학부생들이 줄을 섰어요.','어제는 추천서 더미가 꿈에 나왔어요. …아니, 복도에 진짜로 나왔던가?'],
+      ['교수회의가 세 시간을 넘기면 회의실에서 뭔가가 태어난대요.','농담이에요. …농담이었으면 좋겠어요.']
+    ];
+    showDialog('동료 조교수',lines[humIdx%lines.length]);humIdx++;return;
+  }
+  if(kind==='humta'){
+    sfx.ok();
+    showDialog('행정조교',S.lecture1
+      ?['교수님 첫 강의, 학생들 반응 좋던데요? 수강신청 정정 문의가 벌써 와요.','복도의 그… 것들은 계속 나옵니다. 신임 교원의 통과의례라고 생각하세요.','왼쪽이 교수님 연구실이에요. 입주 선물 상자, 아직 안 여셨으면 챙기시고요.']
+      :['연구 교수님 맞으시죠? 임용을 축하드립니다!','왼쪽 방이 교수님 연구실이에요. 소파랑 노트북, 입주 선물까지 들어가 있어요.','오른쪽은 강의실 — <b>첫 강의</b>가 잡혀 있어요. 단상에 서면 시작됩니다. (권장 Lv 33+)','아, 복도 조심하세요. 강의평가 정령이니 마감 더미니… 신임 교원만 보이는 것들이 떠돌아요.']);
+    return;
+  }
+  if(kind==='lectern'){
+    sfx.ok();
+    if(S.lecture1){showDialog('',['강의 단상. 출석부와 식은 커피가 놓여 있다.','…다음 학기 강의계획서나 슬슬 써볼까.']);return;}
+    openMenu('단상에 선다 — <b>첫 강의</b>를 시작한다? <span style="color:#aab;font-size:12px">(학부생 질문 폭격 2웨이브 · 도주 불가 · 권장 Lv 33+)</span>',[
+      {label:'강의를 시작한다 (전투)',fn:()=>{closeMenu();startEventBattle({
+        waves:[['quizstu','quizstu'],['quizstu','quizstu','quizstu']],noRun:true,
+        intro:'출석을 부르자마자 — 손이 일제히 올라온다! 「교수님, 질문 있는데요!」',
+        waveMsg:'뒷줄의 손이 또 올라온다…!',
+        onWin:()=>{S.lecture1=1;P.atk+=5;updateHud();
+          showDialog('',['마지막 질문까지 받아냈다. 종이 울린다.','학생들이 박수를 친다 — 어, 박수…? 박수다!','강의로 단련된 논리가 몸에 붙었다. <b>논증력(ATK)이 영구히 +5!</b>','(완당 선생도 이런 기분이었을까.)']);}
+      });}},
+      {label:'아직 마음의 준비가…',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
   if(kind==='fisher'){
     sfx.ok();
     const cnt=Object.keys(S.fish||{}).length;
@@ -2210,7 +2302,8 @@ function dormMenu(){
     cafe:    {t:'카페 야외 좌석 — 잠깐 쉬어갈까?',a:'커피 한잔 한다',m:['따뜻한 커피 한 잔에 숨을 돌렸다.','HP와 MP가 모두 회복되었다!']},
     yenching:{t:'연구실 간이침대 — 포닥의 필수 가구.',a:'쪽잠을 잔다',m:['옌칭 서가의 종이 냄새 속에서 깜빡 잠들었다…','HP와 MP가 모두 회복되었다!']},
     banana:  {t:'라운지 소파 — 공짜 바나나와 커피가 있다.',a:'바나나를 먹으며 늘어진다',m:['바나나 두 개와 커피 한 잔. 무한복도 끝의 오아시스.','HP와 MP가 모두 회복되었다!']},
-    charles: {t:'강변 벤치 — 찰스강이 반짝인다.',a:'강바람을 쐰다',m:['조정 보트가 미끄러져 간다. …거위만 조심하자.','HP와 MP가 모두 회복되었다!']}
+    charles: {t:'강변 벤치 — 찰스강이 반짝인다.',a:'강바람을 쐰다',m:['조정 보트가 미끄러져 간다. …거위만 조심하자.','HP와 MP가 모두 회복되었다!']},
+    hum:     {t:'내 연구실 소파 — 명패에 「조교수 연구」라고 적혀 있다.',a:'소파에 몸을 묻는다',m:['창밖으로 안암 캠퍼스가 한눈에 내려다보인다.','10년 전, 저 잔디밭에서 슬라임에게 쫓기던 신입생이 여기까지 왔다.','HP와 MP가 모두 회복되었다!']}
   };
   const sp=SPOT[CUR]||SPOT.dorm;
   openMenu(sp.t,[
@@ -2575,7 +2668,9 @@ const QUESTS=[
   {name:'[3장] 루카스의 방울',desc:'보스턴 5구역의 보물을 모아 하버드 스퀘어의 루카스에게',prog:()=>((S.gooseboss?1:0)+(S.tumorboss?1:0)+(S.mok?1:0)+(S.jk3open?1:0)+(S.nightfirst?1:0))+'/5',done:()=>S.bell>=1,ch3:true},
   {name:'[3장] 단행본 초고',desc:'세 필드보스의 사례를 모아 옌칭에서 초고 완성 (Lv30+) → 임용장 개방',prog:()=>S.paper3?'1/1':'0/1',done:()=>S.paper3>=1,ch3:true},
   {name:'[3장] 교수 임용 커미티',desc:'Job Talk 최종 심사 — 조교수가 되는 것 (권장 Lv32+ · 요리 누적 필수)',prog:()=>S.boss3?'1/1':'0/1',done:()=>S.boss3>=1,ch3:true},
-  {name:'[종장] 종신의 문턱',desc:'조교수 임용 후, 안암 국제관 2층의 그분을 만나다 (권장 Lv 33+)',prog:()=>S.tenureSeen?'1/1':'0/1',done:()=>S.tenureSeen>=1,ch3:true}
+  {name:'[종장] 종신의 문턱',desc:'조교수 임용 후, 안암 국제관 2층의 그분을 만나다 (권장 Lv 33+)',prog:()=>S.tenureSeen?'1/1':'0/1',done:()=>S.tenureSeen>=1,ch3:true},
+  {name:'[종장] 연구실 입주',desc:'조교수가 되어 안암 인문대 교수동에 입성하기',prog:()=>(S.visited&&S.visited.hum)?'1/1':'0/1',done:()=>!!(S.visited&&S.visited.hum),ch4:true},
+  {name:'[종장] 첫 강의',desc:'인문대 강의실 단상에서 첫 강의 진행 (권장 Lv 33+)',prog:()=>S.lecture1?'1/1':'0/1',done:()=>S.lecture1>=1,ch4:true}
 ];
 let questOpen=null;
 function questRegion(q){
@@ -2644,7 +2739,7 @@ function fmView(view){
     html='<h3>미션</h3>';
     for(const [rid,rname] of REGS){
       const all=QUESTS.filter(q=>questRegion(q)===rid);
-      const vis=all.filter(q=>(!q.ch2||S.boss1)&&(!q.ch3||S.boss2));
+      const vis=all.filter(q=>(!q.ch2||S.boss1)&&(!q.ch3||S.boss2)&&(!q.ch4||S.boss3));
       const done=vis.filter(q=>q.done()).length;
       const locked=vis.length===0;
       html+='<button class="gbtn" data-act="qr-'+rid+'" style="width:100%;text-align:left;margin:3px 0" '+(locked?'disabled':'')+'>'+
@@ -2778,7 +2873,7 @@ function applySnapshot(d){
     mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
     matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
     gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
-    intlKills:0,tenureSeen:0,
+    intlKills:0,tenureSeen:0,lecture1:0,
     dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
     revPoints:0,revBest:0,revClears:0,dailyDate:'',revBuys:0,
     fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
@@ -3681,6 +3776,36 @@ async function enemyAct(e){
     await eHitP(e,1.0,e.name+'이(가) 깨진 플라스크를 휘둘렀다!');
     return;
   }
+  // ===== [v2.8] 인문대: 신임 교원의 시련 =====
+  if(e.key==='evalghost'&&Math.random()<0.3){
+    sfx.crash();P.confuse=Math.max(P.confuse,2);
+    await bmsg('악플 정령이 별점을 들이밀었다 — <b>「★☆☆☆☆ 설명이 어려워요」</b>');
+    await bmsg('멘탈이 흔들린다 — <span style="color:#f0c060"><b>혼란</b></span>! (2턴)');
+    return;
+  }
+  if(e.key==='recpile'&&Math.random()<0.3){
+    if(await tryCounter(e))return;
+    const hit=await eHitP(e,1.2,'추천서 더미가 <b>D-1 마감</b>을 들이밀며 쏟아졌다!');
+    if(hit!==null&&P.overwork<5){P.overwork++;await bmsg('<span style="color:#f08080"><b>과로 +1</b></span>… 받는 피해가 늘어난다! (현재 '+P.overwork+'스택)');}
+    return;
+  }
+  if(e.key==='meetghost'){
+    const roll=Math.random();
+    if(roll<0.25){
+      sfx.crash();P.silence=Math.max(P.silence,2);
+      await bmsg('「잠깐, 그 전에 — <b>안건 하나만 더</b> 추가하겠습니다.」');
+      await bmsg('말할 틈이 없다 — <b>침묵</b>! (다음 턴 스킬 불가)');
+      return;
+    }
+    if(roll<0.45){
+      P.mpLeak=Math.max(P.mpLeak,3);
+      await bmsg('회의가 길어진다… 길어진다… <span style="color:#9cc4ea"><b>MP 누수</b></span>! (3턴)');
+      return;
+    }
+    if(await tryCounter(e))return;
+    await eHitP(e,1.0,e.name+'이(가) 안건을 추가했다!');
+    return;
+  }
   // ===== 3장 롱우드: 의료가 — 과로 스택·MP 누수 =====
   if(e.key==='intern'&&Math.random()<0.3){
     if(await tryCounter(e))return;
@@ -3855,7 +3980,7 @@ async function enemyAct(e){
     return;
   }
   if(await tryCounter(e))return;
-  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!',bwh1:'주사기를 들이밀었다!',bwh2:'영상으로 약점을 짚었다!',bwh3:'청진기로 후려쳤다!',bwh4:'제세동 패들을 들이댔다!',bwh5:'메스를 휘둘렀다!',confstu:'발표 자료 뭉치를 휘둘렀다!',interp:'헤드셋 하울링을 일으켰다!',posterg:'포스터 보드로 밀쳤다!',emer:'반투명한 손으로 내리눌렀다!',keynote:'레이저 포인터를 쏘았다!',chaired:'가운 자락으로 후려쳤다!',labstu:'깨진 플라스크를 휘둘렀다!'};
+  const verbs={slime:'서류 더미를 덮쳤다!',student:'졸린 눈으로 들이받았다!',paper:'채점을 요구하며 덮쳤다!',dust:'먼지 구름을 일으켰다!',spirit:'들이받았다!',worm:'들이받았다!',corn:'수염을 휘둘렀다!',snowman:'눈덩이를 던졌다!',hanmun:'세로쓰기로 쏟아져 내렸다!',mfghost:'릴을 휘둘렀다!',gosling:'졸졸 쫓아와 쪼아댔다!',goose:'긴 목을 휘둘러 후려쳤다!',tackler:'거친 몸싸움을 걸어왔다!',intern:'클립보드를 휘둘렀다!',cafghost:'식은 커피를 끼얹었다!',bwh1:'주사기를 들이밀었다!',bwh2:'영상으로 약점을 짚었다!',bwh3:'청진기로 후려쳤다!',bwh4:'제세동 패들을 들이댔다!',bwh5:'메스를 휘둘렀다!',confstu:'발표 자료 뭉치를 휘둘렀다!',interp:'헤드셋 하울링을 일으켰다!',posterg:'포스터 보드로 밀쳤다!',emer:'반투명한 손으로 내리눌렀다!',keynote:'레이저 포인터를 쏘았다!',chaired:'가운 자락으로 후려쳤다!',labstu:'깨진 플라스크를 휘둘렀다!',evalghost:'별점 테러를 퍼부었다!',recpile:'마감 서류가 쏟아져 내렸다!',meetghost:'안건을 추가했다!',quizstu:'손을 들고 질문을 퍼부었다!'};
   await eHitP(e,1.0,e.name+'이(가) '+(verbs[e.key]||'들이받았다!'));
 }
 async function gainLevels(){
@@ -4269,6 +4394,19 @@ function battleBg(){
     ctx.fillStyle=vip?'#171221':'#26222e';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
     return vip?'국제관 2층 · VIP 라운지':'국제관 1층 · 포스터 세션';
   }
+  if(CUR==='hum'){
+    ctx.fillStyle='#2e2a38';ctx.fillRect(0,0,256,110);
+    ctx.fillStyle='#3a3448';for(let x=0;x<256;x+=40)ctx.fillRect(x,0,2,110);
+    ctx.fillStyle='#1f3a2e';ctx.fillRect(40,12,176,42);ctx.fillStyle='#2a4a3a';ctx.fillRect(40,12,176,3); // 칠판
+    ctx.fillStyle='#e8dcc0';ctx.font='9px serif';ctx.textAlign='center';
+    ctx.fillText('格物致知 — 1주차: 들어가며',128,32);
+    ctx.font='7px serif';ctx.fillText('담당: 趙敎授 (新任)',128,46);ctx.textAlign='left';
+    ctx.fillStyle='#6b4226';ctx.fillRect(16,60,40,22);ctx.fillStyle='#8a5a35';ctx.fillRect(16,60,40,3); // 단상
+    ctx.fillStyle='#27232e';ctx.fillRect(0,104,256,88);
+    ctx.fillStyle='#211d28';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
+    ctx.fillStyle='#332e3c';for(const bx of [28,108,188]){ctx.fillRect(bx,124,52,12);}
+    return '인문대 교수동 · 신임 교원의 복도';
+  }
   if(S.night){
     ctx.fillStyle='#101436';ctx.fillRect(0,0,256,120);
     ctx.fillStyle='#fff';ctx.fillRect(40,20,2,2);ctx.fillRect(120,12,2,2);ctx.fillRect(200,28,2,2);ctx.fillRect(80,36,1,1);ctx.fillRect(170,44,1,1);
@@ -4447,12 +4585,47 @@ function loop(t){
   requestAnimationFrame(loop);
 }
 // ============ 시작 ============
-$('startBtn').addEventListener('click',()=>{
+function newGame(){
   sfx.ok();$('title').style.display='none';MODE='map';updateHud();
   S.visited[CUR]=1;
   toast=M().name;toastT=performance.now();
   showDialog('',['안암의 봄. 입학식이 끝났다.','『주자어류』 한 권과 모나미 볼펜 — 이것이 전 재산이다.','북쪽 가운데가 본관. 그 아래 큰길 좌우 끝에 문과대와 도서관.','동쪽 아래엔 연구실, 남서쪽 길 끝엔 술집 골목이 있다.','잔디밭(초록)은 인카운터 구역. 골목엔 취객이 출몰한다.','X키(B버튼)로 메뉴를 열 수 있다. 먼저 완당 선생을 찾아가자.']);
-});
+}
+function titleInit(){
+  const wrap=$('titleBtns');wrap.innerHTML='';
+  // 최근 세이브 탐색 (오토 + 슬롯 1~3, 타임스탬프 비교)
+  let best=null,bestT=0;
+  for(const i of ['auto',1,2,3]){
+    const r=rawLoad('gmcz_save_'+i);if(!r)continue;
+    try{const d=JSON.parse(r);if((d.t||0)>bestT){bestT=d.t||0;best=i;}}catch(e){}
+  }
+  const mk=(html,fn,sub)=>{
+    const b=document.createElement('button');b.className='gbtn';
+    b.style.cssText='font-size:15px;padding:9px 22px;min-width:230px;';
+    b.innerHTML=html+(sub?'<br><small style="color:#9ad;font-weight:normal">'+sub+'</small>':'');
+    b.addEventListener('click',fn);wrap.appendChild(b);
+  };
+  if(best!=null){
+    mk('▶ 이어서 하기',()=>{
+      sfx.ok();$('title').style.display='none';MODE='map';
+      loadSlot(best);S.visited[CUR]=1;updateHud();
+    },(best==='auto'?'오토세이브':'슬롯 '+best)+' · '+loadSlotInfo(best));
+    mk('처음부터 (입학)',()=>{
+      if(!confirm('새로 시작합니다. 기존 세이브 슬롯은 지워지지 않지만, 진행 중이던 모험은 타이틀로 돌아오기 전까지 저장되지 않습니다.'))return;
+      newGame();
+    });
+  }else{
+    mk('▶ 입학',newGame);
+  }
+  mk('세이브 코드 불러오기',()=>{
+    const code=prompt('세이브 코드를 붙여넣으세요');if(!code)return;
+    try{JSON.parse(decodeURIComponent(escape(atob(code.trim()))));}
+    catch(e){alert('코드를 읽을 수 없습니다. 다시 확인해주세요.');return;}
+    sfx.ok();$('title').style.display='none';MODE='map';
+    importCode(code);S.visited[CUR]=1;updateHud();
+  });
+}
+titleInit();
 updateHud();
 requestAnimationFrame(loop);
 </script>

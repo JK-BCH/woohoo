@@ -170,16 +170,16 @@ const NPCS={
   prelim:[]
 };
 const CHEST_DB={
-  'stacks:1,18':{note:1,text:'희귀 사료 상자를 열었다!|<고문헌 노트>를 얻었다. 논증력(ATK)이 영구히 +3!'},
+  'stacks:1,18':{note:1,text:'희귀 사료 상자를 열었다!|〈고문헌 노트〉를 얻었다. 논증력(ATK)이 영구히 +3!'},
   'stacks:12,2':{item:'poktanju',n:2,text:'먼지 쌓인 상자를 열었다.|폭탄주 2병을 얻었다. …누가 서고에 술을?'},
   'stacks:19,17':{gold:6000,text:'낡은 상자를 열었다.|₩6,000을 얻었다. 장학금의 흔적인가.'},
   'quad:2,22':{gold:12000,text:'쿼드 구석의 상자를 열었다.|₩12,000을 얻었다. RA 장학금이 입금됐다!'},
   'asianlib:2,15':{item:'barolo',n:2,text:'서가 뒤 상자를 열었다.|바롤로 2병을 얻었다. 사서의 비상용인가…'},
   'asianlib:21,15':{gold:15000,text:'먼지 쌓인 상자를 열었다.|₩15,000을 얻었다. 컨퍼런스 출장비의 잔액이다.'},
-  'bookstore:14,2':{flag:'scanboost',req:()=>S.bookQ>=1,reqMsg:['서가 깊은 곳의 낡은 상자. 잠겨 있다.','헌책방 주인에게 먼저 부탁을 받아야 할 것 같다.'],text:'먼지투성이 상자에서 절판된 사료와 함께 <돋보기 안경>이 나왔다!|관찰의 도구다. 약점 노출(격물치지·실사구시 등)이 1턴 더 지속된다!|헌책방 주인에게 알리자.'},
-  'dorm:9,2':{stat:{hp:20},text:'기숙사 사물함을 열었다.|<프로틴 셰이커>를 얻었다! ARC에서 단련한 멘탈… 최대 HP가 영구히 +20!'},
-  'union2:12,7':{stat:{def:5},text:'스터디룸 구석의 상자를 열었다.|<롱패딩 점퍼>를 얻었다! 일리노이의 겨울도 끄떡없다. 철면피(DEF)가 영구히 +5!'},
-  'union4:11,4':{regen:1,text:'라운지의 상자를 열었다.|<일리니 보온 텀블러>를 얻었다!|전투 중 매 턴, 따뜻한 커피가 논리(MP)를 5씩 데워준다.'}
+  'bookstore:14,2':{flag:'scanboost',req:()=>S.bookQ>=1,reqMsg:['서가 깊은 곳의 낡은 상자. 잠겨 있다.','헌책방 주인에게 먼저 부탁을 받아야 할 것 같다.'],text:'먼지투성이 상자에서 절판된 사료와 함께 〈돋보기 안경〉이 나왔다!|관찰의 도구다. 약점 노출(격물치지·실사구시 등)이 1턴 더 지속된다!|헌책방 주인에게 알리자.'},
+  'dorm:9,2':{stat:{hp:20},text:'기숙사 사물함을 열었다.|〈프로틴 셰이커〉를 얻었다! ARC에서 단련한 멘탈… 최대 HP가 영구히 +20!'},
+  'union2:12,7':{stat:{def:5},text:'스터디룸 구석의 상자를 열었다.|〈롱패딩 점퍼〉를 얻었다! 일리노이의 겨울도 끄떡없다. 철면피(DEF)가 영구히 +5!'},
+  'union4:11,4':{regen:1,text:'라운지의 상자를 열었다.|〈일리니 보온 텀블러〉를 얻었다!|전투 중 매 턴, 따뜻한 커피가 논리(MP)를 5씩 데워준다.'}
 };
 const ENC_DAY={rate:1/22,tiles:'G',groups:[
   {w:20,e:['slime']},{w:25,e:['slime','slime']},{w:15,e:['slime','slime','slime']},
@@ -1195,12 +1195,12 @@ function showDialog(name,lines,onEnd,portrait){
   const pi=$('dlgPort');
   if(portrait){pi.src=portrait.toDataURL();pi.style.display='block';}
   else pi.style.display='none';
-  $('dlgText').textContent=lines[0];$('dlg').style.display='block';
+  $('dlgText').innerHTML=lines[0];$('dlg').style.display='block';
 }
 function advanceDialog(){
   sfx.ok();dlgIdx++;
   if(dlgIdx>=dlgLines.length){$('dlg').style.display='none';$('dlgPort').style.display='none';MODE='map';const f=dlgEnd;dlgEnd=null;if(f)f();}
-  else $('dlgText').textContent=dlgLines[dlgIdx];
+  else $('dlgText').innerHTML=dlgLines[dlgIdx];
 }
 $('dlg').addEventListener('pointerdown',e=>{e.preventDefault();if(MODE==='dialog')advanceDialog();});
 // ============ 맵 코어 ============
@@ -1240,7 +1240,7 @@ function catEvent(){
   const name=isOlli?'올리':'꽈이꽈이';
   if(isOlli)S.olli++;else S.kwai++;
   const buff=Math.random()<(isOlli?0.75:0.65);
-  const lines=['잔디 사이에서 주황 털뭉치가 튀어나왔다!','진저캣 <'+name+'>다! ('+(isOlli?S.olli:S.kwai)+'번째 만남)'];
+  const lines=['잔디 사이에서 주황 털뭉치가 튀어나왔다!','진저캣 〈'+name+'〉다! ('+(isOlli?S.olli:S.kwai)+'번째 만남)'];
   if(buff){
     const roll=Math.random();
     if(roll<0.4){P.gold+=3000;lines.push(name+'가 물어온 털뭉치 속에서 지폐가 나왔다?! (+₩3,000)');}
@@ -1255,7 +1255,7 @@ function catEvent(){
   if(!S.charm&&S.olli>=5&&S.kwai>=5){
     S.charm=1;P.luk+=10;P.spd+=3;
     lines.push('…올리와 꽈이꽈이가 나란히 앉아 그르릉거린다.');
-    lines.push('<주황 털뭉치 부적>을 얻었다! 통찰(LUK) 영구 +10, 마감력(SPD) 영구 +3!');
+    lines.push('〈주황 털뭉치 부적〉을 얻었다! 통찰(LUK) 영구 +10, 마감력(SPD) 영구 +3!');
     lines.push('고양이의 직감과 발걸음이 깃들었다.');
   }
   updateHud();
@@ -1373,7 +1373,7 @@ function npcTalk(kind){
           onWin:()=>{
             S.gradeRuns++;
             if(!S.card){S.card=1;
-              showDialog('조교',['…살았다. 고마워, 진짜로.','약속한 거. <24시간 출입카드>야.','이제 연구실 침대에서 밤까지 자면 밤 캠퍼스를 돌 수 있어.','밤엔 현타 그림자가 나와. 위험하지만… 경험치가 쏠쏠하대.']);
+              showDialog('조교',['…살았다. 고마워, 진짜로.','약속한 거. 〈24시간 출입카드〉야.','이제 연구실 침대에서 밤까지 자면 밤 캠퍼스를 돌 수 있어.','밤엔 현타 그림자가 나와. 위험하지만… 경험치가 쏠쏠하대.']);
             }else{
               showDialog('조교',['고마워… 다음 학기에도 부탁해도 될까? (채점 '+S.gradeRuns+'회차 완료)']);
             }
@@ -1391,7 +1391,7 @@ function npcTalk(kind){
         {label:'정리한다 (전투)',fn:()=>{closeMenu();startEventBattle({
           waves:[['slime','slime','slime']],
           intro:'연체자 명단이 꿈틀거리며 일어났다!',
-          onWin:()=>{S.stackKey=1;showDialog('사서',['감사합니다! 약속대로 <서고 열쇠>를 드릴게요.','계단은 열람실 오른쪽 위예요. 안쪽 깊은 곳엔… 희귀 사료 상자가 있다는 소문이.']);}
+          onWin:()=>{S.stackKey=1;showDialog('사서',['감사합니다! 약속대로 〈서고 열쇠〉를 드릴게요.','계단은 열람실 오른쪽 위예요. 안쪽 깊은 곳엔… 희귀 사료 상자가 있다는 소문이.']);}
         });}},
         {label:'다음에',fn:()=>{closeMenu();MODE='map';}}
       ],()=>{closeMenu();MODE='map';});
@@ -1656,7 +1656,7 @@ function npcTalk(kind){
             waves:[['aud1','aud2'],['aud1','aud3'],['aud1','aud2','aud3']],
             intro:'세미나실의 청중이 일제히 손을 들었다!',waveMsg:'다음 줄의 청중이 손을 든다…!',
             onWin:()=>{S.postdocQ=2;
-              showDialog('포닥 선배',['깔끔했어. 그 정도면 어디 가서도 안 깨져.','옜다, <학회 명찰>. 이거 달면 잔챙이들이 알아서 피해 가.','(인카운터율이 영구히 20% 감소한다!)'],()=>{S.encDown=1;});}
+              showDialog('포닥 선배',['깔끔했어. 그 정도면 어디 가서도 안 깨져.','옜다, 〈학회 명찰〉. 이거 달면 잔챙이들이 알아서 피해 가.','(인카운터율이 영구히 20% 감소한다!)'],()=>{S.encDown=1;});}
           });}},
           {label:'다음에',fn:()=>{closeMenu();MODE='map';}}
         ],()=>{closeMenu();MODE='map';});
@@ -1681,7 +1681,7 @@ function npcTalk(kind){
       const done=cnt>=5;
       if(done){S.cafeStamp=1;P.mp=Math.min(P.maxmp,P.mp+10);}
       showDialog('바리스타',[m+'을(를) 마셨다. 머리가 맑아진다.',
-        done?'…그리고 도장 5개 완성! <단골 도장 카드>를 받았다! (상점가 술값 10% 할인)':'단골 도장 '+cnt+'/5.']);
+        done?'…그리고 도장 5개 완성! 〈단골 도장 카드〉를 받았다! (상점가 술값 10% 할인)':'단골 도장 '+cnt+'/5.']);
     });
     return;
   }
@@ -1692,10 +1692,10 @@ function npcTalk(kind){
     if(S.saryo>=3){
       showDialog('우체국 직원',['오, 사료 조각 3개 다 모았네! 분류 끝났어.','대신 이거, 너 앞으로 온 소포. 어머님이 보내셨더라.'],()=>{
         S.bansae=1;S.saryo=0;P.inv.banchan=(P.inv.banchan||0)+3;
-        showDialog('',['<어머니의 밑반찬> 3개를 얻었다!','집밥은 완전회복에 숙취도 없다. 괜히 집밥이 아니다.']);
+        showDialog('',['〈어머니의 밑반찬〉 3개를 얻었다!','집밥은 완전회복에 숙취도 없다. 괜히 집밥이 아니다.']);
       });return;
     }
-    showDialog('우체국 직원',['아시아도서관에서 흘러나온 <사료 조각>들이 우편함에 섞여 들어왔어.','3개만 찾아서 갖다주면 분류 끝나는데… 도와줄래?','(아시아도서관 몹이 가끔 떨어뜨려. 현재 '+S.saryo+'/3)']);
+    showDialog('우체국 직원',['아시아도서관에서 흘러나온 〈사료 조각〉들이 우편함에 섞여 들어왔어.','3개만 찾아서 갖다주면 분류 끝나는데… 도와줄래?','(아시아도서관 몹이 가끔 떨어뜨려. 현재 '+S.saryo+'/3)']);
     return;
   }
   // ===== 헌책방 주인 (카페 거리) =====
@@ -1713,7 +1713,7 @@ function npcTalk(kind){
     const stages=[
       ['…어, 안녕. 나도 여기 박사과정.','요즘 잠이 안 와. 내 연구가 의미가 있나 싶어서…','(가끔 들러서 말동무가 되어주자.)'],
       ['또 왔네. 고마워.','어제는 지도교수가 내 챕터를 통째로 다시 쓰래. 멘탈이 바스러졌어.','…그래도 누가 들어주니까 좀 낫다.'],
-      ['있잖아, 너랑 얘기하면서 깨달았어.','우리 다 똑같이 헤매는 거더라. 나만 못난 게 아니라.','이거 받아. 내가 만든 백업용 USB. 필드 어디서든 저장돼.','(<동기의 USB> 획득! 메뉴에서 언제든 세이브 가능!)']
+      ['있잖아, 너랑 얘기하면서 깨달았어.','우리 다 똑같이 헤매는 거더라. 나만 못난 게 아니라.','이거 받아. 내가 만든 백업용 USB. 필드 어디서든 저장돼.','(〈동기의 USB〉 획득! 메뉴에서 언제든 세이브 가능!)']
     ];
     if(S.minseo>=3){showDialog('민서',['너 덕분에 다시 책상에 앉았어.','USB 잘 쓰고 있지? 우린 같이 졸업하자.']);return;}
     const st=S.minseo;
@@ -1832,7 +1832,7 @@ function labMenu(){
       showDialog('',['…눈을 뜨니 아침이다.','캠퍼스에 다시 햇살이 비친다.']);}});
   }else{
     items.push({label:'밤까지 잔다 '+(S.card?'':'(24시간 출입카드 필요)'),disabled:!S.card,fn:()=>{closeMenu();S.night=1;P.hp=P.maxhp;P.mp=P.maxmp;sfx.crash();updateHud();
-      showDialog('',['…눈을 뜨니 캠퍼스가 어둡다.','밤의 잔디밭에는 <현타 그림자>가 떠돈다.','위험하지만, 경험치와 돈이 쏠쏠하다고 했다.']);}});
+      showDialog('',['…눈을 뜨니 캠퍼스가 어둡다.','밤의 잔디밭에는 〈현타 그림자〉가 떠돈다.','위험하지만, 경험치와 돈이 쏠쏠하다고 했다.']);}});
   }
   items.push({label:'나간다',fn:()=>{closeMenu();MODE='map';}});
   openMenu('연구실 침대 — 어떻게 할까?',items,()=>{closeMenu();MODE='map';});
@@ -3130,7 +3130,7 @@ async function victoryFinal(){
     if(S.moonQ===0){S.moonRamen=1;await bmsg('<b>문(Moon)의 의뢰 완료!</b> 보트하우스로 돌아가 천상 라면을 받자.');}
     else await bmsg('문(Moon)의 의뢰 — 남은 거위: <b>'+S.moonQ+'마리</b>');
   }
-  if(B._saryoDrop){await bmsg('<사료 조각>을 '+B._saryoDrop+'개 주웠다! (현재 '+S.saryo+'/3)');}
+  if(B._saryoDrop){await bmsg('〈사료 조각〉을 '+B._saryoDrop+'개 주웠다! (현재 '+S.saryo+'/3)');}
   await bmsg('승리했다! 경험치 '+B.bank.xp+' · '+fmt(B.bank.gold)+' 획득!');
   P.gold+=B.bank.gold;P.xp+=B.bank.xp;updateHud();
   await gainLevels();

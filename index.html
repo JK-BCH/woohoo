@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.8</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.9</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.8 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.9 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -86,7 +86,7 @@
 "use strict";
 // ============ 맵 데이터 ============
 const MAPS={
- campus:{name:"안암 캠퍼스",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGNGGQGGZGGNGGGRRRRRRRRRRGQGGZGGNGGQGGGT","TGGTGGZGGNGGQTGBBBBBBBBBBGTZGGGGGGGGTGGT","TGGGGGGGGGGGGGGBBBBDBBBBBGGGGGGGGGGGGGGT","TGGGRRRRRRRRGGGGGGGPGGGGGGGRRRRRRRRGGGGT","TGGGBBBBBBBBGGGGGGGPGGGGGGGBBBBBBBBGGGGT","TGGGBBBDBBBBGGGGGGGPGGGGGGGBBBBDBBBGGGGT","TGGGGGGPPPPPPPPPPPPPPPPPPPPPPPPPGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGTGGGGGGGGGGGGTGGPGGGGGGGGGGGGGGGGTGGT","TGGGGGGGGGGGGTGGGGGPGGGGTGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGRRRRRGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBBBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBLBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPPPPPPPPPPPGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGRRRRRRRGGT","TGGTGGGGGGGGGGGGGGGPGGGGGGGGGGBBBBBBBGGT","TGGGGGGGGGTGGGGGGGGPGGGTGGGGGGBBBDBBBGGT","TGGGGGGGGGAGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGGGGPPPPPPPPPPPPPPGGGGGGGGGTGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGRRRRRRRRGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGBBBBBBBBGGGGGGGGGTGGGGGGTGGGGGT","TGGTGGPGGBBBDBBBBGGGGGGGGGGGGGGGGGGGTGGT","TGGGGGPPPPPPPGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGHT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
+ campus:{name:"안암 캠퍼스",tiles:["TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGNGGQGGZGGNGGGRRRRRRRRRRGQGGZGGNGGQGGGT","TGGTGGZGGNGGQTGBBBBBBBBBBGTZGGGGGGGGTGGT","TGGGGGGGGGGGGGGBBBBDBBBBBGGGGGGGGGGGGGGT","TGGGRRRRRRRRGGGGGGGPGGGGGGGRRRRRRRRGGGGT","TGGGBBBBBBBBGGGGGGGPGGGGGGGBBBBBBBBGGGGT","TGGGBBBDBBBBGGGGGGGPGGGGGGGBBBBDBBBGGGGT","TGGGGGGPPPPPPPPPPPPPPPPPPPPPPPPPGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGGGGGGGGGGT","TGGTGGGGGGGGGGGGTGGPGGGGGGGGGGGGGGGGTGGT","TGGGGGGGGGGGGTGGGGGPGGGGTGGGGGGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGRRRRRGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBBBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGBBLBBGGGGGGGT","TGGGGGGGGGGGGGGGGGGPPPPPPPPPPPGGGGGGGGGT","TGGGGGGGGGGGGGGGGGGPGGGGGGGGGGRRRRRRRGGT","TGGTGGGGGGGGGGGGGGGPGGGGGGGGGGBBBBBBBGGT","TGGGGGGGGGTGGGGGGGGPGGGTGGGGGGBBBDBBBGGT","TGGGGGGGGGAGGGGGGGGPGGGGGGGGGGGGGPGGGGGT","TGGGGGPPPPPPPPPPPPPPPPPPPPPPPPPPPPGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGRRRRRRRRGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGBBBBBBBBGGGGGGGGGTGGGGGGTGGGGGT","TGGTGGPGGBBBDBBBBGGGGGGGGGGGGGGGGGGGTGGT","TGGGGGPPPPPPPGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGT","TGGGGGPGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGHT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]},
  liberal:{name:"문과대",tiles:["BBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFCCCCCCFFCCCFFFFFB","BFFFFFFFFFFFFFCCCCCB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFCCCCCCFFCCCFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBFBBBBBBBBB"]},
  library:{name:"중앙도서관 열람실",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFSFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFCCCCCFFFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFKKKKFKKKKKFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFCCCCCFCCCCCFFFFFFFFFB","BFFFCCCCCFCCCCCFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBFBBBBBBBBBBBB"]},
  stacks:{name:"깊은 서고 B2",tiles:["BBBBBBBBBBBBBBBBBBBBBBBBB","BFFFFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFKFFFXFFFKFFFFFSFB","BFFFKFFFKFFFFFFFKFFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFFFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFFFFFKFFFB","BFFFFFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFFFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFFFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFKFFFKFFFKFFFKFFFB","BFFFKFFFFFFFKFFFFFFFKFFFB","BFKFFFFFFFFFKFFFFFFXFFFFB","BXKFFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBBBBBBBBBBBBBBBB"]},
@@ -114,12 +114,13 @@ const MAPS={
  jobhall:{name:"임용 심사장",tiles:["BBBBBBBBBBBB","BFFFFFFFFFFB","BFVFJJJJFOFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BFFFFFFFFFFB","BBBBBBFBBBBB"]},
  intl1:{name:"국제관 1층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFBB","BFFFFFFFFFFBSB","BFFFFFFFFFFFFB","BFFKFFKFFKFFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BXFFFFFFFFFFFB","BFFFFFFFFFFFFB","BBBBBBBFBBBBBB"]},
  intl2:{name:"국제관 2층",tiles:["BBBBBBBBBBBBBB","BFFFFFFFFFFFFB","BFFFFFFFFFFFSB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BFFFCFFCFFCFFB","BFFFFFFFFFFFFB","BFFFFFFFFFFFFB","BXFFFFFFFFFFFB","BBBBBBBBBBBBBB"]},
- hum:{name:"인문대 교수동",tiles:["BBBBBBBBBBBBBBBBBBBBBB","BFFFOFFBFFKFKFBFFFFFFB","BFEFFCFBFFFFFFBFFFFFFB","BFFFFFFBFFFFFFBFCFCFCB","BFXFFFFBFFFFFFBFCFCFCB","BFFFFFFBFFFFFFBFFFFFFB","BBBBFBBBFFFFFFBBBFBBBB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BBBBBBBBBBDBBBBBBBBBBB"]},
+ hum:{name:"인문대 교수동 1층",tiles:["BBBBBBBBBBBBBBBBBBBBBB","BFFFOFFBFFKFKFBFVFFFFB","BFEFFCFBFFFFFFBFFFFCFB","BFFFFFFBFFFFFFBFFFFFFB","BFXFFFFBFFFFFFBFCFFFFB","BFFFFFFBFFFFFFBFFFFFFB","BBBBFBBBFFFFFFBBBFBBBB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFSB","BBBBBBBBBBDBBBBBBBBBBB"]},
+ hum2:{name:"인문대 교수동 2층",tiles:["BBBBBBBBBBBBBBBBBBBBBB","BFFFFFFBFFFFFFBFFFFFFB","BFFFFFFBFFFFFFBFFFFFFB","BFCFCFCBFCFCFCBFCFCFCB","BFCFCFCBFCFCFCBFCFCFCB","BFFFFFFBFFFFFFBFFFFFFB","BBBBFBBBBBFBBBBBBFBBBB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFFFFFFFFFFFFFFFFFFFFB","BFKFFFFFFFFFKFFFFFFFSB","BBBBBBBBBBBBBBBBBBBBBB"]},
 };
 for(const id in MAPS){MAPS[id].w=MAPS[id].tiles[0].length;MAPS[id].h=MAPS[id].tiles.length;}
 let CUR='campus';
 const M=()=>MAPS[CUR];
-const RECLV={stacks:'권장 Lv4+',alley:'권장 Lv5+',quad:'권장 Lv10+',intl1:'권장 Lv10+',asianlib:'권장 Lv13+',union1:'권장 Lv14+',union2:'권장 Lv14+',union3:'권장 Lv14+',union4:'권장 Lv16+',charles:'권장 Lv20+',mit:'권장 Lv22+',infinite:'권장 Lv24+',longwood:'권장 Lv24+',intl2:'권장 Lv33+',hum:'권장 Lv33+'};
+const RECLV={stacks:'권장 Lv4+',alley:'권장 Lv5+',quad:'권장 Lv10+',intl1:'권장 Lv10+',asianlib:'권장 Lv13+',union1:'권장 Lv14+',union2:'권장 Lv14+',union3:'권장 Lv14+',union4:'권장 Lv16+',charles:'권장 Lv20+',mit:'권장 Lv22+',infinite:'권장 Lv24+',longwood:'권장 Lv24+',intl2:'권장 Lv33+',hum2:'권장 Lv33+'};
 const TILE=16, VW=16, VH=12;
 const SOLID={T:1,B:1,W:1,D:1,L:1,R:1,K:1,C:1,V:1,X:1,J:1,O:1,Y:1,A:1,H:1,E:1,M:1,N:1,Q:1,Z:1,U:1};
 const WALKP={
@@ -151,7 +152,9 @@ const WALKP={
   union4:{'1,2':{to:'union3',x:11,y:2,d:'left'}},
   prelim:{'6,9':{to:'quad',x:17,y:5,d:'down'}},
   intl1:{'7,9':{to:'campus',x:12,y:26,d:'down'},'12,2':{to:'intl2',x:12,y:3,d:'down'}},
-  intl2:{'12,2':{to:'intl1',x:12,y:3,d:'down'}}
+  intl2:{'12,2':{to:'intl1',x:12,y:3,d:'down'}},
+  hum:{'20,12':{to:'hum2',x:19,y:12,d:'up'}},
+  hum2:{'20,12':{to:'hum',x:19,y:12,d:'down'}}
 };
 const DOORP={
   campus:{'19,4':{to:'hall',x:6,y:8,d:'up'},'7,7':{to:'liberal',x:10,y:13,d:'up'},'31,7':{to:'library',x:12,y:18,d:'up'},'12,25':{to:'intl1',x:7,y:8,d:'up'},'33,19':{to:'hum',x:10,y:12,d:'up',lock:()=>!S.boss3,msg:['인문대 교수동 — 신축 건물이다.','「교원 전용 · 외부인 출입 제한」','…언젠가, 이 문이 너를 위해 열릴 날이 올까.']}},
@@ -192,7 +195,8 @@ const NPCS={
   prelim:[],
   intl1:[{x:12,y:3,kind:'staffer',cond:()=>!S.boss3}],
   intl2:[{x:2,y:2,kind:'tenure'}],
-  hum:[{x:10,y:4,kind:'colleague'},{x:12,y:9,kind:'humta'},{x:17,y:2,kind:'lectern'}]
+  hum:[{x:10,y:4,kind:'colleague'},{x:12,y:9,kind:'humta'}],
+  hum2:[{x:4,y:1,kind:'lectern'},{x:10,y:1,kind:'lectern2'},{x:17,y:1,kind:'lectern3'}]
 };
 const CHEST_DB={
   'stacks:1,18':{note:1,text:'희귀 사료 상자를 열었다!|〈고문헌 노트〉를 얻었다. 논증력(ATK)이 영구히 +3!'},
@@ -257,7 +261,7 @@ function encFor(){
   if(CUR==='longwood')return ENC_LW;
   if(CUR==='intl1')return ENC_INTL1;
   if(CUR==='intl2')return ENC_INTL2;
-  if(CUR==='hum')return ENC_HUM;
+  if(CUR==='hum2')return ENC_HUM;   // 1층(hum)은 로비 — 인카운터 없음
   if(ENC_UNION[CUR])return ENC_UNION[CUR];
   return null;
 }
@@ -291,18 +295,18 @@ const ITEMS={
 const SKILLS={
   gyeokmul:{id:'gyeokmul',name:'격물치지',mp:6,lv:2,desc:'사물을 파고든다 — 단일 ×1.8 + 약점 노출(받는 피해 +20%, 3턴)',brief:'단일 ×1.8+약점'},
   geogyeong:{id:'geogyeong',name:'부동심(不動心)',mp:4,lv:3,desc:'흔들리지 않는 마음 — 방어 ×2 (3턴)',brief:'방어 ×2 (3턴)'},
-  gungri:{id:'gungri',name:'온고지신(溫故知新)',mp:0,lv:4,desc:'옛 기록을 익혀 새 힘을 — 논리(MP) +8 + 간이 스캔',brief:'MP +8 + 스캔'},
+  gungri:{id:'gungri',name:'온고지신(溫故知新)',mp:0,lv:4,desc:'옛 기록을 익혀 새 힘을 — 논리(MP) +8 + 간이 스캔',brief:'MP +8 + 스캔',sup:'susin'},
   gakju:{id:'gakju',name:'술이부작(述而不作)',mp:5,lv:5,desc:'경전 인용 태세 — 받는 공격 1회 무효 + 1.5배 반격',brief:'1회 무효+반격'},
   sadan:{id:'sadan',name:'사단지심(四端之心)',mp:8,lv:6,desc:'측은·수오·사양·시비 — 무작위 대상 정확히 4연타 ×0.55',brief:'4연타 ×0.55'},
   igi:{id:'igi',name:'치국평천하(治國平天下)',mp:12,lv:8,desc:'천하를 다스려 기세를 꺾는다 — 전체 ×1.0 + 적 전체 논증력 −15%(2턴), 회피 불가',brief:'전체+ATK디버프'},
-  jihaeng:{id:'jihaeng',name:'지행합일(知行合一)',mp:10,lv:11,desc:'앎이 곧 일격 — 단일 ×2.2 (최대 화력)',brief:'단일 ×2.2'},
+  jihaeng:{id:'jihaeng',name:'지행합일(知行合一)',mp:10,lv:11,desc:'앎이 곧 일격 — 단일 ×2.2 (최대 화력)',brief:'단일 ×2.2',sup:'bakhak'},
   silsa:{id:'silsa',name:'실사구시(實事求是)',mp:0,lv:12,desc:'사실로 못 박는다 — 대상 약점 노출 + 막기 봉인(3턴) + 정밀 스캔',brief:'약점+가드봉인'},
   ilgwan:{id:'ilgwan',name:'일이관지(一以貫之)',mp:0,lv:13,desc:'현재 MP의 절반을 쏟아붓는 단 한 번의 관통 — 소모 MP에 비례해 강력 (배율 최대 ×4)',brief:'MP½ 비례 한방'},
-  haeche:{id:'haeche',name:'해체신서(解體新書)',mp:12,lv:14,desc:'구조를 해부 — 단일 ×1.8, 방어·막기 모두 무시',brief:'×1.8 방어무시'},
+  haeche:{id:'haeche',name:'해체신서(解體新書)',mp:12,lv:14,desc:'구조를 해부 — 단일 ×1.8, 방어·막기 모두 무시',brief:'×1.8 방어무시',sup:'hwalyeon'},
   gyeongse:{id:'gyeongse',name:'경세치용(經世致用)',mp:10,lv:16,desc:'배움을 현실의 힘으로 — 논증력 +25% (3턴)',brief:'ATK +25%(3턴)'},
-  dongdo:{id:'dongdo',name:'동도서기(東道西器)',mp:18,lv:18,desc:'동서 합력의 대기술 — 전체 ×1.6 순수 화력, 회피 불가',brief:'전체 ×1.6'},
+  dongdo:{id:'dongdo',name:'동도서기(東道西器)',mp:18,lv:18,desc:'동서 합력의 대기술 — 전체 ×1.6 순수 화력, 회피 불가',brief:'전체 ×1.6',sup:'beopgo'},
   susin:{id:'susin',name:'수신제가(修身齊家)',mp:0,lv:21,desc:'먼저 나를 다스린다 — 자신의 모든 디버프 해제 + 논리(MP) +12',brief:'디버프 해제+MP12'},
-  bakhak:{id:'bakhak',name:'박학심문(博學審問)',mp:14,lv:24,desc:'넓게 배우고 깊이 따진다 — 단일 ×2.6',brief:'단일 ×2.6'},
+  bakhak:{id:'bakhak',name:'박학심문(博學審問)',mp:14,lv:24,desc:'넓게 배우고 깊이 따진다 — 단일 ×2.6',brief:'단일 ×2.6',sup:'hwalyeon'},
   beopgo:{id:'beopgo',name:'법고창신(法古創新)',mp:16,lv:27,desc:'옛것을 본받아 새것을 연다 — 전체 ×1.3 + 적 전체 약점 노출(2턴), 회피 불가',brief:'전체+약점노출'},
   hwalyeon:{id:'hwalyeon',name:'활연관통(豁然貫通)',mp:20,lv:30,desc:'문득 모든 것이 꿰뚫린다 — 단일 ×3.0, 방어·막기 무시',brief:'×3.0 방어무시'}
 };
@@ -440,7 +444,7 @@ const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
   matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
   gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
-  intlKills:0,tenureSeen:0,lecture1:0,
+  intlKills:0,tenureSeen:0,lecture1:0,lecture2:0,lecture3:0,
   dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
   revPoints:0,revBest:0,revClears:0,dailyDate:'',revBuys:0,
   fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
@@ -450,6 +454,7 @@ let MODE='title';
 // ============ 유틸 ============
 const $=id=>document.getElementById(id);
 let SPEED=1;try{if(localStorage.getItem('gmcz_speed')==='2')SPEED=2;}catch(e){}
+let SHOW_ALL_SK=false;   // 계열 진화 — 계승된 하위 스킬을 전투 메뉴에 모두 펼칠지 (세션 한정, 세이브 불필요)
 const ADMIN=(()=>{try{return /[?&]admin\b/.test(location.search);}catch(e){return false;}})();
 const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(16,ms/SPEED)));
 const fmt=n=>'₩'+n.toLocaleString('ko-KR');
@@ -721,11 +726,14 @@ function buildTiles(){
     px(g4g,x,y+7,8,1,'#6e6e76');px(g4g,x+7,y,1,8,'#6e6e76');
   }
   t.G4=g4;
+  // 5=인문대 교수동 — 사암 석조 + 청동 그린 지붕 (캠퍼스의 다른 적벽돌 건물과 차별화)
+  t.B5=mkWall('#b8b09e','#8a8272','#d4ccba','#9cd8e8','#3a4452');
+  t.R5=mkRoof('#2e5a52','#3e7468','#1e3e38');
 }
 const MAP_THEME={
   quad:1,green:1,cafe:1,bookstore:1,dorm:1,union1:1,union2:1,union3:1,union4:1,prelim:1,asianlib:1,
   hsq:2,yenching:2,banana:2,newbury:2,charles:2,jobhall:2,intl1:2,intl2:2,
-  alley:4,longwood:4,mit:4,infinite:3
+  alley:4,longwood:4,mit:4,infinite:3,hum:5,hum2:5
 };
 const URBAN_G={alley:1,longwood:1};  // 테마4 중 바닥 G→보도블럭 렌더 (mit 잔디는 축구장이라 유지)
 function buildChar(){
@@ -991,6 +999,15 @@ function buildNpc(){
     px(g,4,6,8,1,'#caa53d');                                // 교표 라인
     px(g,5,2,6,2,'#2b2b33');px(g,6,1,4,1,'#3a3a44');       // 마이크·노트북
     A.npc.lectern=c;}
+  // 줌 강의실 B/C 단상 — 노트북 색·표식만 다른 변종
+  {const c=mkC(16,16),g=c.getContext('2d');
+    g.drawImage(A.npc.lectern,0,0);
+    px(g,5,2,6,2,'#1d3a5c');px(g,7,5,2,1,'#58a6ff');       // 파란 노트북 (B강의실)
+    A.npc.lectern2=c;}
+  {const c=mkC(16,16),g=c.getContext('2d');
+    g.drawImage(A.npc.lectern,0,0);
+    px(g,5,2,6,2,'#5c2a3a');px(g,7,5,2,1,'#e8a0c8');       // 자주 노트북 (C강의실)
+    A.npc.lectern3=c;}
   A.npc.fisher=mkPerson('#5a4632','#3a6e5a',g=>{
     px(g,3,1,10,3,'#caa53d');px(g,2,3,12,1,'#b5923a');   // 밀짚모자
     px(g,12,2,2,12,'#7a5c3a');px(g,13,1,1,3,'#5a4226');  // 낚싯대
@@ -1759,7 +1776,7 @@ function npcTalk(kind){
     sfx.ok();
     const lines=[
       ['어, 연구 교수님! …아직 「교수님」 소리가 어색하죠? 저도요.','저는 사회학과 신임이에요. 우리 동기네요, 임용 동기.'],
-      ['강의평가 보셨어요? 저는 무서워서 아직 못 열었어요.','복도에 떠도는 그… 별점 정령들, 다 우리 같은 신임들 멘탈이 만들어낸 거래요.'],
+      ['강의평가 보셨어요? 저는 무서워서 아직 못 열었어요.','2층 복도에 떠도는 그… 별점 정령들, 다 우리 같은 신임들 멘탈이 만들어낸 거래요. 1층까진 안 내려와요.'],
       ['추천서 시즌이에요. 학부생들이 줄을 섰어요.','어제는 추천서 더미가 꿈에 나왔어요. …아니, 복도에 진짜로 나왔던가?'],
       ['교수회의가 세 시간을 넘기면 회의실에서 뭔가가 태어난대요.','농담이에요. …농담이었으면 좋겠어요.']
     ];
@@ -1768,20 +1785,52 @@ function npcTalk(kind){
   if(kind==='humta'){
     sfx.ok();
     showDialog('행정조교',S.lecture1
-      ?['교수님 첫 강의, 학생들 반응 좋던데요? 수강신청 정정 문의가 벌써 와요.','복도의 그… 것들은 계속 나옵니다. 신임 교원의 통과의례라고 생각하세요.','왼쪽이 교수님 연구실이에요. 입주 선물 상자, 아직 안 여셨으면 챙기시고요.']
-      :['연구 교수님 맞으시죠? 임용을 축하드립니다!','왼쪽 방이 교수님 연구실이에요. 소파랑 노트북, 입주 선물까지 들어가 있어요.','오른쪽은 강의실 — <b>첫 강의</b>가 잡혀 있어요. 단상에 서면 시작됩니다. (권장 Lv 33+)','아, 복도 조심하세요. 강의평가 정령이니 마감 더미니… 신임 교원만 보이는 것들이 떠돌아요.']);
+      ?['교수님 첫 강의, 학생들 반응 좋던데요? 수강신청 정정 문의가 벌써 와요.','2층의 그… 것들은 계속 나옵니다. 신임 교원의 통과의례라고 생각하세요.','왼쪽이 교수님 연구실이에요. 입주 선물 상자, 아직 안 여셨으면 챙기시고요. 자판기는 오른쪽 라운지에 있어요.']
+      :['연구 교수님 맞으시죠? 임용을 축하드립니다!','왼쪽 방이 교수님 연구실이에요. 소파랑 노트북, 입주 선물까지 들어가 있어요. 오른쪽 라운지엔 자판기도 있고요.','강의는 전부 <b>2층 줌 강의실</b>이에요 — 동쪽 끝 계단으로 올라가세요. A·B·C 세 강의실에 일정이 잡혀 있어요. (권장 Lv 33+)','아, <b>2층 복도는 조심하세요.</b> 강의평가 정령이니 마감 더미니… 신임 교원만 보이는 것들이 떠돌아요.','1층은 안전해요. 제가 지키고 있거든요. …행정의 힘으로요.']);
     return;
   }
   if(kind==='lectern'){
     sfx.ok();
-    if(S.lecture1){showDialog('',['강의 단상. 출석부와 식은 커피가 놓여 있다.','…다음 학기 강의계획서나 슬슬 써볼까.']);return;}
-    openMenu('단상에 선다 — <b>첫 강의</b>를 시작한다? <span style="color:#aab;font-size:12px">(학부생 질문 폭격 2웨이브 · 도주 불가 · 권장 Lv 33+)</span>',[
+    if(S.lecture1){showDialog('',['줌 강의실 A — 단상에 출석부와 식은 커피가 놓여 있다.','…다음 학기 강의계획서나 슬슬 써볼까.']);return;}
+    openMenu('<b>줌 강의실 A</b> — 단상에 서서 <b>첫 강의</b>를 시작한다? <span style="color:#aab;font-size:12px">(학부생 질문 폭격 2웨이브 · 도주 불가 · 권장 Lv 33+ · 보상: ATK+5)</span>',[
       {label:'강의를 시작한다 (전투)',fn:()=>{closeMenu();startEventBattle({
         waves:[['quizstu','quizstu'],['quizstu','quizstu','quizstu']],noRun:true,
-        intro:'출석을 부르자마자 — 손이 일제히 올라온다! 「교수님, 질문 있는데요!」',
-        waveMsg:'뒷줄의 손이 또 올라온다…!',
+        intro:'카메라가 켜지자마자 — 채팅창과 손들기 버튼이 폭발한다! 「교수님, 질문 있는데요!」',
+        waveMsg:'음소거를 푼 뒷줄의 손이 또 올라온다…!',
         onWin:()=>{S.lecture1=1;P.atk+=5;updateHud();
-          showDialog('',['마지막 질문까지 받아냈다. 종이 울린다.','학생들이 박수를 친다 — 어, 박수…? 박수다!','강의로 단련된 논리가 몸에 붙었다. <b>논증력(ATK)이 영구히 +5!</b>','(완당 선생도 이런 기분이었을까.)']);}
+          showDialog('',['마지막 질문까지 받아냈다. 수업 종료 버튼을 누른다.','채팅창에 박수 이모지가 쏟아진다 — 어, 박수…? 박수다!','강의로 단련된 논리가 몸에 붙었다. <b>논증력(ATK)이 영구히 +5!</b>','(완당 선생도 이런 기분이었을까.)']);}
+      });}},
+      {label:'아직 마음의 준비가…',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
+  if(kind==='lectern2'){
+    sfx.ok();
+    if(!S.lecture1){showDialog('',['줌 강의실 B — 「대형 교양: 동양고전의 이해」','화면이 꺼져 있다. 먼저 A강의실에서 <b>첫 강의</b>를 마쳐야 한다.']);return;}
+    if(S.lecture2){showDialog('',['줌 강의실 B — 종강했다.','강의평가 창은… 열어보지 않기로 했다. 그게 정신 건강에 좋다.']);return;}
+    openMenu('<b>줌 강의실 B</b> — <b>대형 교양 화상강의</b>를 연다? <span style="color:#aab;font-size:12px">(수강생 300명 · 강의평가 정령 2웨이브 · 도주 불가 · 권장 Lv 33+ · 보상: DEF+5)</span>',[
+      {label:'강의를 연다 (전투)',fn:()=>{closeMenu();startEventBattle({
+        waves:[['evalghost'],['evalghost','evalghost']],noRun:true,
+        intro:'수강생 300명의 꺼진 화면 너머에서 — 별점 정령이 미리 나타났다! 「교수님 목소리가 작아요 ★☆☆☆☆」',
+        waveMsg:'중간 강의평가 알림이 두 통 더 도착했다…!',
+        onWin:()=>{S.lecture2=1;P.def+=5;updateHud();
+          showDialog('',['마지막 악플까지 논리로 받아쳤다.','「…생각해보니 도움이 된 것 같음 ★★★★☆」 — 별점이 슬그머니 올라간다.','악플에 단련된 멘탈이 굳은살이 됐다. <b>철면피(DEF)가 영구히 +5!</b>']);}
+      });}},
+      {label:'아직 마음의 준비가…',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
+  if(kind==='lectern3'){
+    sfx.ok();
+    if(!S.lecture2){showDialog('',['줌 강의실 C — 「온라인 교수회의 (비공개)」','입장 권한이 없다. 먼저 B강의실의 <b>대형 교양</b>을 마쳐야 한다.']);return;}
+    if(S.lecture3){showDialog('',['줌 강의실 C — 「회의가 끝났습니다」','다음 안건은… 없다. 없어야 한다.']);return;}
+    openMenu('<b>줌 강의실 C</b> — <b>온라인 교수회의</b>에 입장한다? <span style="color:#aab;font-size:12px">(안건 무한증식 · 마감 더미·회의 망령 2웨이브 · 도주 불가 · 권장 Lv 34+ · 보상: 최대 MP+20)</span>',[
+      {label:'회의에 입장한다 (전투)',fn:()=>{closeMenu();startEventBattle({
+        waves:[['recpile','recpile'],['meetghost','recpile']],noRun:true,
+        intro:'「짧게 하죠」로 시작한 회의 — 화면 공유와 함께 마감 서류가 쏟아진다!',
+        waveMsg:'「마지막으로 한 가지만 더…」 회의가 연장된다…!',
+        onWin:()=>{S.lecture3=1;P.maxmp+=20;P.mp+=20;updateHud();
+          showDialog('',['「…그럼 이만 마치겠습니다.」 — 종료 버튼을 내가 먼저 눌렀다.','세 시간짜리 회의를 40분 만에 끝낸 전설이 시작됐다.','회의를 버텨낸 정신력이 깊어졌다. <b>최대 MP가 영구히 +20!</b>']);}
       });}},
       {label:'아직 마음의 준비가…',fn:()=>{closeMenu();MODE='map';}}
     ],()=>{closeMenu();MODE='map';});
@@ -2285,7 +2334,7 @@ function tryInteract(){
   if(t==='W'){sfx.ok();showDialog('',['좌판에 술병이 가지런히 놓여 있다.','점주에게 말을 걸자.']);return;}
   if(t==='A'){travelMenu();return;}
   if(t==='H'){hiddenPagoda(f.x,f.y);return;}
-  if(t==='V'){vendingShop(CUR==='prelim'?['miller','yuengling']:(CUR==='jobhall'?['yuengling','barbaresco','nightshift']:['soju','beer']));return;}
+  if(t==='V'){vendingShop(CUR==='prelim'?['miller','yuengling']:(CUR==='jobhall'?['yuengling','barbaresco','nightshift']:(CUR==='hum'?['yuengling','barolo','nightshift']:['soju','beer'])));return;}
   if(t==='O'){sfx.heal();openFieldMenu();fmView('save');return;}
   if(t==='X'){openChest(f.x,f.y);return;}
   if(t==='J'){if(CUR==='prelim')prelimJudge();else if(CUR==='jobhall')jobhallCommittee();else hallJudge();return;}
@@ -2670,7 +2719,8 @@ const QUESTS=[
   {name:'[3장] 교수 임용 커미티',desc:'Job Talk 최종 심사 — 조교수가 되는 것 (권장 Lv32+ · 요리 누적 필수)',prog:()=>S.boss3?'1/1':'0/1',done:()=>S.boss3>=1,ch3:true},
   {name:'[종장] 종신의 문턱',desc:'조교수 임용 후, 안암 국제관 2층의 그분을 만나다 (권장 Lv 33+)',prog:()=>S.tenureSeen?'1/1':'0/1',done:()=>S.tenureSeen>=1,ch3:true},
   {name:'[종장] 연구실 입주',desc:'조교수가 되어 안암 인문대 교수동에 입성하기',prog:()=>(S.visited&&S.visited.hum)?'1/1':'0/1',done:()=>!!(S.visited&&S.visited.hum),ch4:true},
-  {name:'[종장] 첫 강의',desc:'인문대 강의실 단상에서 첫 강의 진행 (권장 Lv 33+)',prog:()=>S.lecture1?'1/1':'0/1',done:()=>S.lecture1>=1,ch4:true}
+  {name:'[종장] 첫 강의',desc:'교수동 2층 줌 강의실 A에서 첫 강의 진행 (권장 Lv 33+)',prog:()=>S.lecture1?'1/1':'0/1',done:()=>S.lecture1>=1,ch4:true},
+  {name:'[종장] 종강까지 버티기',desc:'2층 줌 강의실 A·B·C의 시련 완수 (강의→교양→교수회의)',prog:()=>((S.lecture1?1:0)+(S.lecture2?1:0)+(S.lecture3?1:0))+'/3',done:()=>!!(S.lecture1&&S.lecture2&&S.lecture3),ch4:true}
 ];
 let questOpen=null;
 function questRegion(q){
@@ -2711,7 +2761,7 @@ function fmView(view){
       '<tr><td>마감력 (SPD)</td><td>'+P.spd+'</td></tr>'+
       '<tr><td>통찰 (LUK)</td><td>'+P.luk+' <span style="color:#aab">(크리티컬 '+P.luk+'%)</span></td></tr>'+
       '<tr><td>소지금</td><td>'+fmt(P.gold)+'</td></tr>'+
-      '<tr><td>스킬</td><td>'+(P.skills.length?P.skills.map(s=>SKILLS[s].name+' <span style="color:#aab;font-size:11px">'+SKILLS[s].desc+'</span>').join('<br>'):'(아직 없음 — Lv2부터 습득)')+'</td></tr>'+
+      '<tr><td>스킬</td><td>'+(P.skills.length?P.skills.map(s=>SKILLS[s].name+' <span style="color:#aab;font-size:11px">'+SKILLS[s].desc+'</span>'+(P.skills.includes(SKILLS[s].sup)?' <span style="color:#778;font-size:11px">⤷ '+SKILLS[SKILLS[s].sup].name+' 계승(전투 메뉴 접힘)</span>':'')).join('<br>'):'(아직 없음 — Lv2부터 습득)')+'</td></tr>'+
       '<tr><td>열쇠 아이템</td><td>'+([S.card?'24시간 출입카드':null,S.stackKey?'서고 열쇠':null].filter(Boolean).join(' · ')||'(없음)')+'</td></tr>'+
       '<tr><td>전투 기록</td><td>슬라임 '+S.slimeKills+' · 정령 '+S.spiritKills+' · 채점 '+S.gradeRuns+'회 · 현타 '+S.hyunta+'회</td></tr>'+
       '</table><br><div class="btnrow">'+back+'</div>';
@@ -2873,7 +2923,7 @@ function applySnapshot(d){
     mok:0,bwhCoupon:0,bwh1:0,bwh2:0,bwh3:0,bwh4:0,bwh5:0,jk3open:0,jk3free:0,jk3kills:0,jk3stock:0,
     matA:0,matB:0,moonQ:0,moonRamen:0,hanIdx:0,hanCooked:0,
     gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
-    intlKills:0,tenureSeen:0,lecture1:0,
+    intlKills:0,tenureSeen:0,lecture1:0,lecture2:0,lecture3:0,
     dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
     revPoints:0,revBest:0,revClears:0,dailyDate:'',revBuys:0,
     fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
@@ -3202,15 +3252,24 @@ async function playerCommand(){
         else txt+=' · '+s.brief;
         return txt;
       };
-      const acts=[{label:'평타 (논박) <small>약 '+dmgRange(1)+'뎀</small>',value:'attack'}];
-      P.skills.forEach(id=>{
-        const s=SKILLS[id];
-        const mute=P.silence>0;
-        const noMp=id==='ilgwan'?ilgwanSpend()<5:P.mp<s.mp;
-        acts.push({label:s.name+' <small>'+(mute&&id!=='susin'?'침묵 <span style="color:#56d364">(수신제가로 해제 가능)</span>':info(id))+'</small>',value:'sk_'+id,disabled:id==='susin'?false:(mute||noMp)});
-      });
-      acts.push({label:'← 뒤로',value:'__cancel__'});
-      const c=await bchoice('어떤 수로 갈까? <span style="color:#aab;font-size:11px">(예상뎀은 첫 번째 적 기준 · 크리티컬 제외)</span>',acts,true);
+      // 계열 진화: 상위 스킬을 익히면 하위(sup 보유)는 기본 접힘 — 토글로 전체 열람 가능
+      const folded=P.skills.filter(id=>SKILLS[id].sup&&P.skills.includes(SKILLS[id].sup));
+      let c;
+      while(true){
+        const acts=[{label:'평타 (논박) <small>약 '+dmgRange(1)+'뎀</small>',value:'attack'}];
+        P.skills.forEach(id=>{
+          if(!SHOW_ALL_SK&&folded.includes(id))return;
+          const s=SKILLS[id];
+          const mute=P.silence>0;
+          const noMp=id==='ilgwan'?ilgwanSpend()<5:P.mp<s.mp;
+          acts.push({label:s.name+' <small>'+(mute&&id!=='susin'?'침묵 <span style="color:#56d364">(수신제가로 해제 가능)</span>':info(id))+'</small>',value:'sk_'+id,disabled:id==='susin'?false:(mute||noMp)});
+        });
+        if(folded.length)acts.push({label:SHOW_ALL_SK?'▲ 계승된 스킬 접기 (−'+folded.length+')':'▼ 모든 스킬 보기 (+'+folded.length+')',value:'__togglesk__'});
+        acts.push({label:'← 뒤로',value:'__cancel__'});
+        c=await bchoice('어떤 수로 갈까? <span style="color:#aab;font-size:11px">(예상뎀은 첫 번째 적 기준 · 크리티컬 제외)</span>',acts,true);
+        if(c==='__togglesk__'){SHOW_ALL_SK=!SHOW_ALL_SK;continue;}
+        break;
+      }
       if(c==='__cancel__')continue;
       const targeted={attack:'attack',sk_gyeokmul:'gyeokmul',sk_gungri:'gungri',sk_jihaeng:'jihaeng',sk_silsa:'silsa',sk_haeche:'haeche',sk_ilgwan:'ilgwan',sk_bakhak:'bakhak',sk_hwalyeon:'hwalyeon'};
       if(targeted[c]){
@@ -3993,6 +4052,8 @@ async function gainLevels(){
       if(SKILLS[id].lv===P.lv&&!P.skills.includes(id)){
         P.skills.push(id);
         await bmsg('『주자어류』 새 장이 펼쳐졌다 — 스킬 <b>'+SKILLS[id].name+'</b> 습득!');
+        const inh=P.skills.filter(k=>SKILLS[k].sup===id);
+        if(inh.length)await bmsg('<small style="color:#aab">'+inh.map(k=>SKILLS[k].name).join(' · ')+'의 가르침이 <b>'+SKILLS[id].name+'</b>(으)로 계승되었다 — 전투 메뉴에서 접힌다. (「모든 스킬 보기」로 계속 사용 가능)</small>');
       }
     }
   }
@@ -4126,6 +4187,7 @@ function tileImg(t,x,y){
     const h=(x*31+y*17)%7;return h===0?A.tiles.G2:(h%2?A.tiles.G0:A.tiles.G1);
   }
   if(t==='X'&&S.chests[CUR+':'+x+','+y])return A.tiles.Xo;
+  if(CUR==='campus'&&(t==='B'||t==='R')&&x>=30&&x<=36&&y>=17&&y<=19)return A.tiles[t+'5']; // 교수동 외벽(석조) — 캠퍼스 내 차별화
   if((t==='B'||t==='R')&&MAP_THEME[CUR])return A.tiles[t+MAP_THEME[CUR]];
   if(t==='P'&&MAP_THEME[CUR]===4)return A.tiles.P4;
   return A.tiles[t]||A.tiles.G0;
@@ -4394,7 +4456,7 @@ function battleBg(){
     ctx.fillStyle=vip?'#171221':'#26222e';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
     return vip?'국제관 2층 · VIP 라운지':'국제관 1층 · 포스터 세션';
   }
-  if(CUR==='hum'){
+  if(CUR==='hum'||CUR==='hum2'){
     ctx.fillStyle='#2e2a38';ctx.fillRect(0,0,256,110);
     ctx.fillStyle='#3a3448';for(let x=0;x<256;x+=40)ctx.fillRect(x,0,2,110);
     ctx.fillStyle='#1f3a2e';ctx.fillRect(40,12,176,42);ctx.fillStyle='#2a4a3a';ctx.fillRect(40,12,176,3); // 칠판
@@ -4405,7 +4467,7 @@ function battleBg(){
     ctx.fillStyle='#27232e';ctx.fillRect(0,104,256,88);
     ctx.fillStyle='#211d28';for(let i=0;i<6;i++)ctx.fillRect(0,112+i*13,256,1);
     ctx.fillStyle='#332e3c';for(const bx of [28,108,188]){ctx.fillRect(bx,124,52,12);}
-    return '인문대 교수동 · 신임 교원의 복도';
+    return CUR==='hum2'?'교수동 2층 · 줌 강의동':'인문대 교수동 · 로비';
   }
   if(S.night){
     ctx.fillStyle='#101436';ctx.fillRect(0,0,256,120);
@@ -4591,6 +4653,28 @@ function newGame(){
   toast=M().name;toastT=performance.now();
   showDialog('',['안암의 봄. 입학식이 끝났다.','『주자어류』 한 권과 모나미 볼펜 — 이것이 전 재산이다.','북쪽 가운데가 본관. 그 아래 큰길 좌우 끝에 문과대와 도서관.','동쪽 아래엔 연구실, 남서쪽 길 끝엔 술집 골목이 있다.','잔디밭(초록)은 인카운터 구역. 골목엔 취객이 출몰한다.','X키(B버튼)로 메뉴를 열 수 있다. 먼저 완당 선생을 찾아가자.']);
 }
+// 보스턴 모드 — 1·2장을 건너뛰고 박사 학위 소지 상태로 3장부터 시작
+function bostonStart(){
+  sfx.ok();$('title').style.display='none';
+  // Lv20 박사 (gainLevels와 동일한 성장 공식으로 1→20 시뮬레이트)
+  while(P.lv<20){
+    P.lv++;
+    P.maxhp+=12;P.maxmp+=4;P.atk+=2;P.def=Math.floor(P.def+1.5);P.spd+=1;P.luk=Math.floor(P.luk+0.5);
+  }
+  P.hp=P.maxhp;P.mp=P.maxmp;P.xp=0;
+  P.skills=Object.keys(SKILLS).filter(id=>SKILLS[id].lv<=P.lv);   // Lv20까지의 12종
+  P.weapon='keyboard';                                            // 기계식 키보드 (ATK 15)
+  P.gold=150000;                                                  // 하버드-옌칭 정착 장학금
+  P.inv.yuengling=3;P.inv.buffalo=1;P.inv.poktanju=1;
+  S.boss1=1;S.boss2=1;S.card=1;S.ch2first=1;S.ch3first=1;        // 1·2장 수료 처리
+  checkTitles();S.title='phd';                                    // [문학석사]·[철학박사] 자동 획득, [철학박사] 장착
+  CUR='hsq';P.x=20;P.y=14;P.tx=20;P.ty=14;P.fx=20*TILE;P.fy=14*TILE;P.dir='up';P.moving=false;
+  S.visited[CUR]=1;MODE='map';updateHud();
+  toast=M().name;toastT=performance.now();
+  showDialog('',['【보스턴 모드】 — 1·2장을 수료한 박사로 시작합니다.','보스턴 로건 공항 — 그리고 빨간 벽돌의 하버드 스퀘어.','일리노이의 박사모를 쓰고, <b>하버드-옌칭연구소 포닥</b>으로 왔다.','지갑엔 정착 장학금 <b>₩150,000</b>. 『주자어류』는 이제 12장(章)까지 펼쳐져 있다.'],()=>{
+    showDialog('',['북서쪽 건물이 옌칭연구소 — 내 책상과 간이침대가 있다.','서쪽은 뉴버리 스트릿, 동쪽은 찰스 리버. 강 건너엔 MIT.','MIT 무한복도 끝엔 포닥들의 비밀 휴게실이 있다는 소문이.','남쪽 길은 롱우드 병원가로 이어진다. 공항(T 정거장)으로 서울·일리노이 왕복도 가능하다.','목표는 하나 — <b>단행본 논문을 완성하고, 교수가 되는 것.</b>']);
+  });
+}
 function titleInit(){
   const wrap=$('titleBtns');wrap.innerHTML='';
   // 최근 세이브 탐색 (오토 + 슬롯 1~3, 타임스탬프 비교)
@@ -4614,8 +4698,13 @@ function titleInit(){
       if(!confirm('새로 시작합니다. 기존 세이브 슬롯은 지워지지 않지만, 진행 중이던 모험은 타이틀로 돌아오기 전까지 저장되지 않습니다.'))return;
       newGame();
     });
+    mk('보스턴 모드 (3장부터)',()=>{
+      if(!confirm('보스턴 모드: 1·2장을 건너뛰고 Lv20 박사로 3장(보스턴)부터 시작합니다. 기존 세이브 슬롯은 지워지지 않습니다.'))return;
+      bostonStart();
+    },'Lv20 박사 · 스킬 12종 · 장학금 ₩150,000');
   }else{
     mk('▶ 입학',newGame);
+    mk('보스턴 모드 (3장부터)',bostonStart,'Lv20 박사 · 스킬 12종 · 장학금 ₩150,000');
   }
   mk('세이브 코드 불러오기',()=>{
     const code=prompt('세이브 코드를 붙여넣으세요');if(!code)return;

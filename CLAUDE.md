@@ -37,6 +37,8 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 - **v2.4 미니게임**: ① 찰스강 낚시 — `MODE='fishing'`(loop·pressA·pressB 분기), `startFishing/renderFishing/fishingAct`, 마커 타이밍→등급 추첨(`FISH_DB`/`FISH_BY_GRADE`), charles NPC `fisher`, 물고기 도감(`S.fish`). ② 체스 수읽기 — NPC `chessman`(플레이버에서 전용 핸들러로 승격), `CHESS_Q` 일일 3지선다(`S.chessDate`). ③ JK 시음회 — `jkTasting()`(jk3Build 메뉴), 일일(`S.tasteDate`). ④ 발도장 — goMap/시작/로드서 `S.visited[CUR]=1`, 도감 탭 표시. 신규 칭호 angler/master.
 - **v2.5 비주얼 1차**: 맵별 건물 팔레트(`MAP_THEME` 1=일리노이 적벽돌/2=보스턴 레드브릭/3=콘크리트, `tileImg` 분기) · 물 타일 물결 애니 · 지역 파티클(눈발/낙엽/반딧불) · 장식 타일 N/Q/Z(가로등·벤치·화단, gen_maps `deco()` 연결성 보존 자동 배치 66개, campus 야간 가로등 글로우).
 - **v2.6 비주얼 2차+콘텐츠**: 현대도시 테마4(B4 유리 커튼월·R4 옥상설비·P4 아스팔트·G4 보도블럭 — alley/longwood/mit, `URBAN_G`로 골목·롱우드만 바닥 도시화) · U 축구골대(mit 6,16/25,16) · 신규 몹 labstu(실험 망친 공대생, ENC_INF 전용: 폭주 시약 ×1.4+자해 8%·혼란 연기) · 미니맵 col N/Q/Z/U 보강.
+- **v2.7 경제**: 완전회복템 일반상점 삭제(보틀숍 wellerfp 제거 — JK 히든재고·보스턴 JK·야바위만) · 안암 야바위꾼(campus 16,12, `gamblerGame`: ₩30,000 가중뽑기 `GACHA_POOL` 합1000·파피2, 기대회수 ~₩7,300 = 골드 싱크).
+- **v2.8 종장 콘텐츠**: 타이틀 메뉴(`titleInit` — 이어서/처음부터/코드, `newGame` 분리) · **인문대 교수동 hum**(campus 33,19 D `lock:()=>!S.boss3`, 22×14): 연구실(E/O/X HP+30)·강의실·ENC_HUM 1/16 Lv33+ 몹 3종(evalghost 혼란/recpile 과로/meetghost 침묵·MP누수)·첫 강의 이벤트전(lectern NPC, quizstu 2웨이브 → `S.lecture1`+ATK+5)·미션 ch4 게이트(`!q.ch4||S.boss3`) · gen_maps `NPC_GUARD`(데코의 NPC 좌표 보호 — **NPCS 변경 시 동기 필수**).
 - **절대 금지**: 리포 이름/도메인 변경. localStorage는 origin 단위라 **모든 플레이어의 세이브가 증발**한다 (세이브 코드로만 이주 가능).
 - 업데이트 절차: `index.html` 덮어쓰기 + CHANGELOG 한 줄 + git tag. GH Pages 캐시 ~10분, 캐시버스팅 불필요.
 
@@ -124,7 +126,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 - S 플래그: `const S={…}` 와 `applySnapshot` 내 `const def={…}` **두 곳 동시 추가** (verify [8]이 비교)
 
 ### 4-3. 신규 요소 추가 체크리스트
-**NPC 추가** = ① NPCS 배치(빈 보행칸 위 아님 + 인접 보행칸 존재) ② `A.npc.키=` 스프라이트 ③ `npcTalk`에 `kind==='키'` 분기. 하나라도 빠지면 verify가 잡는다 (스프라이트 누락 → 투명 NPC였던 vgolem 사례).
+**NPC 추가** = ① NPCS 배치(빈 보행칸 위 아님 + 인접 보행칸 존재) ② `A.npc.키=` 스프라이트 ③ `npcTalk`에 `kind==='키'` 분기 ④ **데코 대상 맵이면 gen_maps `NPC_GUARD`에도 좌표 동기** (안 하면 데코가 NPC 위/주변에 깔림 — v2.5 rower-벤치 겹침 사고). 하나라도 빠지면 verify가 잡는다 (스프라이트 누락 → 투명 NPC였던 vgolem 사례).
 **상자 추가** = 맵에 X 타일(gen_maps) + `CHEST_DB['map:x,y']` (gold/item/note/stat/regen/flag 중 하나). `req:()=>bool, reqMsg:[…]`로 잠금 가능.
 **적 추가** = ENEMY_DB + `A.enemy.키` 스프라이트 + (기믹 있으면) enemyAct 분기 + verbs 테이블.
 **스킬 추가** = SKILLS + (단일기) `targeted`/`TM`/`CFG`/단일 라우트 조건 + 연출 분기, (비대상기) **playerCommand의 명시 `if(c==='sk_키')return{type:'키'}` 필수** (susin/beopgo 누락 사례) + playerAct 분기. MULT 테이블에 예상뎀 등록.

@@ -62,6 +62,11 @@ for y in (24,25):
     for x in range(9,17): c[y][x]='B'
 put(c,12,25,'D')
 hline(c,26,7,12,'P')   # 국제관 앞 도로 (골목길 x6 세로와 연결)
+# [v2.8] 인문대 교수동 (동측) rows17-19 cols30-36, 문 (33,19) — S.boss3([조교수]) 해금
+hline(c,17,30,36,'R')
+for y in (18,19):
+    for x in range(30,37): c[y][x]='B'
+put(c,33,19,'D')
 
 # ---------- 문과대 20x15 ----------
 l=grid(20,15,'F'); border(l,'B')
@@ -389,6 +394,23 @@ put(i2,12,2,'S')                      # 1층 계단
 for x in (4,7,10): i2[5][x]='C'       # 기조연설 단상
 put(i2,1,8,'X')                       # 상자
 
+# ---------- [v2.8] 인문대 교수동 22x14 — S.boss3 해금 엔드게임 (권장 Lv33+) ----------
+hm=grid(22,14,'F'); border(hm,'B')
+put(hm,10,13,'D')                     # 남쪽 문 → campus (33,20)
+# 좌측: 내 연구실 (벽 col7 rows1-5 + row6 cols1-7, 입구 (4,6))
+for y in range(1,6): hm[y][7]='B'
+for x in range(1,8): hm[6][x]='B'
+hm[6][4]='F'                          # 연구실 입구
+put(hm,2,2,'E'); put(hm,4,1,'O'); put(hm,2,4,'X'); put(hm,5,2,'C')
+# 우측: 강의실 (벽 col14 rows1-5 + row6 cols14-20, 입구 (17,6))
+for y in range(1,6): hm[y][14]='B'
+for x in range(14,21): hm[6][x]='B'
+hm[6][17]='F'                         # 강의실 입구
+for y in (3,4):
+    for x in (16,18,20): hm[y][x]='C' # 수강생 책상
+# 복도 장식: 게시판(K)
+for x in (10,12): hm[1][x]='K'
+
 MAPS={
  'campus':dict(g=c,name='안암 캠퍼스'),
  'liberal':dict(g=l,name='문과대'),
@@ -418,12 +440,13 @@ MAPS={
  'jobhall':dict(g=jh,name='임용 심사장'),
  'intl1':dict(g=i1,name='국제관 1층'),
  'intl2':dict(g=i2,name='국제관 2층'),
+ 'hum':dict(g=hm,name='인문대 교수동'),
 }
 
 # ---------- 검증 ----------
 # 보행 포털/도착점/상호작용 지점
 CHECK={
- 'campus':dict(start=(19,12),walk=[(6,28)],doors=[(19,4),(7,7),(31,7),(29,15),(10,20),(38,28),(12,25)],npc=[(17,6)],arrive=[(6,27),(7,8),(31,8),(19,5),(19,12),(29,16),(12,26)]),
+ 'campus':dict(start=(19,12),walk=[(6,28)],doors=[(19,4),(7,7),(31,7),(29,15),(10,20),(38,28),(12,25),(33,19)],npc=[(17,6)],arrive=[(6,27),(7,8),(31,8),(19,5),(19,12),(29,16),(12,26),(33,20)]),
  'liberal':dict(start=(10,13),walk=[(10,14)],doors=[],npc=[(16,4)],arrive=[(10,13)]),
  'library':dict(start=(12,18),walk=[(12,19),(22,2)],doors=[],npc=[(18,6)],arrive=[(12,18),(22,3)]),
  'stacks':dict(start=(22,3),walk=[(22,2)],doors=[(12,2),(19,17)],npc=[(1,17)],arrive=[(22,3)]),
@@ -451,6 +474,7 @@ CHECK={
  'jobhall':dict(start=(6,8),walk=[(6,9)],doors=[(4,2),(5,2),(6,2),(7,2),(2,2),(9,2)],npc=[],arrive=[(6,8)]),
  'intl1':dict(start=(7,8),walk=[(7,9)],doors=[(1,7)],npc=[(12,3)],arrive=[(7,8),(12,3)]),  # 계단(12,2)은 NPC 게이트 — doors에서 제외 (함정 #10 패턴)
  'intl2':dict(start=(12,3),walk=[(12,2)],doors=[(1,8)],npc=[(2,2)],arrive=[(12,3)]),
+ 'hum':dict(start=(10,12),walk=[],doors=[(10,13)],npc=[(2,2),(4,1),(2,4),(17,2),(10,4),(12,9)],arrive=[(10,12)]),
 }
 # ---------- v2.5 데코 패스: 장식 타일 자동 배치 (연결성 보존) ----------
 def _reach(g,sx,sy):
@@ -462,10 +486,26 @@ def _reach(g,sx,sy):
             if 0<=nx<w and 0<=ny<h and (nx,ny) not in seen and g[ny][nx] not in SOLID:
                 seen.add((nx,ny));dq.append((nx,ny))
     return seen
+# 데코 보호: 전체 NPC 좌표 (플레이버 포함 — index.html NPCS와 동기할 것!)
+NPC_GUARD={
+ 'campus':[(17,6),(16,9),(10,18),(16,12)],
+ 'quad':[(19,6),(6,21),(22,14)],
+ 'green':[(4,4),(9,4),(14,4),(17,4),(16,8)],
+ 'cafe':[(4,6),(9,6),(14,6),(8,9)],
+ 'hsq':[(11,11),(12,17),(17,12),(27,20),(33,11)],
+ 'newbury':[(13,4),(18,4),(7,5),(20,5)],
+ 'charles':[(10,12),(22,14),(16,10),(20,10),(6,8)],
+ 'mit':[(16,13),(25,12),(20,9)],
+ 'longwood':[(5,12),(9,12),(13,12),(17,12),(21,12),(13,15),(24,15),(7,11)],
+ 'jobhall':[],
+}
 def deco(mid,chars,n):
     g=MAPS[mid]['g'];h=len(g);w=len(g[0]);chk=CHECK[mid];sx,sy=chk['start']
     cur=len(_reach(g,sx,sy))
     protect=set(chk['walk'])|set(chk['doors'])|set(chk['npc'])|set(chk['arrive'])|{(sx,sy)}
+    for (nx,ny) in NPC_GUARD.get(mid,[]):  # NPC 본체 + 4방위(말 걸 공간) 보호
+        protect.add((nx,ny))
+        for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)): protect.add((nx+dx,ny+dy))
     placed=0
     for y in range(2,h-2):
         for x in range(2,w-2):

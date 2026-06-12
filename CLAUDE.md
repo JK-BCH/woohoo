@@ -109,6 +109,7 @@ python3 gen_maps.py        # → maps.js 재생성 + BFS 통행성 검증 자동
 | A | 공항·역 표지판 | × | travelMenu |
 | Y/H/M | 갈대·옥수수/디버그 돌탑/물 | × | M은 3장 신설 |
 | S | 계단 | ○(밟으면 WALKP) | 유니언 던전 |
+| N/Q/Z | 가로등/벤치/화단 | × | v2.5 장식. gen_maps `deco()` 자동 배치(연결성 보존), tryInteract 플레이버. N은 campus 야간 글로우 |
 
 ### 4-2. verify.js가 기대하는 소스 포맷 (깨뜨리면 검증이 눈멂)
 - 맵: ` mapid:{name:"이름",tiles:["...","..."]},` — **한 줄**, 앞에 공백 1칸

@@ -3,7 +3,7 @@
 import json, sys
 from collections import deque
 
-SOLID=set('TBWDLRKCVXJOYAHEM')  # S,F,G,P 통행 가능
+SOLID=set('TBWDLRKCVXJOYAHEMNQZ')  # S,F,G,P 통행 가능 (N가로등 Q벤치 Z화단 = 장식)
 
 def grid(w,h,fill='G'):
     return [[fill]*w for _ in range(h)]
@@ -450,6 +450,40 @@ CHECK={
  'intl1':dict(start=(7,8),walk=[(7,9)],doors=[(1,7)],npc=[(12,3)],arrive=[(7,8),(12,3)]),  # 계단(12,2)은 NPC 게이트 — doors에서 제외 (함정 #10 패턴)
  'intl2':dict(start=(12,3),walk=[(12,2)],doors=[(1,8)],npc=[(2,2)],arrive=[(12,3)]),
 }
+# ---------- v2.5 데코 패스: 장식 타일 자동 배치 (연결성 보존) ----------
+def _reach(g,sx,sy):
+    h=len(g);w=len(g[0]);seen={(sx,sy)};dq=deque([(sx,sy)])
+    while dq:
+        x,y=dq.popleft()
+        for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
+            nx,ny=x+dx,y+dy
+            if 0<=nx<w and 0<=ny<h and (nx,ny) not in seen and g[ny][nx] not in SOLID:
+                seen.add((nx,ny));dq.append((nx,ny))
+    return seen
+def deco(mid,chars,n):
+    g=MAPS[mid]['g'];h=len(g);w=len(g[0]);chk=CHECK[mid];sx,sy=chk['start']
+    cur=len(_reach(g,sx,sy))
+    protect=set(chk['walk'])|set(chk['doors'])|set(chk['npc'])|set(chk['arrive'])|{(sx,sy)}
+    placed=0
+    for y in range(2,h-2):
+        for x in range(2,w-2):
+            if placed>=n: return placed
+            if (x,y) in protect: continue
+            if (x*7+y*5)%3: continue            # 듬성듬성 (~1/3 후보)
+            if g[y][x]!='G': continue           # 잔디에만 (길 P는 보존)
+            ok2=all(g[y+dy][x+dx] in 'GPTNQZ' for dx,dy in((1,0),(-1,0),(0,1),(0,-1)))
+            if not ok2: continue                # 4방위 자연 — 구조물·포털·NPC 회피
+            orig=g[y][x];g[y][x]=chars[placed%len(chars)]
+            r=len(_reach(g,sx,sy))
+            if r==cur-1: placed+=1;cur=r        # cut-vertex 아닐 때만 (직전 대비 -1)
+            else: g[y][x]=orig
+    return placed
+# 외부 맵에 가로등(N)·벤치(Q)·화단(Z) 배치 — 황량한 잔디·포장 길을 채운다
+for mid,chars,n in [
+    ('campus','NQZ',12),('quad','NQZ',10),('green','QZ',4),('cafe','QZ',4),
+    ('hsq','NQZ',12),('newbury','QZ',5),('charles','QZ',6),('mit','NQZ',8),
+    ('longwood','NQ',5),('jobhall','QZ',3)]:
+    deco(mid,chars,n)
 ok=True
 for mid,info in MAPS.items():
     g=info['g']; w=len(g[0]); h2=len(g)

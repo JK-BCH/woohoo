@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>격물치지 — 어느 대학원생의 모험 v2.3</title>
+<title>격물치지 — 어느 대학원생의 모험 v2.4</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; background:#14141c; color:#eee; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; overflow:hidden; }
@@ -66,7 +66,7 @@
     <div id="fieldMenu" class="rpgwin"></div>
     <div id="title">
       <h1>격물치지</h1>
-      <div class="sub">— 어느 대학원생의 모험 · v2.3 —<br><br>
+      <div class="sub">— 어느 대학원생의 모험 · v2.4 —<br><br>
         이동: 방향키/WASD 또는 가상패드<br>
         결정·조사: <b>Z</b>(A버튼) / 취소·메뉴: <b>X</b>(B버튼)<br><br>
         안암 캠퍼스, 문과대, 도서관과 깊은 서고,<br>술집 골목, 그리고 본관 심사장.<br>1장의 모든 곳이 열렸다.</div>
@@ -161,7 +161,7 @@ const NPCS={
   yenching:[{x:5,y:2,kind:'yenmail'},{x:9,y:3,kind:'thesis'},{x:5,y:6,kind:'archivist'}],
   banana:[{x:10,y:2,kind:'banguide'}],
   newbury:[{x:13,y:4,kind:'bostonliq'},{x:18,y:4,kind:'gadget'},{x:7,y:5,kind:'rock'},{x:20,y:5,kind:'shopper'}],
-  charles:[{x:10,y:12,kind:'moon'},{x:22,y:14,kind:'gooseboss',cond:()=>!S.gooseboss},{x:16,y:10,kind:'rower'},{x:20,y:10,kind:'nightshift'}],
+  charles:[{x:10,y:12,kind:'moon'},{x:22,y:14,kind:'gooseboss',cond:()=>!S.gooseboss},{x:16,y:10,kind:'rower'},{x:20,y:10,kind:'nightshift'},{x:6,y:8,kind:'fisher'}],
   mit:[{x:16,y:13,kind:'moktree',cond:()=>!S.mok},{x:25,y:12,kind:'han'},{x:20,y:9,kind:'hacker'}],
   infinite:[{x:19,y:2,kind:'lostfresh'}],
   longwood:[{x:5,y:12,kind:'bwh1'},{x:9,y:12,kind:'bwh2'},{x:13,y:12,kind:'bwh3'},{x:17,y:12,kind:'bwh4'},{x:21,y:12,kind:'bwh5'},{x:13,y:15,kind:'jk3'},{x:24,y:15,kind:'tumorboss',cond:()=>!S.tumorboss},{x:7,y:11,kind:'mdfriend'}],
@@ -290,6 +290,33 @@ const HAN_DISHES=[
   {n:'랍스터 비빔국수',f:()=>{P.spd+=2;},txt:'마감력(SPD)이 영구히 +2'},
   {n:'클램차우더 순두부',f:()=>{P.luk+=3;},txt:'통찰(LUK)이 영구히 +3'}
 ];
+// ===== v2.4 낚시: 물고기 도감 =====
+const FISH_DB={
+  charlesbeast:{n:'찰스강의 괴어',grade:'전설',gold:50000},
+  trout:{n:'무지개 송어',grade:'희귀',gold:12000},
+  bass:{n:'큰입배스',grade:'희귀',gold:10000},
+  eel:{n:'민물장어',grade:'희귀',gold:14000},
+  carp:{n:'잉어',grade:'일반',gold:3000},
+  bluegill:{n:'블루길',grade:'일반',gold:2000},
+  catfish:{n:'메기',grade:'일반',gold:3500},
+  perch:{n:'옐로우 퍼치',grade:'일반',gold:2500},
+  boot:{n:'낡은 장화',grade:'잡템',gold:100},
+  can:{n:'찌그러진 캔',grade:'잡템',gold:50},
+  draft:{n:'물에 젖은 논문 초고',grade:'잡템',gold:0},
+  goosefeather:{n:'젖은 거위 깃털',grade:'잡템',gold:500}
+};
+const FISH_BY_GRADE={'전설':['charlesbeast'],'희귀':['trout','bass','eel'],'일반':['carp','bluegill','catfish','perch'],'잡템':['boot','can','draft','goosefeather']};
+// ===== v2.4 체스 노인 수읽기 (일일 3지선다) =====
+const CHESS_Q=[
+  {q:'「폰 하나가 적진 끝에 도달했다. 무엇으로 승급하는 게 최선인가?」',a:['퀸','나이트','비숍'],c:0},
+  {q:'「상대 킹을 한 수에 외통(체크메이트)으로 몰 수 있다. 우선순위는?」',a:['기물을 더 모은다','즉시 외통을 노린다','킹을 안전하게 숨긴다'],c:1},
+  {q:'「오프닝에서 가장 먼저 발전시켜야 할 것은?」',a:['퀸을 일찍 내보낸다','중앙을 장악하고 기물을 전개','룩을 구석에서 흔든다'],c:1},
+  {q:'「내 킹이 노출됐다. 가장 급한 일은?」',a:['공격을 계속한다','캐슬링으로 안전 확보','폰을 전진시킨다'],c:1},
+  {q:'「가치로 따질 때 가장 비싼 기물은? (킹 제외)」',a:['룩','퀸','나이트'],c:1},
+  {q:'「상대가 내 퀸을 공짜로 잡을 수 있게 뒀다. 이건?」',a:['덫일 수 있으니 의심','무조건 받는다','기권한다'],c:0},
+  {q:'「엔드게임에서 폰의 가치는?」',a:['초반보다 떨어진다','승급 때문에 매우 높다','변함없다'],c:1},
+  {q:'「대학원도 체스와 같다네. 가장 중요한 건?」',a:['끝까지 버티는 것','화려한 한 수','남보다 빠른 시작'],c:0}
+];
 // ===== v2.2 수집: 트로피 (순수 수집 — 도감 전시용) =====
 const TROPHIES={
   slimecore:{n:'서류 슬라임의 코어',src:'slime',rate:0.03,d:'반려 서류의 응어리'},
@@ -315,7 +342,9 @@ const TITLES={
   collector:{n:'수집가',d:'트로피 5종',eff:'통찰 가드 +3%p',cond:()=>Object.keys(S.trophies||{}).length>=5},
   resilient:{n:'현타 극복',d:'현타 3회 극복',eff:'패배 골드 손실 50%→30%',cond:()=>S.hyunta>=3},
   rich:{n:'백만장자',d:'₩1,000,000 보유 달성',eff:'자판기 할증 면제',cond:()=>S.richSeen>=1},
-  catfriend:{n:'고양이의 친구',d:'올리·꽈이꽈이와 우정',eff:'고양이 조우 시 항상 좋은 일',cond:()=>S.olli>=5&&S.kwai>=5}
+  catfriend:{n:'고양이의 친구',d:'올리·꽈이꽈이와 우정',eff:'고양이 조우 시 항상 좋은 일',cond:()=>S.olli>=5&&S.kwai>=5},
+  angler:{n:'낚시왕',d:'물고기 도감 완성',eff:'전투 골드 +5%(중첩X)',cond:()=>Object.keys(S.fish||{}).length>=Object.keys(FISH_DB).length},
+  master:{n:'수읽기의 대가',d:'체스 노인에게 10승',eff:'전투 첫 턴 선공 보정',cond:()=>S.chessWins>=10}
 };
 function checkTitles(){
   const got=[];
@@ -385,7 +414,8 @@ const S={slimeKills:0,spiritKills:0,bought:0,talked:0,hyunta:0,boss1:0,
   gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
   intlKills:0,tenureSeen:0,
   dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
-  revPoints:0,revBest:0,revClears:0,dailyDate:''};
+  revPoints:0,revBest:0,revClears:0,dailyDate:'',
+  fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
 let wandangIdx=0;
 let REV=null;
 let MODE='title';
@@ -818,6 +848,10 @@ function buildNpc(){
   A.npc.tenure=mkPerson('#d8d8e0','#3a3040',g=>{
     px(g,4,4,3,2,'rgba(80,80,120,.6)');px(g,9,4,3,2,'rgba(80,80,120,.6)');px(g,7,5,2,1,'#445');
     px(g,12,7,2,7,'#7a5c3a');px(g,11,6,4,1,'#caa53d');    // 황금 손잡이 지팡이
+  });
+  A.npc.fisher=mkPerson('#5a4632','#3a6e5a',g=>{
+    px(g,3,1,10,3,'#caa53d');px(g,2,3,12,1,'#b5923a');   // 밀짚모자
+    px(g,12,2,2,12,'#7a5c3a');px(g,13,1,1,3,'#5a4226');  // 낚싯대
   });
   {const c=mkC(16,16),g=c.getContext('2d');   // 리비전의 문 — 보라색 차원문
     px(g,3,1,10,14,'#2a1840');px(g,4,2,8,12,'#3a2458');
@@ -1292,11 +1326,13 @@ $('btnA').addEventListener('pointerdown',e=>{e.preventDefault();pressA();});
 $('btnB').addEventListener('pointerdown',e=>{e.preventDefault();pressB();});
 $('menuHint').addEventListener('click',()=>{if(MODE==='map')openFieldMenu();});
 function pressA(){
+  if(MODE==='fishing'){fishingAct();return;}
   if(MODE==='dialog'){advanceDialog();return;}
   if(menuBtns.length){clickFocused();return;}
   if(MODE==='map'){tryInteract();return;}
 }
 function pressB(){
+  if(MODE==='fishing'){MODE='map';FISH=null;sfx.ok();return;}
   if(menuCancel){menuCancel();return;}
   if(MODE==='map')openFieldMenu();
 }
@@ -1364,6 +1400,7 @@ async function goMap(to,x,y,d){
   CUR=to;P.x=x;P.y=y;P.tx=x;P.ty=y;P.fx=x*TILE;P.fy=y*TILE;P.moving=false;if(d)P.dir=d;
   toast=M().name;toastT=performance.now();
   flashOn=false;MODE='map';sfx.step();
+  if(!S.visited[CUR]){S.visited[CUR]=1;}
   autoSave();
 }
 function stepDone(){
@@ -1495,7 +1532,34 @@ function flavorTalk(kind){
   flavorIdx[kind]++;
 }
 function npcTalk(kind){
-  if(kind==='flyerstu'||kind==='oldprof'||kind==='sleepgrad'||kind==='cramstu'||kind==='regular'||kind==='frisbee'||kind==='tailgate'||kind==='laptopper'||kind==='roommate'||kind==='studygrp'||kind==='chessman'||kind==='busker'||kind==='tourist'||kind==='shopper'||kind==='rower'||kind==='hacker'||kind==='mdfriend'||kind==='archivist'||kind==='lostfresh'){flavorTalk(kind);return;}
+  if(kind==='flyerstu'||kind==='oldprof'||kind==='sleepgrad'||kind==='cramstu'||kind==='regular'||kind==='frisbee'||kind==='tailgate'||kind==='laptopper'||kind==='roommate'||kind==='studygrp'||kind==='busker'||kind==='tourist'||kind==='shopper'||kind==='rower'||kind==='hacker'||kind==='mdfriend'||kind==='archivist'||kind==='lostfresh'){flavorTalk(kind);return;}
+  if(kind==='fisher'){
+    sfx.ok();
+    const cnt=Object.keys(S.fish||{}).length;
+    openMenu('<b style="color:#ffd866">찰스강 낚시터</b> — 강태공 노인이 자리를 비켜준다.<br><span style="color:#aab;font-size:12px">찌가 가운데(노랑)에 올 때 챔질하면 큰 물고기. 도감 '+cnt+'/'+Object.keys(FISH_DB).length+' 종</span>',[
+      {label:'낚싯대를 던진다',fn:()=>{closeMenu();startFishing();}},
+      {label:'물고기 도감을 본다',fn:()=>{closeMenu();openFieldMenu();fmView('dex');}},
+      {label:'나간다',fn:()=>{closeMenu();MODE='map';}}
+    ],()=>{closeMenu();MODE='map';});
+    return;
+  }
+  if(kind==='chessman'){
+    sfx.ok();
+    const today=new Date().toISOString().slice(0,10);
+    if(S.chessDate===today){showDialog('체스 두는 노인',['오늘 한 판은 이미 뒀지. 내일 또 오게.','「폰도 끝까지 가면 퀸이 돼.」 …자네처럼 말이야.']);return;}
+    const Q=CHESS_Q[(new Date().getDate()+(S.chessWins||0))%CHESS_Q.length];
+    showDialog('체스 두는 노인',['한 수 두지. '+Q.q],()=>{
+      openMenu('어떻게 두겠나? <span style="color:#aab;font-size:12px">(하루 1회 · 정답 시 보상)</span>',
+        Q.a.map((opt,i)=>({label:opt,fn:()=>{closeMenu();S.chessDate=today;
+          if(i===Q.c){S.chessWins=(S.chessWins||0)+1;const g=5000+S.chessWins*500;P.gold+=g;updateHud();sfx.lvl();
+            const nt=checkTitles();
+            showDialog('체스 두는 노인',['「…훌륭해. 자네, 보는 눈이 있군.」','정답이다! '+fmt(g)+'을 받았다. (누적 '+S.chessWins+'승)'].concat(nt.map(t=>'<b style="color:#ffd866">칭호 〈'+t+'〉 획득!</b>')));
+          }else{sfx.crash();showDialog('체스 두는 노인',['「쯧. 한 수 앞을 못 보는군.」','…오답이다. 내일 다시 도전하게.','(정답: '+Q.a[Q.c]+')']);}
+        }})).concat([{label:'…모르겠다',fn:()=>{closeMenu();MODE='map';}}]),
+        ()=>{closeMenu();MODE='map';});
+    });
+    return;
+  }
   if(kind==='wandang'){
     sfx.ok();S.talked++;
     const pool=CUR==='quad'?WANDANG_IL:(S.boss1?WANDANG_AFTER:WANDANG_LINES);
@@ -2036,6 +2100,55 @@ function vendingShop(stock){
     ()=>{closeMenu();MODE='map';});
   build('심사 전 마지막 보급이다.');
 }
+// ===== v2.4 낚시 미니게임 =====
+let FISH=null;
+function startFishing(){
+  MODE='fishing';
+  FISH={x:0,dir:1,spd:0.55+Math.random()*0.35,phase:'cast',res:null};
+}
+function fishingAct(){
+  if(!FISH)return;
+  if(FISH.phase!=='cast'){MODE='map';FISH=null;return;}
+  const d=Math.abs(FISH.x-0.5);
+  let grade;
+  if(d<0.045)grade='전설';else if(d<0.13)grade='희귀';else if(d<0.30)grade='일반';else grade='잡템';
+  if(grade==='전설'&&Math.random()<0.5)grade='희귀'; // 전설은 정중앙+추가 확률
+  const pool=FISH_BY_GRADE[grade];
+  const key=pool[Math.floor(Math.random()*pool.length)];
+  const f=FISH_DB[key];
+  const first=!S.fish[key];
+  S.fish[key]=(S.fish[key]||0)+1;
+  P.gold+=f.gold;updateHud();
+  FISH=null;MODE='map';
+  sfx[grade==='잡템'?'crash':'lvl']();
+  const lines=[];
+  if(grade==='잡템')lines.push('…뭔가 걸렸다. 끌어올려 보니 〈'+f.n+'〉.');
+  else lines.push('<b style="color:#ffd866">'+grade+'</b> — 〈'+f.n+'〉을(를) 낚았다!');
+  lines.push((f.gold>0?fmt(f.gold)+'에 팔 수 있다. (자동 정산)':'…팔 수도 없다.')+(first?' <span style="color:#56d364">(도감 신규 등록!)</span>':''));
+  if(key==='charlesbeast'&&first){S.trophies.charlesbeast=1;lines.push('<b style="color:#9a6aff">전설의 괴어!</b> 트로피로 박제했다.');}
+  const newT=checkTitles();
+  for(const tn of newT)lines.push('<b style="color:#ffd866">칭호 〈'+tn+'〉 획득!</b>');
+  showDialog('낚시',lines);
+}
+function renderFishing(dt){
+  FISH.x+=FISH.dir*FISH.spd*(dt/1000);
+  if(FISH.x>=1){FISH.x=1;FISH.dir=-1;}else if(FISH.x<=0){FISH.x=0;FISH.dir=1;}
+  const grd=ctx.createLinearGradient(0,0,0,192);
+  grd.addColorStop(0,'#a8c8e8');grd.addColorStop(0.5,'#5a82a8');grd.addColorStop(1,'#2a5482');
+  ctx.fillStyle=grd;ctx.fillRect(0,0,256,192);
+  for(let i=0;i<5;i++){ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(0,60+i*24+(animT/40+i*30)%24*0,256,2);}
+  ctx.fillStyle='#1a1a22';ctx.fillRect(40,20,4,70);ctx.fillStyle='#8a6a44';ctx.fillRect(38,14,8,8);
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.beginPath();ctx.moveTo(44,20);ctx.lineTo(128,96);ctx.stroke();
+  ctx.fillStyle='#e24b4a';ctx.beginPath();ctx.arc(128,96,4,0,Math.PI*2);ctx.fill();
+  const bx=28,bw=200,by=140;
+  ctx.fillStyle='rgba(10,10,24,.7)';ctx.fillRect(bx-4,by-10,bw+8,30);
+  ctx.fillStyle='#2a2a3a';ctx.fillRect(bx,by,bw,12);
+  ctx.fillStyle='#3a8a4a';ctx.fillRect(bx+bw*0.30,by,bw*0.40,12);
+  ctx.fillStyle='#ffd866';ctx.fillRect(bx+bw*0.45,by,bw*0.10,12);
+  ctx.fillStyle='#fff';ctx.fillRect(bx+bw*FISH.x-1,by-4,3,20);
+  ctx.fillStyle='#fff';ctx.font='9px sans-serif';ctx.textAlign='center';
+  ctx.fillText('Z: 챔질!  (가운데 노랑일수록 大物)',128,178);ctx.textAlign='left';
+}
 function travelMenu(){
   sfx.ok();
   const here=CUR==='campus'?'seoul':(CUR==='hsq'?'boston':'illinois');
@@ -2176,8 +2289,27 @@ function jk3Build(msg){
   reg.forEach(k=>opts.push({label:ITEMS[k].name+(BUYQ>1?' ×'+BUYQ:'')+' ('+fmt(shopPrice(k)*BUYQ)+(S.cafeStamp?' <span style="color:#56d364">▼</span>':'')+') <small>'+ITEMS[k].short+'</small>',disabled:P.gold<shopPrice(k)*BUYQ,
     fn:()=>{P.gold-=shopPrice(k)*BUYQ;P.inv[k]+=BUYQ;S.bought++;updateHud();jk3Build('Cheers.');}}));
   opts.push(buyqBtn(()=>jk3Build('Cheers.')));
+  const today=new Date().toISOString().slice(0,10);
+  opts.push({label:'<b style="color:#f0d080">블라인드 시음회</b> '+(S.tasteDate===today?'<small>(내일 다시)</small>':'— 도전'),disabled:S.tasteDate===today,fn:()=>{closeMenu();jkTasting();}});
   opts.push({label:'나가기',fn:()=>{closeMenu();MODE='map';}});
   openMenu(head,opts,()=>{closeMenu();MODE='map';});
+}
+function jkTasting(){
+  sfx.ok();
+  const today=new Date().toISOString().slice(0,10);
+  const pool=['poktanju','yuengling','barolo','barbaresco','stagg','wellerfp','buffalo','pappy','nightshift'];
+  const ans=pool[Math.floor(Math.random()*pool.length)];
+  const wrong=pool.filter(k=>k!==ans).sort(()=>Math.random()-0.5).slice(0,2);
+  const opts=[ans,...wrong].sort(()=>Math.random()-0.5);
+  showDialog('JK',['「눈 감고 한 모금. …이게 뭔지 맞혀 보게.」','힌트: <b>'+ITEMS[ans].short+'</b>'],()=>{
+    openMenu('이 술은 무엇일까? <span style="color:#aab;font-size:12px">(하루 1회 · 정답 시 그 술 1병)</span>',
+      opts.map(k=>({label:ITEMS[k].name,fn:()=>{closeMenu();S.tasteDate=today;
+        if(k===ans){P.inv[ans]=(P.inv[ans]||0)+1;S.drank[ans]=1;updateHud();sfx.lvl();
+          showDialog('JK',['「…정확해. 자네 혀, 박사급이야.」','〈'+ITEMS[ans].name+'〉 한 병을 상으로 받았다!']);
+        }else{sfx.crash();showDialog('JK',['「땡. 그건 '+ITEMS[k].name+'이 아니라 '+ITEMS[ans].name+'이었어.」','…내일 다시 와. 혀는 훈련이지.']);}
+      }})).concat([{label:'…모르겠다',fn:()=>{closeMenu();MODE='map';}}]),
+      ()=>{closeMenu();MODE='map';});
+  });
 }
 function shopPrice(k){let p=S.cafeStamp?Math.round(ITEMS[k].price*0.9):ITEMS[k].price;if(S.title==='prof')p=Math.round(p*0.95);return p;}
 let BUYQ=1;
@@ -2315,12 +2447,17 @@ function fmView(view){
     const drRows=iKeys.map(k=>S.drank[k]?'<tr><td>'+ITEMS[k].name+'</td><td style="color:#aab;font-size:11px">'+ITEMS[k].short+'</td></tr>':'<tr><td style="color:#666">???</td><td></td></tr>').join('');
     const ckRows=HAN_DISHES.map((d,i)=>S.cooked[i]?'<tr><td>'+d.n+'</td><td style="color:#aab;font-size:11px">'+d.txt+'</td></tr>':'<tr><td style="color:#666">???</td><td></td></tr>').join('');
     const trRows=tKeys.map(k=>S.trophies[k]?'<tr><td>'+TROPHIES[k].n+'</td><td style="color:#aab;font-size:11px">'+TROPHIES[k].d+'</td></tr>':'<tr><td style="color:#666">???</td><td></td></tr>').join('');
+    const fKeys=Object.keys(FISH_DB),fsh=fKeys.filter(k=>S.fish[k]).length;
+    const fRows=fKeys.map(k=>S.fish[k]?'<tr><td>'+FISH_DB[k].n+' <span style="color:#888">×'+S.fish[k]+'</span></td><td style="color:#aab;font-size:11px">'+FISH_DB[k].grade+' · '+fmt(FISH_DB[k].gold)+'</td></tr>':'<tr><td style="color:#666">???</td><td></td></tr>').join('');
+    const vis=Object.keys(S.visited||{}).length;
     html='<h3>도감 · 칭호</h3>'+
       '<p style="font-size:12px;margin:4px 0"><b>칭호</b> — 장착 중: '+(S.title&&TITLES[S.title]?'<b style="color:#ffd866">['+TITLES[S.title].n+']</b> ('+TITLES[S.title].eff+')':'없음')+'</p><table>'+ttlRows+'</table>'+
       '<p style="font-size:12px;margin:8px 0 2px"><b>몬스터</b> '+seen+'/'+eKeys.length+'</p><table>'+exRows+'</table>'+
       '<p style="font-size:12px;margin:8px 0 2px"><b>술 · 음식</b> '+drk+'/'+iKeys.length+'</p><table>'+drRows+'</table>'+
       '<p style="font-size:12px;margin:8px 0 2px"><b>합체요리</b> '+ckd+'/'+HAN_DISHES.length+'</p><table>'+ckRows+'</table>'+
+      '<p style="font-size:12px;margin:8px 0 2px"><b>물고기</b> '+fsh+'/'+fKeys.length+' <span style="color:#888">(찰스강 낚시)</span></p><table>'+fRows+'</table>'+
       '<p style="font-size:12px;margin:8px 0 2px"><b>트로피</b> '+tro+'/'+tKeys.length+'</p><table>'+trRows+'</table>'+
+      '<p style="font-size:12px;margin:8px 0 2px"><b>발도장</b> '+vis+'/'+Object.keys(MAPS).length+' 지역 방문</p>'+
       '<br><div class="btnrow">'+back+'</div>';
   }
   else if(view==='save'){
@@ -2411,9 +2548,11 @@ function applySnapshot(d){
     gooseboss:0,tumorboss:0,bell:0,nightfirst:0,bountyKills:0,bountyClaims:0,thesisStarted:0,
     intlKills:0,tenureSeen:0,
     dex:{},drank:{},cooked:{},trophies:{},titles:{},title:'',winCount:0,richSeen:0,
-    revPoints:0,revBest:0,revClears:0,dailyDate:''};
+    revPoints:0,revBest:0,revClears:0,dailyDate:'',
+    fish:{},visited:{},chessDate:'',tasteDate:'',chessWins:0};
   Object.assign(S,def,d.S||{});
   CUR=(d.cur&&MAPS[d.cur])?d.cur:'campus';
+  if(S.visited)S.visited[CUR]=1;
   wandangIdx=d.w||0;updateHud();
 }
 function saveSlot(i){rawSave('gmcz_save_'+i,JSON.stringify(snapshot()));sfx.heal();}
@@ -3971,6 +4110,8 @@ function loop(t){
     renderMap();
   }else if(MODE==='battle'){
     renderBattle();
+  }else if(MODE==='fishing'){
+    renderFishing(dt);
   }else if(MODE==='flash'){
     if(B)renderBattle();else renderMap();
     if(flashOn){ctx.fillStyle=flashColor;ctx.fillRect(0,0,256,192);}
@@ -3980,6 +4121,7 @@ function loop(t){
 // ============ 시작 ============
 $('startBtn').addEventListener('click',()=>{
   sfx.ok();$('title').style.display='none';MODE='map';updateHud();
+  S.visited[CUR]=1;
   toast=M().name;toastT=performance.now();
   showDialog('',['안암의 봄. 입학식이 끝났다.','『주자어류』 한 권과 모나미 볼펜 — 이것이 전 재산이다.','북쪽 가운데가 본관. 그 아래 큰길 좌우 끝에 문과대와 도서관.','동쪽 아래엔 연구실, 남서쪽 길 끝엔 술집 골목이 있다.','잔디밭(초록)은 인카운터 구역. 골목엔 취객이 출몰한다.','X키(B버튼)로 메뉴를 열 수 있다. 먼저 완당 선생을 찾아가자.']);
 });

@@ -1254,34 +1254,52 @@ function start(){
   startBgm();
   requestAnimationFrame(loop);
 }
-const SRC_NAMES={gun:'📄 논문 투고',nova:'🎤 학회 발표',orbit:'👥 공동연구자',chain:'⚡ 인용 연쇄',beam:'🔆 논문 레이저',hole:'🕳️ 블랙홀',flame:'🔥 화염방사',freeze:'❄️ 빙결',missile:'🚀 유도탄'};
 function gameOver(){
   running=false;
   stopBgm();
   const m=Math.floor(G.t/60), s=Math.floor(G.t%60), dur=Math.max(1,G.t);
   const total=G.dmgTotal||0, dps=total/dur;
   const fmt=n=>Math.round(n).toLocaleString();
-  // 딜 기여도 (어떤 스킬이 좋았나)
+  const S=G.stat, lv=id=>upLevels[id]||0, mx1=v=>Math.max(1,v);
+  const critPct=Math.round(S.crit*100);
+  // 스킬별 상세 (평타강화 패시브는 평타에 합산해 스탯으로 표기)
+  const info=k=>{
+    switch(k){
+      case 'gun': return {nm:'📄 평타 (논문 투고)', evo:S.evo.preprint?'프리프린트 폭격':(S.evo.coauthor?'대형 컨소시엄':(S.evo.meta?'체계적 리뷰':(S.evo.nature?'Nature 표지':''))),
+        sub:`타격 ~${Math.round(8*S.dmg)} ×${S.projCount}발 · 공격 Lv${lv('dmg')} · 연사 Lv${lv('fire')} · 관통 ${1+S.pierce} · 치명 ${critPct}%(×${S.critMul})`};
+      case 'nova': return {nm:'🎤 학회 발표', lvl:lv('nova'), evo:S.evo.keynote?'기조 강연':'', sub:`폭발 ~${Math.round(20*S.dmg*mx1(lv('nova')))} · 3초마다`};
+      case 'orbit': return {nm:'👥 공동연구자', lvl:lv('orbit'), evo:S.evo.lab?'대형 연구실':'', sub:`접촉 ~${Math.round(12*S.dmg)}/회 · 위성 ${S.extraWeapons.orbit}개`};
+      case 'chain': return {nm:'⚡ 인용 연쇄', lvl:lv('chain'), evo:S.evo.surge?'동료 인용 폭주':'', sub:`연쇄 ~${Math.round(16*S.dmg*(1+0.4*mx1(lv('chain'))))} ×${2+mx1(lv('chain'))}타`};
+      case 'beam': return {nm:'🔆 논문 레이저', lvl:lv('beam'), evo:S.evo.carpet?'리뷰 융단 레이저':'', sub:`빔 ~${Math.round(30*S.dmg*mx1(lv('beam')))} · 관통`};
+      case 'hole': return {nm:'🕳️ 데드라인 블랙홀', lvl:lv('hole'), evo:'', sub:`흡입 ~${Math.round(7*S.dmg*mx1(lv('hole')))}/0.2초`};
+      case 'flame': return {nm:'🔥 분젠 화염방사', lvl:lv('flame'), evo:S.evo.inferno?'초전도 인페르노':'', sub:`화염 ~${Math.round(9*S.dmg*mx1(lv('flame')))} + 화상 ${Math.round((S.evo.inferno?9:5)*S.dmg)}/0.4초`};
+      case 'freeze': return {nm:'❄️ 액체질소 빙결', lvl:lv('freeze'), evo:'', sub:`피해 ~${Math.round(8*S.dmg*mx1(lv('freeze')))} + 광역 동결`};
+      case 'missile': return {nm:'🚀 예산 유도탄', lvl:lv('missile'), evo:S.evo.swarm?'대량 살포':'', sub:`폭발 ~${Math.round(24*S.dmg)} ×${(S.evo.swarm?2:1)+mx1(lv('missile'))}발`};
+    }
+    return {nm:k};
+  };
   const rows=Object.keys(G.dmgBy).filter(k=>G.dmgBy[k]>0).sort((a,b)=>G.dmgBy[b]-G.dmgBy[a]);
-  const dmgHtml = rows.map((k,i)=>{
-    const v=G.dmgBy[k], pct=total>0?v/total*100:0;
-    return `<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0;">
-      <span style="width:108px;text-align:left;white-space:nowrap;">${i===0?'⭐':''}${SRC_NAMES[k]||k}</span>
-      <span style="flex:1;height:9px;background:#1c2233;border-radius:5px;overflow:hidden;"><span style="display:block;height:100%;width:${pct.toFixed(0)}%;background:${i===0?'#ffd479':'#48d1ff'};"></span></span>
-      <span style="width:62px;text-align:right;color:#9aa5bd;">${pct.toFixed(0)}% · ${fmt(v)}</span>
+  const cards = rows.map((k,i)=>{
+    const v=G.dmgBy[k], pct=total>0?v/total*100:0, sdps=v/dur, d=info(k);
+    const top=i===0?'⭐':'';
+    const lvtag = d.lvl!=null ? ` <span style="color:#ffd479;">Lv${d.lvl}</span>` : '';
+    const evotag = d.evo ? ` <span style="color:#c9a0ff;">✦${d.evo}</span>` : '';
+    return `<div style="background:#141a28;border:1px solid ${i===0?'#5a4a20':'#243049'};border-radius:9px;padding:7px 9px;margin:5px 0;text-align:left;">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;">
+        <span>${top}${d.nm}${lvtag}${evotag}</span><span style="color:#9aa5bd;">${pct.toFixed(0)}%</span></div>
+      <div style="height:7px;background:#0d1220;border-radius:4px;overflow:hidden;margin:5px 0;"><div style="height:100%;width:${pct.toFixed(0)}%;background:${i===0?'#ffd479':'#48d1ff'};"></div></div>
+      <div style="font-size:11px;color:#cfd6e6;">딜 ${fmt(v)} · DPS ${sdps.toFixed(0)}</div>
+      <div style="font-size:10px;color:#8a93a8;margin-top:2px;">${d.sub||''}</div>
     </div>`;
   }).join('') || '<div style="font-size:12px;color:#9aa5bd;">기록 없음</div>';
-  // 획득 스킬 (레벨 포함)
-  const sk = Object.keys(upLevels).filter(k=>upLevels[k]>0).map(k=>{
-    const u=UPGRADES.find(x=>x.id===k); return u?`${u.ic} ${u.nm} <b style="color:#ffd479;">Lv${upLevels[k]}</b>`:k;
-  }).join(' · ') || '없음';
+  // 유틸리티(비전투) 강화
+  const util=['speed','hp','regen','magnet'].filter(k=>lv(k)>0).map(k=>{const u=UPGRADES.find(x=>x.id===k);return `${u.ic}${u.nm} Lv${lv(k)}`;}).join(' · ');
   document.getElementById('overStat').innerHTML=`
-    <div style="font-size:14px;margin-bottom:8px;">버틴 시간 <b>${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</b> · Lv <b>${G.lv}</b> · 막아낸 업무 <b>${G.kills}</b> · 보스 격파 <b>${G.bossIdx}</b></div>
-    <div style="font-size:14px;color:#ffd479;margin-bottom:12px;">총 딜량 <b>${fmt(total)}</b> · 초당 딜량(DPS) <b>${dps.toFixed(1)}</b></div>
-    <div style="font-weight:700;font-size:13px;margin:4px 0 4px;text-align:left;">📊 딜 기여도 — 어떤 스킬이 좋았나</div>
-    ${dmgHtml}
-    <div style="font-weight:700;font-size:13px;margin:12px 0 4px;text-align:left;">🎓 획득 스킬</div>
-    <div style="font-size:12px;color:#cfd6e6;line-height:1.7;text-align:left;">${sk}</div>`;
+    <div style="font-size:13px;margin-bottom:6px;">버틴 시간 <b>${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</b> · Lv <b>${G.lv}</b> · 처치 <b>${G.kills}</b> · 보스 <b>${G.bossIdx}</b></div>
+    <div style="font-size:14px;color:#ffd479;margin-bottom:8px;">총 딜량 <b>${fmt(total)}</b> · 전체 DPS <b>${dps.toFixed(0)}</b></div>
+    <div style="font-weight:700;font-size:12.5px;margin:2px 0 2px;text-align:left;">📊 스킬별 딜 · DPS · 위력</div>
+    ${cards}
+    ${util?`<div style="font-size:11px;color:#8a93a8;margin-top:8px;text-align:left;">기타 강화: ${util}</div>`:''}`;
   document.getElementById('overPanel').classList.add('show');
 }
 document.getElementById('startBtn').onclick=start;

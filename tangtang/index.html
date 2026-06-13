@@ -103,7 +103,7 @@ function resize(){
   cv.style.width = VW + 'px'; cv.style.height = VH + 'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
   _bg=null; _vg=null;                 // 화면 크기 바뀌면 배경 그라디언트 캐시 무효화
-  if(G) G.motes=makeMotes();
+  if(G){ G.motes=makeMotes(); G.blobs=makeBlobs(); }
 }
 window.addEventListener('resize', resize); resize();
 
@@ -256,11 +256,17 @@ function drawSpr(s, sx, sy, size, flash){
    GAME STATE
    =========================================================================== */
 
-// 배경 장식: 떠다니는 부드러운 빛 입자(보케)
-const MOTE_COLORS=['#3a6ea5','#5a7fb5','#4a5a8a','#7a6aa8','#3a8a9a'];
+// 배경 장식: 큰 컬러 글로우 블롭 + 떠다니는 빛 입자(보케)
+const MOTE_COLORS=['#5a8fd5','#7a9fe5','#6a7aba','#9a7ad8','#4aaaca','#7ad0d0'];
+const BLOB_COLORS=['rgba(70,110,210,','rgba(150,80,210,','rgba(50,170,180,','rgba(90,70,180,'];
 function makeMotes(){
-  const n=Math.round((VW*VH)/24000)+22, arr=[];
-  for(let i=0;i<n;i++) arr.push({x:rnd(0,VW),y:rnd(0,VH),r:rnd(1.2,3.8),spd:rnd(5,22),ph:rnd(0,TAU),c:MOTE_COLORS[rint(0,MOTE_COLORS.length-1)]});
+  const n=Math.round((VW*VH)/16000)+30, arr=[];
+  for(let i=0;i<n;i++) arr.push({x:rnd(0,VW),y:rnd(0,VH),r:rnd(1.6,5),spd:rnd(6,26),ph:rnd(0,TAU),c:MOTE_COLORS[rint(0,MOTE_COLORS.length-1)]});
+  return arr;
+}
+function makeBlobs(){
+  const arr=[];
+  for(let i=0;i<4;i++) arr.push({x:rnd(0,VW),y:rnd(0,VH),r:rnd(220,380),vx:rnd(-14,14),vy:rnd(-10,10),c:BLOB_COLORS[i%BLOB_COLORS.length]});
   return arr;
 }
 
@@ -286,7 +292,7 @@ function newGame(){
     lv:1, xp:0, xpNeed:3,
     kills:0,
     enemies:[], bullets:[], gems:[], particles:[], dmgText:[],
-    enemyBullets:[], pickups:[], motes:makeMotes(),
+    enemyBullets:[], pickups:[], motes:makeMotes(), blobs:makeBlobs(),
     bolts:[], beams:[], holes:[], missiles:[],
     chainTimer:0, beamTimer:0, holeTimer:0, flameTimer:0, freezeTimer:0, missileTimer:0,
     spawnTimer:0, spawnEvery:1.1,
@@ -376,11 +382,12 @@ function spawnEnemy(){
   const hpScale = 1 + t*0.012 + Math.max(0,t-180)*0.02;
   const roll = Math.random();
   let key='pipet';
-  if(t>50 && roll<0.14) key='pi';
-  else if(t>25 && roll<0.30) key='reviewer';
-  else if(t>40 && roll<0.46) key='reject';
-  else if(t>10 && roll<0.66) key='deadline';
-  else if(roll<0.30) key='email';
+  // 원거리 몹(리젝/PI)을 더 일찍·자주 등장시켜 확실히 보이게
+  if(t>40 && roll<0.15) key='pi';          // 원딜 15%
+  else if(t>20 && roll<0.33) key='reject';  // 원딜 18%
+  else if(t>25 && roll<0.48) key='reviewer';
+  else if(roll<0.50) key='email';
+  else if(roll<0.74) key='deadline';
   const base = ENEMY_TYPES[key];
   // 화면 바깥, 플레이어 주위 링에서 스폰
   const ang = rnd(0,TAU);
@@ -393,9 +400,9 @@ function spawnEnemy(){
   });
 }
 const BOSSES = [
-  {name:'Reviewer 2 — Final Form', spr:'boss1', color:'#b06cd1', hp:550,  dmg:18, intro:'"Major revisions. 사실상 리젝입니다."'},
-  {name:'그랜트 심사위원회',          spr:'boss2', color:'#e0b24a', hp:850,  dmg:22, intro:'"예산이 삭감되어서요…"'},
-  {name:'테뉴어 트랙 위원회',         spr:'boss3', color:'#ff5577', hp:1200, dmg:26, intro:'"임팩트가 부족합니다."'},
+  {name:'Reviewer 2 — Final Form', spr:'boss1', color:'#b06cd1', hp:1600, dmg:20, intro:'"Major revisions. 사실상 리젝입니다."'},
+  {name:'그랜트 심사위원회',          spr:'boss2', color:'#e0b24a', hp:2400, dmg:24, intro:'"예산이 삭감되어서요…"'},
+  {name:'테뉴어 트랙 위원회',         spr:'boss3', color:'#ff5577', hp:3300, dmg:28, intro:'"임팩트가 부족합니다."'},
 ];
 function spawnBoss(){
   const b = BOSSES[G.bossIdx % BOSSES.length]; G.bossIdx++;
@@ -404,7 +411,7 @@ function spawnBoss(){
   G.enemies.push({
     type:'boss', boss:true, spr:b.spr,
     x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
-    r:42, hp:b.hp*hpScale, maxhp:b.hp*hpScale, speed:46, dmg:b.dmg, xp:60,
+    r:42, hp:b.hp*hpScale, maxhp:b.hp*hpScale, speed:56, dmg:b.dmg, xp:60,
     color:b.color, ranged:true, fire:1.4, hit:0, name:b.name,
   });
   G.bossAlive=true;
@@ -795,23 +802,37 @@ function update(dt){
     }
     const sf = e.frozen>0 ? 0 : (e.slow>0 ? 0.45 : 1);
     const dx=p.x-e.x, dy=p.y-e.y, m=Math.hypot(dx,dy)||1;
-    // ranged keep distance
-    if(e.ranged && m<240){
+    // 잡몹 원거리만 거리 유지(보스는 접근), 그 외 추격
+    if(e.ranged && !e.boss && m<240){
       e.x-=dx/m*e.speed*sf*0.4*dt; e.y-=dy/m*e.speed*sf*0.4*dt;
     } else {
       e.x+=dx/m*e.speed*sf*dt; e.y+=dy/m*e.speed*sf*dt;
     }
     if(e.hit>0) e.hit-=dt;
-    // ranged firing (빙결 중엔 발사 불가)
-    if(e.ranged && e.frozen<=0){
+    // 보스 패턴: 방사 탄막 → 조준 5연사 → 돌진 순환 (빙결 중 정지)
+    if(e.boss){
+      if(e.dashT>0){ e.dashT-=dt; e.x+=dx/m*300*dt; e.y+=dy/m*300*dt; }
+      e.spin=(e.spin||0)+dt*0.7;
+      e.atkT=(e.atkT==null?rnd(1.0,1.8):e.atkT)-dt;
+      if(e.frozen<=0 && e.atkT<=0){
+        e.pat=((e.pat==null?-1:e.pat)+1)%3;
+        if(e.pat===0){            // 방사형 탄막
+          const k=16; for(let i=0;i<k;i++){ const a=i*TAU/k+e.spin;
+            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*165,vy:Math.sin(a)*165,r:9,dmg:e.dmg,life:5,color:'#ff5a8a',big:true}); }
+          e.atkT=2.3; G.shake=7; sfx(110,0.22,'square',0.05);
+        } else if(e.pat===1){     // 조준 5연사 부채꼴
+          for(let i=0;i<5;i++){ const a=Math.atan2(dy,dx)+(i-2)*0.17;
+            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*240,vy:Math.sin(a)*240,r:8,dmg:e.dmg,life:4,color:'#ffb05a',big:true}); }
+          e.atkT=1.7; sfx(300,0.12,'square',0.04);
+        } else {                  // 돌진
+          e.dashT=0.85; e.atkT=2.6; G.shake=5; sfx(80,0.3,'sawtooth',0.05);
+        }
+      }
+    } else if(e.ranged && e.frozen<=0){
       e.fire-=dt;
       if(e.fire<=0 && m<560){
-        e.fire = e.boss?0.5:1.8;
-        const n=e.boss?3:1;
-        for(let i=0;i<n;i++){
-          const a=Math.atan2(dy,dx)+(e.boss?(i-1)*0.22:0);
-          G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*200,vy:Math.sin(a)*200,r:7,dmg:e.dmg,life:4,color:e.color});
-        }
+        e.fire=1.7; const a=Math.atan2(dy,dx);
+        G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*210,vy:Math.sin(a)*210,r:8,dmg:e.dmg,life:4,color:'#ff6a4a',big:true});
       }
     }
     // contact damage
@@ -860,8 +881,10 @@ function update(dt){
     }
   }
   G.pickups=G.pickups.filter(it=>!it.got);
-  // 배경 입자 드리프트
+  // 배경 입자/블롭 드리프트
   for(const m of G.motes){ m.y-=m.spd*dt; if(m.y<-8){ m.y=VH+8; m.x=rnd(0,VW); } }
+  for(const b of G.blobs){ b.x+=b.vx*dt; b.y+=b.vy*dt;
+    if(b.x<-b.r||b.x>VW+b.r) b.vx*=-1; if(b.y<-b.r||b.y>VH+b.r) b.vy*=-1; }
 
   // particles & dmg text
   for(const pt of G.particles){
@@ -966,11 +989,14 @@ function render(){
     }
     ctx.shadowBlur=0; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
   }
-  // enemy bullets
+  // enemy bullets (글로우 + 흰 코어 → 어두운 배경에서도 잘 보이게)
+  ctx.shadowColor='#ff7a7a'; ctx.shadowBlur=9;
   for(const eb of G.enemyBullets){
     const [sx,sy]=worldToScreen(eb.x,eb.y);
     ctx.fillStyle=eb.color; ctx.beginPath(); ctx.arc(sx,sy,eb.r,0,TAU); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.beginPath(); ctx.arc(sx,sy,eb.r*0.42,0,TAU); ctx.fill();
   }
+  ctx.shadowBlur=0;
   // enemies
   for(const e of G.enemies){
     const [sx,sy]=worldToScreen(e.x,e.y);
@@ -1136,13 +1162,19 @@ function bgGradient(){ // 배경 베이스: 중앙이 살짝 밝은 라디얼
   }
   ctx.fillStyle=_bg; ctx.fillRect(0,0,VW,VH);
 }
-function drawMotes(){ // 떠다니는 보케 입자
+function drawMotes(){ // 큰 컬러 글로우 블롭 + 떠다니는 보케 입자
+  for(const b of G.blobs){
+    const g=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+    g.addColorStop(0,b.c+'0.20)'); g.addColorStop(0.6,b.c+'0.07)'); g.addColorStop(1,b.c+'0)');
+    ctx.fillStyle=g; ctx.fillRect(b.x-b.r,b.y-b.r,b.r*2,b.r*2);
+  }
   const t=performance.now()/1000;
+  ctx.shadowColor='#9fd0ff'; ctx.shadowBlur=6;
   for(const m of G.motes){
-    ctx.globalAlpha=0.12+0.16*(0.5+0.5*Math.sin(t*1.3+m.ph));
+    ctx.globalAlpha=0.20+0.22*(0.5+0.5*Math.sin(t*1.3+m.ph));
     ctx.fillStyle=m.c; ctx.beginPath(); ctx.arc(m.x,m.y,m.r,0,TAU); ctx.fill();
   }
-  ctx.globalAlpha=1;
+  ctx.globalAlpha=1; ctx.shadowBlur=0;
 }
 function vignette(){
   if(!_vg||_vgW!==VW||_vgH!==VH){

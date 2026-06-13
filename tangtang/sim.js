@@ -181,10 +181,10 @@ function step(G,dt){
 
   // 스폰
   G.spawnTimer-=dt;
-  let rate=Math.max(0.34,1.4-G.t*0.003);
-  let batch=1+Math.floor(G.t/60);
+  let rate=Math.max(0.34,1.3-G.t*0.0028);
+  let batch=2+Math.floor(G.t/58);
   if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
-  if(G.spawnTimer<=0&&G.enemies.length<170){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
+  if(G.spawnTimer<=0&&G.enemies.length<200){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
   G.bossTimer-=dt;if(G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}
 
   // 발사

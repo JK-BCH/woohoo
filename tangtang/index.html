@@ -89,6 +89,9 @@
 const cv = document.getElementById('cv');
 const ctx = cv.getContext('2d');
 
+// 배경 그라디언트/비네팅 캐시 (resize 시 무효화)
+let _bg=null,_bgW=0,_bgH=0,_vg=null,_vgW=0,_vgH=0;
+
 /* ---- viewport ---- */
 let VW = 0, VH = 0, DPR = 1;
 function resize(){
@@ -97,6 +100,8 @@ function resize(){
   cv.width = VW * DPR; cv.height = VH * DPR;
   cv.style.width = VW + 'px'; cv.style.height = VH + 'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
+  _bg=null; _vg=null;                 // 화면 크기 바뀌면 배경 그라디언트 캐시 무효화
+  if(G) G.motes=makeMotes();
 }
 window.addEventListener('resize', resize); resize();
 
@@ -251,6 +256,14 @@ function drawSpr(s, sx, sy, size, flash){
 let G = null;        // game object, created on start
 let running = false;
 
+// 배경 장식: 떠다니는 부드러운 빛 입자(보케)
+const MOTE_COLORS=['#3a6ea5','#5a7fb5','#4a5a8a','#7a6aa8','#3a8a9a'];
+function makeMotes(){
+  const n=Math.round((VW*VH)/24000)+22, arr=[];
+  for(let i=0;i<n;i++) arr.push({x:rnd(0,VW),y:rnd(0,VH),r:rnd(1.2,3.8),spd:rnd(5,22),ph:rnd(0,TAU),c:MOTE_COLORS[rint(0,MOTE_COLORS.length-1)]});
+  return arr;
+}
+
 function newGame(){
   return {
     t: 0,                       // seconds elapsed
@@ -273,7 +286,7 @@ function newGame(){
     lv:1, xp:0, xpNeed:3,
     kills:0,
     enemies:[], bullets:[], gems:[], particles:[], dmgText:[],
-    enemyBullets:[],
+    enemyBullets:[], pickups:[], motes:makeMotes(),
     bolts:[], beams:[], holes:[], missiles:[],
     chainTimer:0, beamTimer:0, holeTimer:0, flameTimer:0, freezeTimer:0, missileTimer:0,
     spawnTimer:0, spawnEvery:1.1,
@@ -359,8 +372,8 @@ const ENEMY_TYPES = {
 function spawnEnemy(){
   // 시간이 흐를수록 난도 상승 — 포닥 생존 곡선
   const t=G.t;
-  // 후반 가속: 180초 이후 HP가 급증 (초반 ~3분은 기존 유지)
-  const hpScale = 1 + t*0.011 + Math.max(0,t-180)*0.02;
+  // 초반 살짝 상향 + 후반 가속(180초 이후 HP 급증)
+  const hpScale = 1 + t*0.012 + Math.max(0,t-180)*0.02;
   const roll = Math.random();
   let key='pipet';
   if(t>50 && roll<0.14) key='pi';
@@ -502,10 +515,15 @@ function damageEnemy(e,raw,crit){
 function killEnemy(e){
   e.dead=true;
   G.kills++;
-  // xp gems
+  // xp gems — 보스는 젬 가치를 낮춰 경험치를 덜 줌 (12×15=180, 기존 720에서 하향)
   const n = e.boss?12 : 1;
+  const gv = e.boss?15 : e.xp;
   for(let i=0;i<n;i++){
-    G.gems.push({x:e.x+rnd(-e.r,e.r), y:e.y+rnd(-e.r,e.r), v:e.xp, vx:0,vy:0});
+    G.gems.push({x:e.x+rnd(-e.r,e.r), y:e.y+rnd(-e.r,e.r), v:gv, vx:0,vy:0});
+  }
+  // 가끔 마그넷 아이템 드랍 (잡몹만, ~0.6%) — 주우면 화면의 경험치를 일괄 흡수
+  if(!e.boss && Math.random()<0.006){
+    G.pickups.push({x:e.x, y:e.y, kind:'magnet', bob:rnd(0,TAU)});
   }
   for(let i=0;i<(e.boss?30:6);i++) burst(e.x,e.y,e.color);
   if(e.boss){G.bossAlive=false; G.shake=14;}
@@ -558,8 +576,8 @@ function update(dt){
 
   // spawn
   G.spawnTimer-=dt;
-  let rate = Math.max(0.22, 1.3 - G.t*0.003);
-  let batch = 2 + Math.floor(G.t/48);
+  let rate = Math.max(0.22, 1.2 - G.t*0.003);
+  let batch = 2 + Math.floor(G.t/44);
   if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
   if(G.spawnTimer<=0 && G.enemies.length<300){
     G.spawnTimer=rate;
@@ -819,13 +837,31 @@ function update(dt){
   // gems
   for(const g of G.gems){
     const d2=dist2(g.x,g.y,p.x,p.y);
-    if(d2 < p.pickup*p.pickup){
-      const d=Math.sqrt(d2)||1, pull=Math.min(420, 60+ (p.pickup-d)*6);
+    if(g.suck || d2 < p.pickup*p.pickup){
+      const d=Math.sqrt(d2)||1, pull=g.suck?900:Math.min(420, 60+ (p.pickup-d)*6);
       g.x+=(p.x-g.x)/d*pull*dt; g.y+=(p.y-g.y)/d*pull*dt;
     }
     if(d2 < (p.r+8)*(p.r+8)){ g.got=true; gainXP(g.v); }
   }
   G.gems=G.gems.filter(g=>!g.got);
+
+  // 마그넷 아이템: 주우면 화면의 모든 경험치 젬을 끌어당겨 일괄 수집
+  for(const it of G.pickups){
+    const d2=dist2(it.x,it.y,p.x,p.y);
+    if(d2 < (p.pickup*1.4)*(p.pickup*1.4)){
+      const d=Math.sqrt(d2)||1, pull=Math.min(360, 80+(p.pickup*1.4-d)*5);
+      it.x+=(p.x-it.x)/d*pull*dt; it.y+=(p.y-it.y)/d*pull*dt;
+    }
+    if(d2 < (p.r+12)*(p.r+12)){
+      it.got=true;
+      for(const g of G.gems){ g.suck=1; }   // 모든 젬을 강하게 흡인 → 한방에 레벨업
+      G.particles.push({nova:true,x:p.x,y:p.y,r:12,maxr:Math.max(VW,VH)*0.6,life:0.45,color:'#48d1ff'});
+      sfx(1200,0.18,'sine',0.05); sfx(700,0.22,'square',0.04);
+    }
+  }
+  G.pickups=G.pickups.filter(it=>!it.got);
+  // 배경 입자 드리프트
+  for(const m of G.motes){ m.y-=m.spd*dt; if(m.y<-8){ m.y=VH+8; m.x=rnd(0,VW); } }
 
   // particles & dmg text
   for(const pt of G.particles){
@@ -885,6 +921,8 @@ function worldToScreen(x,y){
 }
 function render(){
   ctx.clearRect(0,0,VW,VH);
+  bgGradient();
+  drawMotes();
   ctx.imageSmoothingEnabled=false;
   drawGrid();
   const p=G.player;
@@ -916,6 +954,17 @@ function render(){
     const [sx,sy]=worldToScreen(g.x,g.y);
     ctx.fillStyle='#48d1ff';
     ctx.beginPath(); ctx.moveTo(sx,sy-5); ctx.lineTo(sx+4,sy); ctx.lineTo(sx,sy+5); ctx.lineTo(sx-4,sy); ctx.fill();
+  }
+  // 마그넷 아이템 (자석 이모지 + 글로우, 둥실둥실)
+  if(G.pickups.length){
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font='22px sans-serif'; ctx.shadowColor='#48d1ff'; ctx.shadowBlur=14;
+    const tb=performance.now()/350;
+    for(const it of G.pickups){
+      const [sx,sy]=worldToScreen(it.x,it.y);
+      ctx.fillText('🧲', sx, sy+Math.sin(tb+it.bob)*3);
+    }
+    ctx.shadowBlur=0; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
   }
   // enemy bullets
   for(const eb of G.enemyBullets){
@@ -1079,7 +1128,22 @@ function drawGrid(){
   for(let y=by;y<VH;y+=big){ctx.moveTo(0,y);ctx.lineTo(VW,y);}
   ctx.stroke();
 }
-let _vg=null,_vgW=0,_vgH=0;
+function bgGradient(){ // 배경 베이스: 중앙이 살짝 밝은 라디얼
+  if(!_bg||_bgW!==VW||_bgH!==VH){
+    _bgW=VW;_bgH=VH;
+    _bg=ctx.createRadialGradient(VW/2,VH*0.42,40,VW/2,VH/2,Math.max(VW,VH)*0.85);
+    _bg.addColorStop(0,'#19223a'); _bg.addColorStop(0.55,'#121829'); _bg.addColorStop(1,'#0a0d16');
+  }
+  ctx.fillStyle=_bg; ctx.fillRect(0,0,VW,VH);
+}
+function drawMotes(){ // 떠다니는 보케 입자
+  const t=performance.now()/1000;
+  for(const m of G.motes){
+    ctx.globalAlpha=0.12+0.16*(0.5+0.5*Math.sin(t*1.3+m.ph));
+    ctx.fillStyle=m.c; ctx.beginPath(); ctx.arc(m.x,m.y,m.r,0,TAU); ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
 function vignette(){
   if(!_vg||_vgW!==VW||_vgH!==VH){
     _vgW=VW;_vgH=VH;

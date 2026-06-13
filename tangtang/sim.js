@@ -47,7 +47,7 @@ const VW=900,VH=600; // 가상 화면(스폰 반경 기준)
 function nearest(G,x,y){let b=null,bd=Infinity;for(const e of G.enemies){const d=d2(x,y,e.x,e.y);if(d<bd){bd=d;b=e;}}return b;}
 
 function spawnEnemy(G){
-  const t=G.t, hpS=1+t*0.011+Math.max(0,t-180)*0.02, roll=Math.random();
+  const t=G.t, hpS=1+t*0.012+Math.max(0,t-180)*0.02, roll=Math.random();
   let key='pipet';
   if(t>50&&roll<0.14)key='pi';
   else if(t>25&&roll<0.30)key='reviewer';
@@ -71,7 +71,7 @@ function crit(G,dmg){return Math.random()<G.st.crit?dmg*G.st.critMul:dmg;}
 function hurtEnemy(G,e,dmg){e.hp-=dmg;if(e.boss)G.bossMinFrac=Math.min(G.bossMinFrac,Math.max(0,e.hp)/e.maxhp);if(e.hp<=0&&!e.dead)killEnemy(G,e);}
 function killEnemy(G,e){
   e.dead=true;G.kills++;if(e.boss){G.bossKills++;G.bossAlive=false;}
-  const n=e.boss?12:1;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:(e.boss?60:e.xp),got:false});
+  const n=e.boss?12:1,gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false});
 }
 function explode(G,x,y,radius,dmg){for(const e of G.enemies){if(!e.dead&&d2(x,y,e.x,e.y)<radius*radius)hurtEnemy(G,e,crit(G,dmg));}}
 
@@ -185,8 +185,8 @@ function step(G,dt){
 
   // 스폰
   G.spawnTimer-=dt;
-  let rate=Math.max(0.22,1.3-G.t*0.003);
-  let batch=2+Math.floor(G.t/48);
+  let rate=Math.max(0.22,1.2-G.t*0.003);
+  let batch=2+Math.floor(G.t/44);
   if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
   if(G.spawnTimer<=0&&G.enemies.length<300){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
   G.bossTimer-=dt;if(G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}

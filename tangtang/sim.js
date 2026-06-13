@@ -22,19 +22,19 @@ const ENEMY_TYPES={
 const BOSSES=[
   {hp:550,dmg:18},{hp:850,dmg:22},{hp:1200,dmg:26},
 ];
-const UP_MAX={dmg:8,fire:8,proj:6,pierce:5,speed:6,hp:6,regen:5,crit:6,area:5,magnet:4,orbit:4,nova:4};
+const UP_MAX={dmg:8,fire:8,proj:6,pierce:5,speed:6,hp:6,regen:5,crit:6,area:5,magnet:4,orbit:4,nova:4,chain:5,beam:4,hole:3};
 // 실전형 우선순위 (낮을수록 먼저). 생존 위급 시 regen/hp 가중.
-const PRIO=['fire','dmg','proj','crit','pierce','nova','area','speed','orbit','regen','hp','magnet'];
+const PRIO=['fire','dmg','proj','crit','beam','pierce','chain','nova','hole','area','speed','orbit','regen','hp','magnet'];
 
 function makeGame(){
   return {
     t:0,
     p:{x:0,y:0,r:14,hp:130,maxhp:130,speed:185,regen:0,pickup:120,iframe:0},
     st:{dmg:1,fireRate:1,projSpeed:1,projCount:1,pierce:0,area:1,crit:0.03,critMul:2,
-        moveSpeed:1,extra:{orbit:0,nova:0},evo:{}},
+        moveSpeed:1,extra:{orbit:0,nova:0,chain:0,beam:0,hole:0},evo:{}},
     lv:1,xp:0,xpNeed:3,kills:0,bossKills:0,
     enemies:[],bullets:[],ebullets:[],gems:[],
-    spawnTimer:0,fireTimer:0,novaTimer:0,orbitAngle:0,
+    spawnTimer:0,fireTimer:0,novaTimer:0,orbitAngle:0,chainTimer:0,beamTimer:0,holeTimer:0,holes:[],
     bossTimer:120,bossAlive:false,bossIdx:0,
     up:{},
     dead:false,
@@ -119,8 +119,11 @@ function apply(G,id){
   else if(id==='magnet')p.pickup*=1.4;
   else if(id==='orbit')s.extra.orbit+=1;
   else if(id==='nova')s.extra.nova+=1;
+  else if(id==='chain')s.extra.chain+=1;
+  else if(id==='beam')s.extra.beam+=1;
+  else if(id==='hole')s.extra.hole+=1;
 }
-const EVOF={fire:'preprint',proj:'coauthor',pierce:'meta',dmg:'nature',nova:'keynote',orbit:'lab'};
+const EVOF={fire:'preprint',proj:'coauthor',pierce:'meta',dmg:'nature',nova:'keynote',orbit:'lab',chain:'surge',beam:'carpet'};
 function checkEvo(G,id){
   const f=EVOF[id];if(!f)return;
   if((G.up[id]||0)>=UP_MAX[id]&&!G.st.evo[f]){
@@ -191,6 +194,25 @@ function step(G,dt){
     const radius=120*G.st.area*(1+0.25*(G.st.extra.nova-1));
     for(const e of G.enemies){if(d2(p.x,p.y,e.x,e.y)<radius*radius){hurtEnemy(G,e,crit(G,20*G.st.dmg*G.st.extra.nova));if(G.st.evo.keynote)e.slow=2;}}}}
   if(G.st.extra.orbit>0)G.orbitAngle+=dt*3.0;
+  // ⚡ 인용 연쇄
+  if(G.st.extra.chain>0){G.chainTimer-=dt;if(G.chainTimer<=0){G.chainTimer=2.2;
+    const lv=G.st.extra.chain,jumps=2+lv,reach2=170*170,hit=new Set();
+    let cur=nearest(G,p.x,p.y),from={x:p.x,y:p.y};const dmgBolt=16*G.st.dmg*(1+0.4*lv);
+    while(cur&&hit.size<jumps){hit.add(cur);hurtEnemy(G,cur,crit(G,dmgBolt));if(G.st.evo.surge)cur.slow=1.6;from={x:cur.x,y:cur.y};
+      let nx=null,nd=reach2;for(const e of G.enemies){if(e.dead||hit.has(e))continue;const d=d2(from.x,from.y,e.x,e.y);if(d<nd){nd=d;nx=e;}}cur=nx;}}}
+  // 🔆 논문 레이저
+  if(G.st.extra.beam>0){G.beamTimer-=dt;if(G.beamTimer<=0){G.beamTimer=3.0;
+    const lv=G.st.extra.beam,tgt=nearest(G,p.x,p.y);
+    const ang=tgt?Math.atan2(tgt.y-p.y,tgt.x-p.x):0,len=1100,width=(20+8*lv)*G.st.area,dmgB=30*G.st.dmg*lv;
+    const fb=(an)=>{const dx=Math.cos(an),dy=Math.sin(an);for(const e of G.enemies){if(e.dead)continue;const rx=e.x-p.x,ry=e.y-p.y,pr=rx*dx+ry*dy;if(pr<0||pr>len)continue;const bx=p.x+dx*pr,by=p.y+dy*pr,rr=width/2+e.r;if(d2(bx,by,e.x,e.y)<rr*rr)hurtEnemy(G,e,crit(G,dmgB));}};
+    fb(ang);if(G.st.evo.carpet){fb(ang+Math.PI);fb(ang+Math.PI/2);fb(ang-Math.PI/2);}}}
+  // 🕳️ 블랙홀
+  if(G.st.extra.hole>0){G.holeTimer-=dt;if(G.holeTimer<=0){G.holeTimer=5.5;
+    const lv=G.st.extra.hole,tgt=nearest(G,p.x,p.y);
+    G.holes.push({x:tgt?tgt.x:p.x,y:tgt?tgt.y:p.y,r:90+25*lv,life:1.8,tick:0,lv});}}
+  for(const h of G.holes){h.life-=dt;h.tick-=dt;const tn=h.tick<=0;if(tn)h.tick=0.2;
+    for(const e of G.enemies){if(e.dead)continue;const dd=d2(h.x,h.y,e.x,e.y);if(dd<h.r*h.r){const d=Math.sqrt(dd)||1,pull=e.boss?22:140;e.x+=(h.x-e.x)/d*pull*dt;e.y+=(h.y-e.y)/d*pull*dt;if(tn)hurtEnemy(G,e,crit(G,7*G.st.dmg*h.lv));}}}
+  G.holes=G.holes.filter(h=>h.life>0);
 
   // 총알
   for(const b of G.bullets){

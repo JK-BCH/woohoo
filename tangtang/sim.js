@@ -12,10 +12,10 @@ const TAU=Math.PI*2;
 const d2=(ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
 
 const ENEMY_TYPES={
-  pipet:   {r:13, hp:18,  speed:60,  dmg:11, xp:2},
-  email:   {r:9,  hp:8,   speed:100, dmg:7,  xp:2},
-  deadline:{r:11, hp:14,  speed:105, dmg:11, xp:2},
-  reviewer:{r:20, hp:80,  speed:42,  dmg:22, xp:4},
+  pipet:   {r:13, hp:18,  speed:60,  dmg:13, xp:2},
+  email:   {r:9,  hp:8,   speed:100, dmg:8,  xp:2},
+  deadline:{r:11, hp:14,  speed:105, dmg:13, xp:2},
+  reviewer:{r:20, hp:80,  speed:42,  dmg:26, xp:4},
   reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, ranged:true, shots:2},
   pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, ranged:true, shots:3},
 };
@@ -47,7 +47,7 @@ const VW=900,VH=600; // 가상 화면(스폰 반경 기준)
 function nearest(G,x,y){let b=null,bd=Infinity;for(const e of G.enemies){const d=d2(x,y,e.x,e.y);if(d<bd){bd=d;b=e;}}return b;}
 
 function spawnEnemy(G){
-  const t=G.t, hpS=1+t*0.012+Math.max(0,t-180)*0.02, roll=Math.random();
+  const t=G.t, hpS=1+t*0.015+Math.max(0,t-180)*0.02, roll=Math.random();
   let key='pipet';
   if(t>40&&roll<0.15)key='pi';
   else if(t>20&&roll<0.33)key='reject';

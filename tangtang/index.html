@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>대학원 특공대 — Surviv-like prototype</title>
+<title>포닥 생존 — STEM postdoc survivor</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{width:100%;height:100%;background:#0b0d14;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;color:#e8ecf4;-webkit-user-select:none;user-select:none;}
@@ -60,21 +60,23 @@
 <div id="hint">이동: WASD / 방향키 / 화면 드래그 · 사격은 자동</div>
 
 <div class="panel show" id="startPanel">
-  <h1>대학원 특공대</h1>
-  <p>몰려오는 마감·심사·리비전을 버텨내라.<br>이동만 하면 자동으로 공격한다. 경험치를 모아 레벨업하고 능력을 강화하라.</p>
-  <button class="btn" id="startBtn">시작</button>
+  <h1>포닥 생존</h1>
+  <p>이공계 박사후연구원의 하루.<br>밀린 이메일·데드라인·Reviewer 2·PI 면담이 끝없이 몰려온다.<br>
+     이동만 하면 자동으로 <b>논문을 투고</b>해 막아낸다. 데이터를 모아 레벨업하고 커리어를 강화하라.<br>
+     멘탈이 0이 되면 <b>번아웃</b>이다.</p>
+  <button class="btn" id="startBtn">랩에 출근</button>
 </div>
 
 <div class="panel" id="levelPanel">
-  <h1 style="font-size:22px;color:#8fd2ff;">레벨 업!</h1>
+  <h1 style="font-size:22px;color:#8fd2ff;">커리어 성장!</h1>
   <p>강화할 능력을 하나 선택</p>
   <div id="cards"></div>
 </div>
 
 <div class="panel" id="overPanel">
-  <h1 id="overTitle">전멸</h1>
+  <h1 id="overTitle">번아웃 😵</h1>
   <p id="overStat"></p>
-  <button class="btn" id="retryBtn">다시 도전</button>
+  <button class="btn" id="retryBtn">다시 출근</button>
 </div>
 
 <script>
@@ -104,6 +106,144 @@ const rint = (a,b)=>Math.floor(rnd(a,b+1));
 const dist2 = (ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
 const clamp = (v,a,b)=>v<a?a:v>b?b:v;
 const TAU = Math.PI*2;
+
+/* ===========================================================================
+   PIXEL SPRITES — 외부 에셋 0, 코드로 픽셀아트 생성 (격물치지 px 헬퍼와 동일 철학)
+   각 스프라이트는 문자 그리드 + 팔레트. 공백/'.'=투명.
+   =========================================================================== */
+const SPR = {};
+function pix(rows, pal, scale){
+  scale=scale||4;
+  const h=rows.length, w=rows[0].length;
+  const c=document.createElement('canvas'); c.width=w*scale; c.height=h*scale;
+  const x=c.getContext('2d');
+  for(let j=0;j<h;j++) for(let i=0;i<w;i++){
+    const col=pal[rows[j][i]];
+    if(col){ x.fillStyle=col; x.fillRect(i*scale,j*scale,scale,scale); }
+  }
+  return c;
+}
+function whiteSil(src){ // 피격 플래시용 흰색 실루엣
+  const c=document.createElement('canvas'); c.width=src.width; c.height=src.height;
+  const x=c.getContext('2d'); x.drawImage(src,0,0);
+  x.globalCompositeOperation='source-in'; x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height);
+  return c;
+}
+function reg(key, rows, pal){ const c=pix(rows,pal); SPR[key]={c, w:whiteSil(c)}; }
+
+function buildSprites(){
+  // 플레이어: 가운 입은 포닥
+  reg('player',[
+    '..HHHH..',
+    '.HHHHHH.',
+    '.HSGGSH.',
+    '..SSSS..',
+    '.WWWWWW.',
+    'WWWWWWWW',
+    'WWWBWWWW',
+    'WWWWWWWW',
+    '.WW..WW.',
+    '.PP..PP.',
+  ],{H:'#2b2118',S:'#e9b893',G:'#8fd2ff',W:'#eef2fb',B:'#2a6cf0',P:'#2f3b54'});
+
+  // 피펫팅 잡무: 초록 슬라임
+  reg('pipet',[
+    '..GGGG..',
+    '.GGGGGG.',
+    'GGGGGGGG',
+    'GKGGGGKG',
+    'GGGGGGGG',
+    'GGGGGGGG',
+    '.GGGGGG.',
+    '..G..G..',
+  ],{G:'#6cbf6c',K:'#143a1c'});
+
+  // 밀린 이메일: 작은 봉투
+  reg('email',[
+    'BBBBBB',
+    'BWWWWB',
+    'BWKKWB',
+    'BWWWWB',
+    'BBBBBB',
+  ],{B:'#5aa0ff',W:'#eaf2ff',K:'#22334a'});
+
+  // 데드라인: 빨간 시계
+  reg('deadline',[
+    '.RRRR.',
+    'RWWWWR',
+    'RWKWWR',
+    'RWKKWR',
+    'RWWWWR',
+    '.RRRR.',
+  ],{R:'#ff6b5a',W:'#ffe3dd',K:'#5a1410'});
+
+  // Reviewer 2: 화난 보라 덩어리
+  reg('reviewer',[
+    '..PPPP..',
+    '.PPPPPP.',
+    'PPPPPPPP',
+    'PKKPPKKP',
+    'PPPPPPPP',
+    'PWWWWWWP',
+    'PWKKKKWP',
+    'PPPPPPPP',
+    '.PPPPPP.',
+    '..P..P..',
+  ],{P:'#b06cd1',K:'#2a1233',W:'#e8c9f2'});
+
+  // 리젝 레터: 종이비행기/거절 통지
+  reg('reject',[
+    'OOOOOOOO',
+    'OWWWWWWO',
+    'OWKKKKWO',
+    'OWWWWWWO',
+    'OWKKKKWO',
+    'OWWWWWWO',
+    'OOOOOOOO',
+  ],{O:'#ff8a4c',W:'#fff2e6',K:'#b03a10'});
+
+  // PI 면담: 정장+넥타이 권위자
+  reg('pi',[
+    '..KKKK..',
+    '.KKKKKK.',
+    '.KSSSSK.',
+    '..SSSS..',
+    '.GGGGGG.',
+    'GGGTTGGG',
+    'GGGTTGGG',
+    'GG.GG.GG',
+    '.GG..GG.',
+    '.PP..PP.',
+  ],{K:'#1c2330',S:'#e9b893',G:'#44506b',T:'#d23b3b',P:'#1a1f2b'});
+
+  // 보스 3종 (로브 입은 위원회) — 팔레트만 교체
+  const bossRows=[
+    '....KKKK....',
+    '...KKKKKK...',
+    '..KMSSSSMK..',
+    '..MSEESEEM..',
+    '..MSSSSSSM..',
+    '.MMRRRRRRMM.',
+    'MMRRRRRRRRMM',
+    'MRRRRRRRRRRM',
+    'MRRRRRRRRRRM',
+    'MRRRRRRRRRRM',
+    'MRRRRRRRRRRM',
+    '.RRR....RRR.',
+    '.RR......RR.',
+    '.RR......RR.',
+  ];
+  reg('boss1', bossRows, {K:'#3a1a4a',M:'#d9b3ef',S:'#e9b893',E:'#ff3b3b',R:'#b06cd1'});
+  reg('boss2', bossRows, {K:'#5a4410',M:'#fff0c0',S:'#e9b893',E:'#7af',R:'#e0b24a'});
+  reg('boss3', bossRows, {K:'#3a0f18',M:'#ffd0d8',S:'#e9b893',E:'#fff',R:'#ff5577'});
+}
+buildSprites();
+
+function drawSpr(s, sx, sy, size, flash){
+  const img = flash ? s.w : s.c;
+  const h = size * (img.height/img.width);
+  ctx.drawImage(img, Math.round(sx-size/2), Math.round(sy-h/2), size, h);
+}
 
 /* ===========================================================================
    GAME STATE
@@ -137,9 +277,10 @@ function newGame(){
     fireTimer:0,
     novaTimer:0,
     orbitAngle:0,
-    bossTimer:60, bossAlive:false,
+    bossTimer:60, bossAlive:false, bossIdx:0,
     cam:{x:0,y:0},
     shake:0,
+    banner:null,
   };
 }
 
@@ -205,60 +346,71 @@ function readMove(){
    ENEMY TYPES
    =========================================================================== */
 const ENEMY_TYPES = {
-  grub:   {r:13, hp:18,  speed:62,  dmg:8,  xp:1, color:'#7ad17a', name:'잡무'},
-  runner: {r:11, hp:12,  speed:118, dmg:7,  xp:1, color:'#ffd479', name:'마감'},
-  tank:   {r:20, hp:70,  speed:42,  dmg:16, xp:3, color:'#c97ad1', name:'리비전'},
-  shooter:{r:14, hp:30,  speed:50,  dmg:10, xp:2, color:'#ff8a6c', name:'코멘트', ranged:true},
+  pipet:   {r:13, hp:18,  speed:60,  dmg:8,  xp:1, color:'#6cbf6c', name:'피펫팅 잡무'},
+  email:   {r:9,  hp:8,   speed:130, dmg:5,  xp:1, color:'#5aa0ff', name:'밀린 이메일'},
+  deadline:{r:11, hp:14,  speed:120, dmg:8,  xp:1, color:'#ff6b5a', name:'데드라인'},
+  reviewer:{r:20, hp:80,  speed:42,  dmg:16, xp:3, color:'#b06cd1', name:'Reviewer 2'},
+  reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:2, color:'#ff8a4c', name:'리젝 레터', ranged:true},
+  pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:3, color:'#44506b', name:'PI 면담',   ranged:true},
 };
 function spawnEnemy(){
-  // difficulty scales with time
+  // 시간이 흐를수록 난도 상승 — 포닥 생존 곡선
   const t=G.t;
   const hpScale = 1 + t*0.018;
   const roll = Math.random();
-  let key='grub';
-  if(t>25 && roll<0.18) key='tank';
-  else if(t>12 && roll<0.42) key='runner';
-  else if(t>40 && roll<0.58) key='shooter';
+  let key='pipet';
+  if(t>50 && roll<0.14) key='pi';
+  else if(t>25 && roll<0.30) key='reviewer';
+  else if(t>40 && roll<0.46) key='reject';
+  else if(t>10 && roll<0.66) key='deadline';
+  else if(roll<0.30) key='email';
   const base = ENEMY_TYPES[key];
-  // spawn just outside view, around player
+  // 화면 바깥, 플레이어 주위 링에서 스폰
   const ang = rnd(0,TAU);
   const rad = Math.max(VW,VH)*0.62 + 40;
-  const e = {
-    type:key, x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
+  G.enemies.push({
+    type:key, spr:key, x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
     r:base.r, hp:base.hp*hpScale, maxhp:base.hp*hpScale,
     speed:base.speed*(1+t*0.004), dmg:base.dmg, xp:base.xp,
     color:base.color, ranged:!!base.ranged, fire:rnd(1,2.5), hit:0,
-  };
-  G.enemies.push(e);
+  });
 }
+const BOSSES = [
+  {name:'Reviewer 2 — Final Form', spr:'boss1', color:'#b06cd1', hp:1200, dmg:26, intro:'"Major revisions. 사실상 리젝입니다."'},
+  {name:'그랜트 심사위원회',          spr:'boss2', color:'#e0b24a', hp:1700, dmg:30, intro:'"예산이 삭감되어서요…"'},
+  {name:'테뉴어 트랙 위원회',         spr:'boss3', color:'#ff5577', hp:2300, dmg:34, intro:'"임팩트가 부족합니다."'},
+];
 function spawnBoss(){
+  const b = BOSSES[G.bossIdx % BOSSES.length]; G.bossIdx++;
   const hpScale = 1 + G.t*0.02;
   const ang=rnd(0,TAU), rad=Math.max(VW,VH)*0.6+60;
   G.enemies.push({
-    type:'boss', boss:true,
+    type:'boss', boss:true, spr:b.spr,
     x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
-    r:42, hp:1200*hpScale, maxhp:1200*hpScale, speed:46, dmg:28, xp:40,
-    color:'#ff5577', ranged:true, fire:1.4, hit:0, name:'심사위원장',
+    r:42, hp:b.hp*hpScale, maxhp:b.hp*hpScale, speed:46, dmg:b.dmg, xp:40,
+    color:b.color, ranged:true, fire:1.4, hit:0, name:b.name,
   });
   G.bossAlive=true;
+  G.banner={txt:'⚠ '+b.name, sub:b.intro, life:3};
+  sfx(80,0.5,'sawtooth',0.07);
 }
 
 /* ===========================================================================
    UPGRADE POOL
    =========================================================================== */
 const UPGRADES = [
-  {id:'dmg', ic:'⚔️', nm:'논리 강화', ds:'공격력 +25%', max:8, apply:s=>s.dmg*=1.25},
-  {id:'fire',ic:'⚡', nm:'타자 속도', ds:'연사 속도 +20%', max:8, apply:s=>s.fireRate*=1.2},
-  {id:'proj',ic:'✦', nm:'다중 인용', ds:'투사체 +1', max:6, apply:s=>s.projCount+=1},
-  {id:'pierce',ic:'➹', nm:'관통 논증', ds:'관통 +1', max:5, apply:s=>s.pierce+=1},
-  {id:'speed',ic:'👟', nm:'발놀림', ds:'이동속도 +12%', max:6, apply:s=>s.moveSpeed*=1.12},
-  {id:'hp', ic:'❤️', nm:'체력 단련', ds:'최대 HP +30, 전체 회복', max:6, apply:(s,p)=>{s.maxhpMul+=0.0; p.maxhp+=30; p.hp=p.maxhp;}},
-  {id:'regen',ic:'✚', nm:'커피 수혈', ds:'초당 HP +1.2 회복', max:5, apply:(s,p)=>{p.regen+=1.2;}},
-  {id:'crit',ic:'🎯', nm:'예리한 통찰', ds:'치명타 확률 +8%', max:6, apply:s=>s.crit+=0.08},
-  {id:'area',ic:'💥', nm:'영향력', ds:'투사체 크기 +20%', max:5, apply:s=>s.area*=1.2},
-  {id:'magnet',ic:'🧲', nm:'정보 수집', ds:'경험치 흡수 범위 +40%', max:4, apply:(s,p)=>{p.pickup*=1.4;}},
-  {id:'orbit',ic:'🛰️', nm:'위성 세미나', ds:'주위를 도는 보호막 +1', max:4, apply:s=>s.extraWeapons.orbit+=1},
-  {id:'nova',ic:'❄️', nm:'마감 폭발', ds:'주기적 충격파 +1', max:4, apply:s=>s.extraWeapons.nova+=1},
+  {id:'dmg', ic:'📈', nm:'임팩트 팩터', ds:'논문 위력 +25%', max:8, apply:s=>s.dmg*=1.25},
+  {id:'fire',ic:'⌨️', nm:'자동화 스크립트', ds:'투고 속도 +20%', max:8, apply:s=>s.fireRate*=1.2},
+  {id:'proj',ic:'🤝', nm:'공동 저자', ds:'동시 투고 +1', max:6, apply:s=>s.projCount+=1},
+  {id:'pierce',ic:'🔬', nm:'메타 분석', ds:'관통 +1', max:5, apply:s=>s.pierce+=1},
+  {id:'speed',ic:'☕', nm:'카페인', ds:'이동속도 +12%', max:6, apply:s=>s.moveSpeed*=1.12},
+  {id:'hp', ic:'🛌', nm:'워라밸', ds:'최대 멘탈 +30, 전체 회복', max:6, apply:(s,p)=>{p.maxhp+=30; p.hp=p.maxhp;}},
+  {id:'regen',ic:'😴', nm:'주말 수면', ds:'초당 멘탈 +1.2 회복', max:5, apply:(s,p)=>{p.regen+=1.2;}},
+  {id:'crit',ic:'💡', nm:'유레카', ds:'돌파구(치명타) 확률 +8%', max:6, apply:s=>s.crit+=0.08},
+  {id:'area',ic:'🔓', nm:'오픈 액세스', ds:'영향 범위 +20%', max:5, apply:s=>s.area*=1.2},
+  {id:'magnet',ic:'📚', nm:'레퍼런스 매니저', ds:'데이터 수집 범위 +40%', max:4, apply:(s,p)=>{p.pickup*=1.4;}},
+  {id:'orbit',ic:'👥', nm:'공동연구자', ds:'곁을 도는 협력자 +1', max:4, apply:s=>s.extraWeapons.orbit+=1},
+  {id:'nova',ic:'🎤', nm:'학회 발표', ds:'주기적 임팩트 폭발 +1', max:4, apply:s=>s.extraWeapons.nova+=1},
 ];
 const upLevels = {}; // id -> count
 function pickUpgrades(){
@@ -356,6 +508,7 @@ function update(dt){
   // camera follows
   G.cam.x=p.x; G.cam.y=p.y;
   if(G.shake>0) G.shake-=dt*40;
+  if(G.banner){ G.banner.life-=dt; if(G.banner.life<=0) G.banner=null; }
 
   // spawn
   G.spawnTimer-=dt;
@@ -531,6 +684,7 @@ function worldToScreen(x,y){
 }
 function render(){
   ctx.clearRect(0,0,VW,VH);
+  ctx.imageSmoothingEnabled=false;
   drawGrid();
   const p=G.player;
 
@@ -548,12 +702,9 @@ function render(){
   // enemies
   for(const e of G.enemies){
     const [sx,sy]=worldToScreen(e.x,e.y);
-    ctx.fillStyle = e.hit>0 ? '#fff' : e.color;
-    ctx.beginPath(); ctx.arc(sx,sy,e.r,0,TAU); ctx.fill();
-    // simple eyes
-    ctx.fillStyle='#11151f';
-    ctx.beginPath(); ctx.arc(sx-e.r*0.3,sy-e.r*0.15,e.r*0.16,0,TAU); ctx.fill();
-    ctx.beginPath(); ctx.arc(sx+e.r*0.3,sy-e.r*0.15,e.r*0.16,0,TAU); ctx.fill();
+    const spr=SPR[e.spr];
+    if(spr) drawSpr(spr, sx, sy, e.r*2.4, e.hit>0);
+    else { ctx.fillStyle=e.hit>0?'#fff':e.color; ctx.beginPath(); ctx.arc(sx,sy,e.r,0,TAU); ctx.fill(); }
     // hp bar for tough/boss
     if(e.boss || e.maxhp>40){
       const w=e.r*2, hpw=w*(e.hp/e.maxhp);
@@ -589,10 +740,7 @@ function render(){
   // player
   const [px,py]=worldToScreen(p.x,p.y);
   if(p.iframe>0 && Math.floor(p.iframe*20)%2===0) ctx.globalAlpha=0.4;
-  ctx.fillStyle='#48d1ff';
-  ctx.beginPath(); ctx.arc(px,py,p.r,0,TAU); ctx.fill();
-  ctx.fillStyle='#fff';
-  ctx.beginPath(); ctx.arc(px+p.facing.x*5,py+p.facing.y*5,4,0,TAU); ctx.fill();
+  drawSpr(SPR.player, px, py, p.r*2.6, false);
   ctx.globalAlpha=1;
   // player hp bar
   const w=40, hpw=w*(p.hp/p.maxhp);
@@ -607,6 +755,16 @@ function render(){
     ctx.fillStyle=d.crit?'#ffd479':'#fff';
     ctx.font=(d.crit?'bold 18px':'14px')+' sans-serif';
     ctx.fillText(d.txt,sx,sy);
+    ctx.globalAlpha=1;
+  }
+  // boss banner (screen-space)
+  if(G.banner){
+    ctx.globalAlpha=clamp(G.banner.life,0,1);
+    ctx.textAlign='center';
+    ctx.fillStyle='#ff5577'; ctx.font='bold 26px sans-serif';
+    ctx.fillText(G.banner.txt, VW/2, VH*0.26);
+    ctx.fillStyle='#e8ecf4'; ctx.font='15px sans-serif';
+    ctx.fillText(G.banner.sub, VW/2, VH*0.26+26);
     ctx.globalAlpha=1;
   }
   ctx.textAlign='left';
@@ -664,7 +822,7 @@ function gameOver(){
   running=false;
   const m=Math.floor(G.t/60), s=Math.floor(G.t%60);
   document.getElementById('overStat').innerHTML=
-    `생존 ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} · Lv ${G.lv} · 처치 ${G.kills}`;
+    `버틴 시간 ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} · Lv ${G.lv} · 막아낸 업무 ${G.kills} · 보스 격파 ${G.bossIdx}`;
   document.getElementById('overPanel').classList.add('show');
 }
 document.getElementById('startBtn').onclick=start;

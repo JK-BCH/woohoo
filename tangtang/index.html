@@ -91,6 +91,8 @@ const ctx = cv.getContext('2d');
 
 // 배경 그라디언트/비네팅 캐시 (resize 시 무효화)
 let _bg=null,_bgW=0,_bgH=0,_vg=null,_vgW=0,_vgH=0;
+let G = null;        // game object, created on start (resize에서 참조하므로 상단 선언)
+let running = false;
 
 /* ---- viewport ---- */
 let VW = 0, VH = 0, DPR = 1;
@@ -253,8 +255,6 @@ function drawSpr(s, sx, sy, size, flash){
 /* ===========================================================================
    GAME STATE
    =========================================================================== */
-let G = null;        // game object, created on start
-let running = false;
 
 // 배경 장식: 떠다니는 부드러운 빛 입자(보케)
 const MOTE_COLORS=['#3a6ea5','#5a7fb5','#4a5a8a','#7a6aa8','#3a8a9a'];

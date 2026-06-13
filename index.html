@@ -317,7 +317,7 @@ const SKILLS={
   geogyeong:{id:'geogyeong',name:'부동심(不動心)',mp:4,lv:3,desc:'흔들리지 않는 마음 — 방어 ×2 (3턴)',brief:'방어 ×2 (3턴)'},
   gungri:{id:'gungri',name:'온고지신(溫故知新)',mp:0,lv:4,desc:'옛 기록을 익혀 새 힘을 — 논리(MP) +8 + 간이 스캔',brief:'MP +8 + 스캔',sup:'susin'},
   gakju:{id:'gakju',name:'술이부작(述而不作)',mp:3,lv:5,desc:'경전 인용 태세 — 받는 공격 1회 무효 + 2배 반격(약점 노출 동반), 연속 사용 불가',brief:'무효+강반격'},
-  sadan:{id:'sadan',name:'사단지심(四端之心)',mp:8,lv:6,desc:'측은·수오·사양·시비 — 무작위 4연타 ×0.55, 타격마다 약화(ATK↓/약점/SPD↓/막기봉인)',brief:'4연타+약화'},
+  sadan:{id:'sadan',name:'사단지심(四端之心)',mp:8,lv:6,desc:'측은·수오·사양·시비 — 무작위 4연타 ×0.55(방어 높아도 최소타 보장), 타격마다 약화(ATK↓/약점/SPD↓/막기봉인)',brief:'4연타+약화'},
   igi:{id:'igi',name:'치국평천하(治國平天下)',mp:12,lv:8,desc:'천하를 다스려 기세를 꺾는다 — 전체 ×1.0 + 적 전체 논증력 −15%(2턴), 회피 불가',brief:'전체+ATK디버프'},
   jihaeng:{id:'jihaeng',name:'지행합일(知行合一)',mp:10,lv:11,desc:'앎이 곧 일격 — 단일 ×2.2 (최대 화력)',brief:'단일 ×2.2',sup:'bakhak'},
   silsa:{id:'silsa',name:'실사구시(實事求是)',mp:0,lv:12,desc:'사실로 못 박는다 — 대상 약점 노출 + 막기 봉인(3턴) + 정밀 스캔',brief:'약점+가드봉인'},
@@ -3358,7 +3358,8 @@ async function playerCommand(){
         }
         const m=MULT[id];
         let txt='MP'+s.mp;
-        if(m)txt+=' · '+(m[2]?m[2]+' ':'')+'약 '+dmgRange(m[0],m[1])+'뎀'+(m[2]==='×4'?'/타':'');
+        if(id==='sadan')txt+=' · ×4 약 '+dmgRange(0.55,false,null,Math.floor(atkNow()*0.55*0.5))+'뎀/타';
+        else if(m)txt+=' · '+(m[2]?m[2]+' ':'')+'약 '+dmgRange(m[0],m[1])+'뎀'+(m[2]==='×4'?'/타':'');
         else txt+=' · '+s.brief;
         return txt;
       };
@@ -3424,11 +3425,12 @@ async function pickTarget(m){
   return await bchoice('누구를 논파할까?',items,true);
 }
 function atkNow(){return Math.floor((P.atk+wpn().atk)*(P.debuffAtk>0?0.85:1)*(1+(P.buffAtk>0?0.25:0)+(P.buffGse>0?0.25:0)));}
-function dmgRange(mult,ig,tgt){
+function dmgRange(mult,ig,tgt,minHit){
   const a=atkNow();
   const t=tgt||(B?B.enemies.filter(e=>e.hp>0)[0]:null);
   const def=ig?0:(t?t.def:0);
   let lo=Math.max(1,Math.floor(a*mult*0.9)-def),hi=Math.max(1,Math.floor(a*mult*1.1)-def);
+  if(minHit){lo=Math.max(lo,minHit);hi=Math.max(hi,minHit);}
   if(t&&t.weak>0){lo=Math.floor(lo*1.2);hi=Math.floor(hi*1.2);}
   return lo+'~'+hi;
 }
@@ -3568,7 +3570,7 @@ async function playerAct(act){
       const t=a[Math.floor(Math.random()*a.length)];
       fxAdd('slash',t);sfx.slash();await sleep(220);
       if(pMiss(t)){await bmsg(SADAN[h%4][0]+' — 빗나갔다!',360);continue;}
-      let r=calcDmg(atkNow(),0.55,t.def,P.luk);let d=r.d;
+      let r=calcDmg(atkNow(),0.55,t.def,P.luk);let d=Math.max(r.d,Math.floor(atkNow()*0.55*0.5)); // 사단 최소타 — 방어가 높아도 명목치 절반은 박힌다(저레벨 def 붕괴 방지)
       if(t.weak>0)d=Math.floor(d*1.2);
       const gq=enemyGuard(t,d);d=gq.d;
       t.hp=Math.max(0,t.hp-d);t.shake=8;t.flash=5;sfx.hit();

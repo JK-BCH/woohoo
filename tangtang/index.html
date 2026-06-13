@@ -267,13 +267,15 @@ function newGame(){
     stat:{
       dmg:1, fireRate:1, projSpeed:1, projCount:1, pierce:0,
       area:1, crit:0.03, critMul:2, magnet:1, moveSpeed:1, maxhpMul:1, regenAdd:0,
-      extraWeapons:{orbit:0, nova:0},
+      extraWeapons:{orbit:0, nova:0, chain:0, beam:0, hole:0},
       evo:{},
     },
     lv:1, xp:0, xpNeed:3,
     kills:0,
     enemies:[], bullets:[], gems:[], particles:[], dmgText:[],
     enemyBullets:[],
+    bolts:[], beams:[], holes:[],
+    chainTimer:0, beamTimer:0, holeTimer:0,
     spawnTimer:0, spawnEvery:1.1,
     fireTimer:0,
     novaTimer:0,
@@ -412,6 +414,9 @@ const UPGRADES = [
   {id:'magnet',ic:'📚', nm:'레퍼런스 매니저', ds:'데이터 수집 범위 +40%', max:4, apply:(s,p)=>{p.pickup*=1.4;}},
   {id:'orbit',ic:'👥', nm:'공동연구자', ds:'곁을 도는 협력자 +1', max:4, apply:s=>s.extraWeapons.orbit+=1},
   {id:'nova',ic:'🎤', nm:'학회 발표', ds:'주기적 임팩트 폭발 +1', max:4, apply:s=>s.extraWeapons.nova+=1},
+  {id:'chain',ic:'⚡', nm:'인용 연쇄', ds:'번개가 적 사이를 튄다 (+사거리/타격)', max:5, apply:s=>s.extraWeapons.chain+=1},
+  {id:'beam',ic:'🔆', nm:'논문 레이저', ds:'주기적 관통 빔 발사 (+위력)', max:4, apply:s=>s.extraWeapons.beam+=1},
+  {id:'hole',ic:'🕳️', nm:'데드라인 블랙홀', ds:'적을 빨아들이는 소용돌이 (+범위/딜)', max:3, apply:s=>s.extraWeapons.hole+=1},
 ];
 const upLevels = {}; // id -> count
 function pickUpgrades(){
@@ -430,6 +435,8 @@ const EVO = {
   dmg:   {flag:'nature',   nm:'Nature 표지',     ds:'돌파구 확률 대폭 상승'},
   nova:  {flag:'keynote',  nm:'기조 강연',       ds:'발표 폭발이 광역 둔화'},
   orbit: {flag:'lab',      nm:'대형 연구실',     ds:'협력자 +2 강화'},
+  chain: {flag:'surge',    nm:'동료 인용 폭주',  ds:'연쇄가 적을 감전 둔화'},
+  beam:  {flag:'carpet',   nm:'리뷰 융단 레이저',ds:'빔이 사방 십자로 발사'},
 };
 function checkEvo(u){
   const e=EVO[u.id];
@@ -582,6 +589,79 @@ function update(dt){
     G.orbitAngle+=dt*3.0;
   }
 
+  // ⚡ 인용 연쇄 (체인 라이트닝)
+  if(G.stat.extraWeapons.chain>0){
+    G.chainTimer-=dt;
+    if(G.chainTimer<=0){
+      G.chainTimer=2.2;
+      const lv=G.stat.extraWeapons.chain, jumps=2+lv, reach2=170*170;
+      const hit=new Set(); const pts=[{x:p.x,y:p.y}];
+      let cur=nearestEnemy(p.x,p.y); let from={x:p.x,y:p.y};
+      const dmgBolt=16*G.stat.dmg*(1+0.4*lv);
+      while(cur && hit.size<jumps){
+        hit.add(cur); pts.push({x:cur.x,y:cur.y});
+        const r=critRoll(dmgBolt); damageEnemy(cur,r.d,r.crit);
+        if(G.stat.evo.surge) cur.slow=1.6;
+        from={x:cur.x,y:cur.y};
+        let nx=null,nd=reach2;
+        for(const e of G.enemies){ if(e.dead||hit.has(e))continue; const d=dist2(from.x,from.y,e.x,e.y); if(d<nd){nd=d;nx=e;} }
+        cur=nx;
+      }
+      if(pts.length>1){ G.bolts.push({pts,life:0.22}); sfx(1300,0.08,'square',0.05); }
+    }
+  }
+  // 🔆 논문 레이저 (빔)
+  if(G.stat.extraWeapons.beam>0){
+    G.beamTimer-=dt;
+    if(G.beamTimer<=0){
+      G.beamTimer=3.0;
+      const lv=G.stat.extraWeapons.beam, tgt=nearestEnemy(p.x,p.y);
+      const ang=tgt?Math.atan2(tgt.y-p.y,tgt.x-p.x):Math.atan2(p.facing.y,p.facing.x);
+      const len=1100, width=(20+8*lv)*G.stat.area, dmgBeam=30*G.stat.dmg*lv;
+      const fireBeam=(an)=>{
+        const dx=Math.cos(an),dy=Math.sin(an);
+        for(const e of G.enemies){
+          if(e.dead)continue;
+          const rx=e.x-p.x, ry=e.y-p.y, proj=rx*dx+ry*dy;
+          if(proj<0||proj>len)continue;
+          const bx=p.x+dx*proj, by=p.y+dy*proj, rr=width/2+e.r;
+          if(dist2(bx,by,e.x,e.y)<rr*rr){ const r=critRoll(dmgBeam); damageEnemy(e,r.d,r.crit); }
+        }
+        G.beams.push({x:p.x,y:p.y,ang:an,len,width,life:0.32});
+      };
+      fireBeam(ang);
+      if(G.stat.evo.carpet){ fireBeam(ang+Math.PI); fireBeam(ang+Math.PI/2); fireBeam(ang-Math.PI/2); }
+      sfx(320,0.25,'sawtooth',0.05);
+    }
+  }
+  // 🕳️ 데드라인 블랙홀 (소용돌이)
+  if(G.stat.extraWeapons.hole>0){
+    G.holeTimer-=dt;
+    if(G.holeTimer<=0){
+      G.holeTimer=5.5;
+      const lv=G.stat.extraWeapons.hole, tgt=nearestEnemy(p.x,p.y);
+      const hx=tgt?tgt.x:p.x+p.facing.x*160, hy=tgt?tgt.y:p.y+p.facing.y*160;
+      G.holes.push({x:hx,y:hy,r:90+25*lv,life:1.8,tick:0,lv,ang:0});
+      sfx(70,0.5,'sine',0.05);
+    }
+  }
+  for(const h of G.holes){
+    h.life-=dt; h.ang+=dt*5; h.tick-=dt;
+    const tickNow=h.tick<=0; if(tickNow) h.tick=0.2;
+    for(const e of G.enemies){
+      if(e.dead) continue;
+      const dd=dist2(h.x,h.y,e.x,e.y);
+      if(dd<h.r*h.r){
+        const d=Math.sqrt(dd)||1, pull=e.boss?22:140;
+        e.x+=(h.x-e.x)/d*pull*dt; e.y+=(h.y-e.y)/d*pull*dt;
+        if(tickNow){ const r=critRoll(7*G.stat.dmg*h.lv); damageEnemy(e,r.d,r.crit); }
+      }
+    }
+  }
+  G.holes=G.holes.filter(h=>h.life>0);
+  for(const b of G.bolts) b.life-=dt; G.bolts=G.bolts.filter(b=>b.life>0);
+  for(const bm of G.beams) bm.life-=dt; G.beams=G.beams.filter(bm=>bm.life>0);
+
   // bullets
   for(const b of G.bullets){
     if(G.stat.evo.coauthor){ // 대형 컨소시엄: 유도 추적
@@ -733,6 +813,28 @@ function render(){
   drawGrid();
   const p=G.player;
 
+  // 🕳️ 블랙홀 (적·바닥 아래에 깔리는 소용돌이)
+  for(const h of G.holes){
+    const [sx,sy]=worldToScreen(h.x,h.y);
+    const a=clamp(h.life,0,1);
+    const g=ctx.createRadialGradient(sx,sy,2,sx,sy,h.r);
+    g.addColorStop(0,'rgba(10,4,24,'+(0.9*a)+')');
+    g.addColorStop(0.55,'rgba(120,60,220,'+(0.45*a)+')');
+    g.addColorStop(1,'rgba(120,60,220,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(sx,sy,h.r,0,TAU); ctx.fill();
+    // 회전 소용돌이 팔
+    ctx.strokeStyle='rgba(180,140,255,'+(0.6*a)+')'; ctx.lineWidth=2;
+    for(let k=0;k<3;k++){
+      ctx.beginPath();
+      for(let s=0;s<22;s++){
+        const rr=h.r*(s/22), aa=h.ang*2+k*TAU/3+rr*0.06;
+        const xx=sx+Math.cos(aa)*rr, yy=sy+Math.sin(aa)*rr;
+        s?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);
+      }
+      ctx.stroke();
+    }
+  }
+
   // gems
   for(const g of G.gems){
     const [sx,sy]=worldToScreen(g.x,g.y);
@@ -766,11 +868,14 @@ function render(){
       ctx.beginPath(); ctx.arc(px+Math.cos(a)*60,py+Math.sin(a)*60,9,0,TAU); ctx.fill();
     }
   }
-  // bullets
+  // bullets (글로우 + 코어)
+  ctx.shadowColor='#ffd45a'; ctx.shadowBlur=8;
   for(const b of G.bullets){
     const [sx,sy]=worldToScreen(b.x,b.y);
-    ctx.fillStyle='#ffe08a'; ctx.beginPath(); ctx.arc(sx,sy,b.r,0,TAU); ctx.fill();
+    ctx.fillStyle='#ffb020'; ctx.beginPath(); ctx.arc(sx,sy,b.r*1.15,0,TAU); ctx.fill();
+    ctx.fillStyle='#fff7d6'; ctx.beginPath(); ctx.arc(sx,sy,b.r*0.55,0,TAU); ctx.fill();
   }
+  ctx.shadowBlur=0;
   // particles
   for(const pt of G.particles){
     const [sx,sy]=worldToScreen(pt.x,pt.y);
@@ -781,6 +886,42 @@ function render(){
       ctx.globalAlpha=clamp(pt.life*2,0,1);
       ctx.fillStyle=pt.color; ctx.fillRect(sx-2,sy-2,4,4); ctx.globalAlpha=1;
     }
+  }
+  // 🔆 레이저 빔
+  for(const bm of G.beams){
+    const [sx,sy]=worldToScreen(bm.x,bm.y);
+    const a=clamp(bm.life/0.32,0,1);
+    ctx.save(); ctx.translate(sx,sy); ctx.rotate(bm.ang);
+    ctx.shadowColor='#9be8ff'; ctx.shadowBlur=18;
+    const g=ctx.createLinearGradient(0,-bm.width/2,0,bm.width/2);
+    g.addColorStop(0,'rgba(72,160,255,0)'); g.addColorStop(0.5,'rgba(170,230,255,'+a+')'); g.addColorStop(1,'rgba(72,160,255,0)');
+    ctx.fillStyle=g; ctx.fillRect(0,-bm.width/2,bm.len,bm.width);
+    ctx.fillStyle='rgba(255,255,255,'+a+')'; ctx.fillRect(0,-bm.width*0.18,bm.len,bm.width*0.36);
+    ctx.restore(); ctx.shadowBlur=0;
+  }
+  // ⚡ 인용 연쇄 (체인 라이트닝)
+  for(const bolt of G.bolts){
+    const a=clamp(bolt.life/0.22,0,1);
+    ctx.shadowColor='#7df'; ctx.shadowBlur=12;
+    for(let pass=0;pass<2;pass++){
+      ctx.strokeStyle = pass? 'rgba(255,255,255,'+a+')' : 'rgba(90,200,255,'+a+')';
+      ctx.lineWidth = pass? 2 : 5;
+      ctx.beginPath();
+      for(let i=0;i<bolt.pts.length;i++){
+        const [sx,sy]=worldToScreen(bolt.pts[i].x,bolt.pts[i].y);
+        if(i===0){ ctx.moveTo(sx,sy); }
+        else {
+          const [px0,py0]=worldToScreen(bolt.pts[i-1].x,bolt.pts[i-1].y);
+          const segs=3;
+          for(let s=1;s<=segs;s++){
+            const t=s/segs, jx=(s<segs?rnd(-7,7):0), jy=(s<segs?rnd(-7,7):0);
+            ctx.lineTo(px0+(sx-px0)*t+jx, py0+(sy-py0)*t+jy);
+          }
+        }
+      }
+      ctx.stroke();
+    }
+    ctx.shadowBlur=0;
   }
   // player
   const [px,py]=worldToScreen(p.x,p.y);

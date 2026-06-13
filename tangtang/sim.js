@@ -12,12 +12,12 @@ const TAU=Math.PI*2;
 const d2=(ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
 
 const ENEMY_TYPES={
-  pipet:   {r:13, hp:18,  speed:60,  dmg:8,  xp:2},
-  email:   {r:9,  hp:8,   speed:100, dmg:5,  xp:2},
-  deadline:{r:11, hp:14,  speed:105, dmg:8,  xp:2},
-  reviewer:{r:20, hp:80,  speed:42,  dmg:16, xp:4},
-  reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, ranged:true},
-  pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, ranged:true},
+  pipet:   {r:13, hp:18,  speed:60,  dmg:13, xp:2},
+  email:   {r:9,  hp:8,   speed:100, dmg:8,  xp:2},
+  deadline:{r:11, hp:14,  speed:105, dmg:13, xp:2},
+  reviewer:{r:20, hp:80,  speed:42,  dmg:26, xp:4},
+  reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, ranged:true, shots:2},
+  pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, ranged:true, shots:3},
 };
 const BOSSES=[
   {hp:1600,dmg:20},{hp:2400,dmg:24},{hp:3300,dmg:28},
@@ -47,7 +47,7 @@ const VW=900,VH=600; // 가상 화면(스폰 반경 기준)
 function nearest(G,x,y){let b=null,bd=Infinity;for(const e of G.enemies){const d=d2(x,y,e.x,e.y);if(d<bd){bd=d;b=e;}}return b;}
 
 function spawnEnemy(G){
-  const t=G.t, hpS=1+t*0.012+Math.max(0,t-180)*0.02, roll=Math.random();
+  const t=G.t, hpS=1+t*0.015+Math.max(0,t-180)*0.02, roll=Math.random();
   let key='pipet';
   if(t>40&&roll<0.15)key='pi';
   else if(t>20&&roll<0.33)key='reject';
@@ -57,7 +57,7 @@ function spawnEnemy(G){
   const b=ENEMY_TYPES[key], ang=rnd(0,TAU), rad=Math.max(VW,VH)*0.62+40;
   G.enemies.push({type:key,x:G.p.x+Math.cos(ang)*rad,y:G.p.y+Math.sin(ang)*rad,
     r:b.r,hp:b.hp*hpS,maxhp:b.hp*hpS,speed:b.speed*(1+t*0.002+Math.max(0,t-180)*0.0007),dmg:b.dmg,xp:b.xp,
-    ranged:!!b.ranged,fire:rnd(1,2.5),slow:0});
+    ranged:!!b.ranged,shots:b.shots||1,fire:rnd(1,2.5),slow:0});
 }
 function spawnBoss(G){
   const b=BOSSES[G.bossIdx%BOSSES.length];G.bossIdx++;
@@ -88,7 +88,7 @@ function fire(G){
   for(let i=0;i<count;i++){
     const off=count>1?(i-(count-1)/2)*spread:0,a=base+off;
     G.bullets.push({x:p.x,y:p.y,vx:Math.cos(a),vy:Math.sin(a),
-      speed:430*G.st.projSpeed,r:6*G.st.area,dmg:8*G.st.dmg,
+      speed:430*G.st.projSpeed,r:6*G.st.area,dmg:13*G.st.dmg,
       pierce:pierce,hit:new Set(),life:1.4});
   }
 }
@@ -192,16 +192,16 @@ function step(G,dt){
   G.bossTimer-=dt;if(G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}
 
   // 발사
-  G.fireTimer-=dt;if(G.fireTimer<=0){G.fireTimer=0.40/G.st.fireRate;if(G.enemies.length)fire(G);}
+  G.fireTimer-=dt;if(G.fireTimer<=0){G.fireTimer=0.36/G.st.fireRate;if(G.enemies.length)fire(G);}
   // nova
   if(G.st.extra.nova>0){G.novaTimer-=dt;if(G.novaTimer<=0){G.novaTimer=3.0;
     const radius=120*G.st.area*(1+0.25*(G.st.extra.nova-1));
     for(const e of G.enemies){if(d2(p.x,p.y,e.x,e.y)<radius*radius){hurtEnemy(G,e,crit(G,20*G.st.dmg*G.st.extra.nova));if(G.st.evo.keynote)e.slow=2;}}}}
   if(G.st.extra.orbit>0)G.orbitAngle+=dt*3.0;
   // ⚡ 인용 연쇄
-  if(G.st.extra.chain>0){G.chainTimer-=dt;if(G.chainTimer<=0){G.chainTimer=2.2;
-    const lv=G.st.extra.chain,jumps=2+lv,reach2=170*170,hit=new Set();
-    let cur=nearest(G,p.x,p.y),from={x:p.x,y:p.y};const dmgBolt=16*G.st.dmg*(1+0.4*lv);
+  if(G.st.extra.chain>0){G.chainTimer-=dt;if(G.chainTimer<=0){G.chainTimer=1.8;
+    const lv=G.st.extra.chain,jumps=3+lv,reach2=170*170,hit=new Set();
+    let cur=nearest(G,p.x,p.y),from={x:p.x,y:p.y};const dmgBolt=26*G.st.dmg*(1+0.4*lv);
     while(cur&&hit.size<jumps){hit.add(cur);hurtEnemy(G,cur,crit(G,dmgBolt));if(G.st.evo.surge)cur.slow=1.6;from={x:cur.x,y:cur.y};
       let nx=null,nd=reach2;for(const e of G.enemies){if(e.dead||hit.has(e))continue;const d=d2(from.x,from.y,e.x,e.y);if(d<nd){nd=d;nx=e;}}cur=nx;}}}
   // 🔆 논문 레이저
@@ -271,7 +271,7 @@ function step(G,dt){
         else if(e.pat===1){for(let i=0;i<5;i++){const a=Math.atan2(dy,dx)+(i-2)*0.17;G.ebullets.push({x:e.x,y:e.y,vx:Math.cos(a)*240,vy:Math.sin(a)*240,r:8,dmg:e.dmg,life:4});}e.atkT=1.7;}
         else{e.dashT=0.85;e.atkT=2.6;}
       }
-    } else if(e.ranged&&e.frozen<=0){e.fire-=dt;if(e.fire<=0&&m<560){e.fire=1.7;const a=Math.atan2(dy,dx);G.ebullets.push({x:e.x,y:e.y,vx:Math.cos(a)*210,vy:Math.sin(a)*210,r:8,dmg:e.dmg,life:4});}}
+    } else if(e.ranged&&e.frozen<=0){e.fire-=dt;if(e.fire<=0&&m<560){e.fire=1.7;const base=Math.atan2(dy,dx),n=e.shots||1;for(let i=0;i<n;i++){const a=base+(i-(n-1)/2)*0.17;G.ebullets.push({x:e.x,y:e.y,vx:Math.cos(a)*210,vy:Math.sin(a)*210,r:8,dmg:e.dmg,life:4});}}}
     if(m<e.r+p.r&&p.iframe<=0){p.hp-=e.dmg;p.iframe=0.5;}
     if(oN>0){for(let i=0;i<oN;i++){const a=G.orbitAngle+i*TAU/oN;const ox=p.x+Math.cos(a)*60,oy=p.y+Math.sin(a)*60;
       if(d2(ox,oy,e.x,e.y)<(e.r+12)*(e.r+12)){if(!e._oc||e._oc<=0){hurtEnemy(G,e,crit(G,12*G.st.dmg));e._oc=0.3;}}}}

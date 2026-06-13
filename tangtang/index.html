@@ -371,18 +371,18 @@ function readMove(){
    ENEMY TYPES
    =========================================================================== */
 const ENEMY_TYPES = {
-  pipet:   {r:13, hp:18,  speed:60,  dmg:8,  xp:2, color:'#6cbf6c', name:'피펫팅 잡무'},
-  email:   {r:9,  hp:8,   speed:100, dmg:5,  xp:2, color:'#5aa0ff', name:'밀린 이메일'},
-  deadline:{r:11, hp:14,  speed:105, dmg:8,  xp:2, color:'#ff6b5a', name:'데드라인'},
-  reviewer:{r:20, hp:80,  speed:42,  dmg:16, xp:4, color:'#b06cd1', name:'Reviewer 2'},
-  reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, color:'#ff8a4c', name:'리젝 레터', ranged:true},
-  pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, color:'#44506b', name:'PI 면담',   ranged:true},
+  pipet:   {r:13, hp:18,  speed:60,  dmg:13, xp:2, color:'#6cbf6c', name:'피펫팅 잡무'},
+  email:   {r:9,  hp:8,   speed:100, dmg:8,  xp:2, color:'#5aa0ff', name:'밀린 이메일'},
+  deadline:{r:11, hp:14,  speed:105, dmg:13, xp:2, color:'#ff6b5a', name:'데드라인'},
+  reviewer:{r:20, hp:80,  speed:42,  dmg:26, xp:4, color:'#b06cd1', name:'Reviewer 2'},
+  reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, color:'#ff8a4c', name:'리젝 레터', ranged:true, shots:2},
+  pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, color:'#44506b', name:'PI 면담',   ranged:true, shots:3},
 };
 function spawnEnemy(){
   // 시간이 흐를수록 난도 상승 — 포닥 생존 곡선
   const t=G.t;
   // 초반 살짝 상향 + 후반 가속(180초 이후 HP 급증)
-  const hpScale = 1 + t*0.012 + Math.max(0,t-180)*0.02;
+  const hpScale = 1 + t*0.015 + Math.max(0,t-180)*0.02;
   const roll = Math.random();
   let key='pipet';
   // 원거리 몹(리젝/PI)을 더 일찍·자주 등장시켜 확실히 보이게
@@ -399,7 +399,7 @@ function spawnEnemy(){
     type:key, spr:key, x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
     r:base.r, hp:base.hp*hpScale, maxhp:base.hp*hpScale,
     speed:base.speed*(1+t*0.002+Math.max(0,t-180)*0.0007), dmg:base.dmg, xp:base.xp,
-    color:base.color, ranged:!!base.ranged, fire:rnd(1,2.5), hit:0,
+    color:base.color, ranged:!!base.ranged, shots:base.shots||1, fire:rnd(1,2.5), hit:0,
   });
 }
 const BOSSES = [
@@ -508,7 +508,7 @@ function fireWeapon(){
     G.bullets.push({
       x:p.x, y:p.y, vx:Math.cos(a), vy:Math.sin(a),
       speed:430*G.stat.projSpeed, r:6*G.stat.area,
-      dmg:8*G.stat.dmg, pierce:pierce, hitset:new Set(), life:1.4,
+      dmg:13*G.stat.dmg, pierce:pierce, hitset:new Set(), life:1.4,
     });
   }
   sfx(660,0.04,'square',0.04);
@@ -601,7 +601,7 @@ function update(dt){
 
   // auto fire
   G.fireTimer-=dt;
-  if(G.fireTimer<=0){ G.fireTimer = 0.40/G.stat.fireRate; if(G.enemies.length) fireWeapon(); }
+  if(G.fireTimer<=0){ G.fireTimer = 0.36/G.stat.fireRate; if(G.enemies.length) fireWeapon(); }
 
   // nova
   if(G.stat.extraWeapons.nova>0){
@@ -629,11 +629,11 @@ function update(dt){
   if(G.stat.extraWeapons.chain>0){
     G.chainTimer-=dt;
     if(G.chainTimer<=0){
-      G.chainTimer=2.2;
-      const lv=G.stat.extraWeapons.chain, jumps=2+lv, reach2=170*170;
+      G.chainTimer=1.8;
+      const lv=G.stat.extraWeapons.chain, jumps=3+lv, reach2=170*170;
       const hit=new Set(); const pts=[{x:p.x,y:p.y}];
       let cur=nearestEnemy(p.x,p.y); let from={x:p.x,y:p.y};
-      const dmgBolt=16*G.stat.dmg*(1+0.4*lv);
+      const dmgBolt=26*G.stat.dmg*(1+0.4*lv);
       while(cur && hit.size<jumps){
         hit.add(cur); pts.push({x:cur.x,y:cur.y});
         const r=critRoll(dmgBolt); damageEnemy(cur,r.d,r.crit,'chain');
@@ -836,8 +836,9 @@ function update(dt){
     } else if(e.ranged && e.frozen<=0){
       e.fire-=dt;
       if(e.fire<=0 && m<560){
-        e.fire=1.7; const a=Math.atan2(dy,dx);
-        G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*210,vy:Math.sin(a)*210,r:8,dmg:e.dmg,life:4,color:'#ff6a4a',big:true});
+        e.fire=1.7; const base=Math.atan2(dy,dx), n=e.shots||1;
+        for(let i=0;i<n;i++){ const a=base+(i-(n-1)/2)*0.17;
+          G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*210,vy:Math.sin(a)*210,r:8,dmg:e.dmg,life:4,color:'#ff6a4a',big:true}); }
       }
     }
     // contact damage
@@ -1266,10 +1267,10 @@ function gameOver(){
   const info=k=>{
     switch(k){
       case 'gun': return {nm:'📄 평타 (논문 투고)', evo:S.evo.preprint?'프리프린트 폭격':(S.evo.coauthor?'대형 컨소시엄':(S.evo.meta?'체계적 리뷰':(S.evo.nature?'Nature 표지':''))),
-        sub:`타격 ~${Math.round(8*S.dmg)} ×${S.projCount}발 · 공격 Lv${lv('dmg')} · 연사 Lv${lv('fire')} · 관통 ${1+S.pierce} · 치명 ${critPct}%(×${S.critMul})`};
+        sub:`타격 ~${Math.round(13*S.dmg)} ×${S.projCount}발 · 공격 Lv${lv('dmg')} · 연사 Lv${lv('fire')} · 관통 ${1+S.pierce} · 치명 ${critPct}%(×${S.critMul})`};
       case 'nova': return {nm:'🎤 학회 발표', lvl:lv('nova'), evo:S.evo.keynote?'기조 강연':'', sub:`폭발 ~${Math.round(20*S.dmg*mx1(lv('nova')))} · 3초마다`};
       case 'orbit': return {nm:'👥 공동연구자', lvl:lv('orbit'), evo:S.evo.lab?'대형 연구실':'', sub:`접촉 ~${Math.round(12*S.dmg)}/회 · 위성 ${S.extraWeapons.orbit}개`};
-      case 'chain': return {nm:'⚡ 인용 연쇄', lvl:lv('chain'), evo:S.evo.surge?'동료 인용 폭주':'', sub:`연쇄 ~${Math.round(16*S.dmg*(1+0.4*mx1(lv('chain'))))} ×${2+mx1(lv('chain'))}타`};
+      case 'chain': return {nm:'⚡ 인용 연쇄', lvl:lv('chain'), evo:S.evo.surge?'동료 인용 폭주':'', sub:`연쇄 ~${Math.round(26*S.dmg*(1+0.4*mx1(lv('chain'))))} ×${3+mx1(lv('chain'))}타`};
       case 'beam': return {nm:'🔆 논문 레이저', lvl:lv('beam'), evo:S.evo.carpet?'리뷰 융단 레이저':'', sub:`빔 ~${Math.round(30*S.dmg*mx1(lv('beam')))} · 관통`};
       case 'hole': return {nm:'🕳️ 데드라인 블랙홀', lvl:lv('hole'), evo:'', sub:`흡입 ~${Math.round(7*S.dmg*mx1(lv('hole')))}/0.2초`};
       case 'flame': return {nm:'🔥 분젠 화염방사', lvl:lv('flame'), evo:S.evo.inferno?'초전도 인페르노':'', sub:`화염 ~${Math.round(9*S.dmg*mx1(lv('flame')))} + 화상 ${Math.round((S.evo.inferno?9:5)*S.dmg)}/0.4초`};

@@ -47,7 +47,7 @@ const VW=900,VH=600; // 가상 화면(스폰 반경 기준)
 function nearest(G,x,y){let b=null,bd=Infinity;for(const e of G.enemies){const d=d2(x,y,e.x,e.y);if(d<bd){bd=d;b=e;}}return b;}
 
 function spawnEnemy(G){
-  const t=G.t, hpS=1+t*0.009, roll=Math.random();
+  const t=G.t, hpS=1+t*0.011+Math.max(0,t-180)*0.02, roll=Math.random();
   let key='pipet';
   if(t>50&&roll<0.14)key='pi';
   else if(t>25&&roll<0.30)key='reviewer';
@@ -56,12 +56,12 @@ function spawnEnemy(G){
   else if(roll<0.30)key='email';
   const b=ENEMY_TYPES[key], ang=rnd(0,TAU), rad=Math.max(VW,VH)*0.62+40;
   G.enemies.push({type:key,x:G.p.x+Math.cos(ang)*rad,y:G.p.y+Math.sin(ang)*rad,
-    r:b.r,hp:b.hp*hpS,maxhp:b.hp*hpS,speed:b.speed*(1+t*0.002),dmg:b.dmg,xp:b.xp,
+    r:b.r,hp:b.hp*hpS,maxhp:b.hp*hpS,speed:b.speed*(1+t*0.002+Math.max(0,t-180)*0.0007),dmg:b.dmg,xp:b.xp,
     ranged:!!b.ranged,fire:rnd(1,2.5),slow:0});
 }
 function spawnBoss(G){
   const b=BOSSES[G.bossIdx%BOSSES.length];G.bossIdx++;
-  const hpS=1+G.t*0.005,ang=rnd(0,TAU),rad=Math.max(VW,VH)*0.6+60;
+  const hpS=1+G.t*0.008,ang=rnd(0,TAU),rad=Math.max(VW,VH)*0.6+60;
   G.enemies.push({type:'boss',boss:true,x:G.p.x+Math.cos(ang)*rad,y:G.p.y+Math.sin(ang)*rad,
     r:42,hp:b.hp*hpS,maxhp:b.hp*hpS,speed:46,dmg:b.dmg,xp:40,ranged:true,fire:1.4,slow:0});
   G.bossAlive=true;
@@ -185,10 +185,10 @@ function step(G,dt){
 
   // 스폰
   G.spawnTimer-=dt;
-  let rate=Math.max(0.34,1.3-G.t*0.0028);
-  let batch=2+Math.floor(G.t/58);
+  let rate=Math.max(0.22,1.3-G.t*0.003);
+  let batch=2+Math.floor(G.t/48);
   if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
-  if(G.spawnTimer<=0&&G.enemies.length<200){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
+  if(G.spawnTimer<=0&&G.enemies.length<300){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
   G.bossTimer-=dt;if(G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}
 
   // 발사

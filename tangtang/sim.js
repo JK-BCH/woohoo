@@ -22,19 +22,20 @@ const ENEMY_TYPES={
 const BOSSES=[
   {hp:550,dmg:18},{hp:850,dmg:22},{hp:1200,dmg:26},
 ];
-const UP_MAX={dmg:8,fire:8,proj:6,pierce:5,speed:6,hp:6,regen:5,crit:6,area:5,magnet:4,orbit:4,nova:4,chain:5,beam:4,hole:3};
+const UP_MAX={dmg:8,fire:8,proj:6,pierce:5,speed:6,hp:6,regen:5,crit:6,area:5,magnet:4,orbit:4,nova:4,chain:5,beam:4,hole:3,flame:5,freeze:4,missile:4};
 // 실전형 우선순위 (낮을수록 먼저). 생존 위급 시 regen/hp 가중.
-const PRIO=['fire','dmg','proj','crit','beam','pierce','chain','nova','hole','area','speed','orbit','regen','hp','magnet'];
+const PRIO=['fire','dmg','proj','crit','beam','missile','pierce','chain','flame','nova','hole','freeze','area','speed','orbit','regen','hp','magnet'];
 
 function makeGame(){
   return {
     t:0,
     p:{x:0,y:0,r:14,hp:130,maxhp:130,speed:185,regen:0,pickup:120,iframe:0},
     st:{dmg:1,fireRate:1,projSpeed:1,projCount:1,pierce:0,area:1,crit:0.03,critMul:2,
-        moveSpeed:1,extra:{orbit:0,nova:0,chain:0,beam:0,hole:0},evo:{}},
+        moveSpeed:1,extra:{orbit:0,nova:0,chain:0,beam:0,hole:0,fire:0,freeze:0,missile:0},evo:{}},
     lv:1,xp:0,xpNeed:3,kills:0,bossKills:0,
     enemies:[],bullets:[],ebullets:[],gems:[],
     spawnTimer:0,fireTimer:0,novaTimer:0,orbitAngle:0,chainTimer:0,beamTimer:0,holeTimer:0,holes:[],
+    flameTimer:0,freezeTimer:0,missileTimer:0,missiles:[],
     bossTimer:120,bossAlive:false,bossIdx:0,
     up:{},
     dead:false,
@@ -122,8 +123,11 @@ function apply(G,id){
   else if(id==='chain')s.extra.chain+=1;
   else if(id==='beam')s.extra.beam+=1;
   else if(id==='hole')s.extra.hole+=1;
+  else if(id==='flame')s.extra.fire+=1;
+  else if(id==='freeze')s.extra.freeze+=1;
+  else if(id==='missile')s.extra.missile+=1;
 }
-const EVOF={fire:'preprint',proj:'coauthor',pierce:'meta',dmg:'nature',nova:'keynote',orbit:'lab',chain:'surge',beam:'carpet'};
+const EVOF={fire:'preprint',proj:'coauthor',pierce:'meta',dmg:'nature',nova:'keynote',orbit:'lab',chain:'surge',beam:'carpet',flame:'inferno',missile:'swarm'};
 function checkEvo(G,id){
   const f=EVOF[id];if(!f)return;
   if((G.up[id]||0)>=UP_MAX[id]&&!G.st.evo[f]){
@@ -213,6 +217,22 @@ function step(G,dt){
   for(const h of G.holes){h.life-=dt;h.tick-=dt;const tn=h.tick<=0;if(tn)h.tick=0.2;
     for(const e of G.enemies){if(e.dead)continue;const dd=d2(h.x,h.y,e.x,e.y);if(dd<h.r*h.r){const d=Math.sqrt(dd)||1,pull=e.boss?22:140;e.x+=(h.x-e.x)/d*pull*dt;e.y+=(h.y-e.y)/d*pull*dt;if(tn)hurtEnemy(G,e,crit(G,7*G.st.dmg*h.lv));}}}
   G.holes=G.holes.filter(h=>h.life>0);
+  // 🔥 화염 분사
+  if(G.st.extra.fire>0){G.flameTimer-=dt;if(G.flameTimer<=0){G.flameTimer=1.1;
+    const lv=G.st.extra.fire,tgt=nearest(G,p.x,p.y);const aim=tgt?Math.atan2(tgt.y-p.y,tgt.x-p.x):0,range=250+45*lv,half=0.78;
+    for(const e of G.enemies){if(e.dead)continue;const dx=e.x-p.x,dy=e.y-p.y,d=Math.hypot(dx,dy);if(d<range){let da=Math.atan2(dy,dx)-aim;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)<half){hurtEnemy(G,e,crit(G,9*G.st.dmg*lv));e.burn=2.0;e.burnT=0;}}}}}
+  // ❄️ 광역 빙결
+  if(G.st.extra.freeze>0){G.freezeTimer-=dt;if(G.freezeTimer<=0){G.freezeTimer=6.0;
+    const lv=G.st.extra.freeze,radius=170+35*lv;
+    for(const e of G.enemies){if(d2(p.x,p.y,e.x,e.y)<radius*radius){if(e.boss)e.slow=2.5;else e.frozen=1.6+0.3*lv;hurtEnemy(G,e,crit(G,8*G.st.dmg*lv));}}}}
+  // 🚀 유도 미사일
+  if(G.st.extra.missile>0){G.missileTimer-=dt;if(G.missileTimer<=0){G.missileTimer=1.4;
+    const lv=G.st.extra.missile,n=(G.st.evo.swarm?2:1)+lv;for(let i=0;i<n;i++){const a=rnd(0,TAU);G.missiles.push({x:p.x,y:p.y,vx:Math.cos(a)*140,vy:Math.sin(a)*140,life:3.2,dmg:24*G.st.dmg});}}}
+  for(const ms of G.missiles){const tgt=nearest(G,ms.x,ms.y);
+    if(tgt){const desired=Math.atan2(tgt.y-ms.y,tgt.x-ms.x);let cur=Math.atan2(ms.vy,ms.vx);let da=desired-cur;da=Math.atan2(Math.sin(da),Math.cos(da));cur+=Math.max(-0.18,Math.min(0.18,da));ms.vx=Math.cos(cur)*340;ms.vy=Math.sin(cur)*340;}
+    ms.x+=ms.vx*dt;ms.y+=ms.vy*dt;ms.life-=dt;
+    for(const e of G.enemies){if(e.dead)continue;if(d2(ms.x,ms.y,e.x,e.y)<(e.r+8)*(e.r+8)){explode(G,ms.x,ms.y,72*G.st.area,ms.dmg);ms.life=0;break;}}}
+  G.missiles=G.missiles.filter(m=>m.life>0);
 
   // 총알
   for(const b of G.bullets){
@@ -234,11 +254,14 @@ function step(G,dt){
   // 적 이동/공격
   const oN=G.st.extra.orbit;
   for(const e of G.enemies){if(e.dead)continue;
-    if(e.slow>0)e.slow-=dt;const sf=e.slow>0?0.45:1;
+    if(e.frozen>0)e.frozen-=dt;
+    if(e.slow>0)e.slow-=dt;
+    if(e.burn>0){e.burn-=dt;e.burnT=(e.burnT||0)-dt;if(e.burnT<=0){e.burnT=0.4;hurtEnemy(G,e,crit(G,(G.st.evo.inferno?9:5)*G.st.dmg));}if(e.dead)continue;}
+    const sf=e.frozen>0?0:(e.slow>0?0.45:1);
     const dx=p.x-e.x,dy=p.y-e.y,m=Math.hypot(dx,dy)||1;
     if(e.ranged&&m<240){e.x-=dx/m*e.speed*sf*0.4*dt;e.y-=dy/m*e.speed*sf*0.4*dt;}
     else{e.x+=dx/m*e.speed*sf*dt;e.y+=dy/m*e.speed*sf*dt;}
-    if(e.ranged){e.fire-=dt;if(e.fire<=0&&m<560){e.fire=e.boss?0.5:1.8;const n=e.boss?3:1;
+    if(e.ranged&&e.frozen<=0){e.fire-=dt;if(e.fire<=0&&m<560){e.fire=e.boss?0.5:1.8;const n=e.boss?3:1;
       for(let i=0;i<n;i++){const a=Math.atan2(dy,dx)+(e.boss?(i-2)*0.22:0);G.ebullets.push({x:e.x,y:e.y,vx:Math.cos(a)*200,vy:Math.sin(a)*200,r:7,dmg:e.dmg,life:4});}}}
     if(m<e.r+p.r&&p.iframe<=0){p.hp-=e.dmg;p.iframe=0.5;}
     if(oN>0){for(let i=0;i<oN;i++){const a=G.orbitAngle+i*TAU/oN;const ox=p.x+Math.cos(a)*60,oy=p.y+Math.sin(a)*60;

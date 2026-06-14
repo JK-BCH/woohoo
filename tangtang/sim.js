@@ -39,7 +39,7 @@ function makeGame(){
     enemies:[],bullets:[],ebullets:[],gems:[],
     spawnTimer:0,fireTimer:0,novaTimer:0,orbitAngle:0,chainTimer:0,beamTimer:0,holeTimer:0,holes:[],
     flameTimer:0,freezeTimer:0,missileTimer:0,missiles:[],
-    bossTimer:120,bossAlive:false,bossIdx:0,midTimer:75,
+    bossTimer:120,bossAlive:false,bossIdx:0,finalBoss:false,won:false,midTimer:75,
     up:{},
     dead:false,
     bossMinFrac:1,
@@ -63,11 +63,12 @@ function spawnEnemy(G){
     ranged:!!b.ranged,shots:b.shots||1,fire:rnd(1,2.5),slow:0});
 }
 function spawnBoss(G){
+  const isFinal=(G.bossIdx===2);
   const b=BOSSES[G.bossIdx%BOSSES.length];G.bossIdx++;
   const hpS=1+G.t*0.008,ang=rnd(0,TAU),rad=Math.max(VW,VH)*0.6+60;
   G.enemies.push({type:'boss',boss:true,x:G.p.x+Math.cos(ang)*rad,y:G.p.y+Math.sin(ang)*rad,
-    r:42,hp:b.hp*hpS,maxhp:b.hp*hpS,speed:56,dmg:b.dmg,xp:40,ranged:true,fire:1.4,slow:0});
-  G.bossAlive=true;
+    r:42,hp:b.hp*hpS,maxhp:b.hp*hpS,speed:56,dmg:b.dmg,xp:40,ranged:true,fire:1.4,slow:0,final:isFinal});
+  G.bossAlive=true; if(isFinal)G.finalBoss=true;
 }
 function spawnMok(G){
   const hpS=1+G.t*0.012+Math.max(0,G.t-180)*0.02, base=rnd(0,TAU);
@@ -78,7 +79,7 @@ function spawnMok(G){
 function crit(G,dmg){return Math.random()<G.st.crit?dmg*G.st.critMul:dmg;}
 function hurtEnemy(G,e,dmg){e.hp-=dmg;if(e.boss)G.bossMinFrac=Math.min(G.bossMinFrac,Math.max(0,e.hp)/e.maxhp);if(e.hp<=0&&!e.dead)killEnemy(G,e);}
 function killEnemy(G,e){
-  e.dead=true;G.kills++;if(e.boss){G.bossKills++;G.bossAlive=false;}
+  e.dead=true;G.kills++;if(e.boss){G.bossKills++;G.bossAlive=false;}if(e.final)G.won=true;
   const n=e.boss?12:(e.mid?5:1),gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false,life:rnd(28,42)});
 }
 function explode(G,x,y,radius,dmg){for(const e of G.enemies){if(!e.dead&&d2(x,y,e.x,e.y)<radius*radius)hurtEnemy(G,e,crit(G,dmg));}}
@@ -198,9 +199,9 @@ function step(G,dt){
   let rate=Math.max(0.28,1.2-G.t*0.0025);
   let batch=2+Math.floor(G.t/55);
   if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
-  if(G.spawnTimer<=0&&G.enemies.length<200){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
-  G.bossTimer-=dt;if(G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}
-  G.midTimer-=dt;if(G.midTimer<=0){spawnMok(G);G.midTimer=165;}
+  if(!G.finalBoss&&G.spawnTimer<=0&&G.enemies.length<200){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
+  G.bossTimer-=dt;if(!G.finalBoss&&G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}
+  G.midTimer-=dt;if(!G.finalBoss&&G.midTimer<=0){spawnMok(G);G.midTimer=165;}
 
   // 발사
   G.fireTimer-=dt;if(G.fireTimer<=0){G.fireTimer=0.36/G.st.fireRate;if(G.enemies.length)fire(G);}
@@ -300,7 +301,7 @@ function step(G,dt){
 
 function runOnce(maxT){
   const G=makeGame();const dt=1/30;
-  while(!G.dead&&G.t<maxT)step(G,dt);
+  while(!G.dead&&!G.won&&G.t<maxT)step(G,dt);
   return {t:G.t,lv:G.lv,kills:G.kills,bossKills:G.bossKills,bossMinFrac:G.bossMinFrac,
     evo:Object.keys(G.st.evo).length,dmg:G.st.dmg,proj:G.st.projCount,fire:G.st.fireRate};
 }

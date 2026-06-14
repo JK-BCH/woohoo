@@ -22,6 +22,7 @@ const ENEMY_TYPES={
   jungmok: {r:24, hp:440, speed:54, dmg:16, xp:8,  dasher:true, mid:true},
   hamok:   {r:18, hp:300, speed:62, dmg:13, xp:6,  dasher:true, mid:true},
 };
+const EVENT_SEQ=["mok","boss","mok","boss","mok","boss"];
 const BOSSES=[
   {hp:1600,dmg:20},{hp:2400,dmg:24},{hp:3300,dmg:28},
 ];
@@ -39,7 +40,7 @@ function makeGame(){
     enemies:[],bullets:[],ebullets:[],gems:[],
     spawnTimer:0,fireTimer:0,novaTimer:0,orbitAngle:0,chainTimer:0,beamTimer:0,holeTimer:0,holes:[],
     flameTimer:0,freezeTimer:0,missileTimer:0,missiles:[],
-    bossTimer:120,bossAlive:false,bossIdx:0,finalBoss:false,won:false,midTimer:75,
+    bossAlive:false,bossIdx:0,finalBoss:false,won:false,mokAlive:0,eventTimer:75,eventIdx:0,
     up:{},
     dead:false,
     bossMinFrac:1,
@@ -74,13 +75,17 @@ function spawnMok(G){
   const hpS=1+G.t*0.012+Math.max(0,G.t-180)*0.02, base=rnd(0,TAU);
   ['sangmok','jungmok','hamok'].forEach((k,i)=>{const md=ENEMY_TYPES[k],a=base+i*2.1,rad=Math.max(VW,VH)*0.6+50;
     G.enemies.push({type:k,mid:true,dasher:true,x:G.p.x+Math.cos(a)*rad,y:G.p.y+Math.sin(a)*rad,r:md.r,hp:md.hp*hpS,maxhp:md.hp*hpS,speed:md.speed,dmg:md.dmg,xp:md.xp,slow:0});});
+  G.mokAlive=3;
 }
 
 function crit(G,dmg){return Math.random()<G.st.crit?dmg*G.st.critMul:dmg;}
 function hurtEnemy(G,e,dmg){e.hp-=dmg;if(e.boss)G.bossMinFrac=Math.min(G.bossMinFrac,Math.max(0,e.hp)/e.maxhp);if(e.hp<=0&&!e.dead)killEnemy(G,e);}
 function killEnemy(G,e){
-  e.dead=true;G.kills++;if(e.boss){G.bossKills++;G.bossAlive=false;}if(e.final)G.won=true;
+  e.dead=true;G.kills++;
   const n=e.boss?12:(e.mid?5:1),gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false,life:rnd(28,42)});
+  if(e.boss){G.bossKills++;G.bossAlive=false;G.eventTimer=90;for(const g of G.gems){if(!g.got){g.got=true;gainXP(G,g.v);}}}  // 보스 처치 → 자동 자석
+  if(e.mid){G.mokAlive--;if(G.mokAlive<=0)G.eventTimer=90;}
+  if(e.final)G.won=true;
 }
 function explode(G,x,y,radius,dmg){for(const e of G.enemies){if(!e.dead&&d2(x,y,e.x,e.y)<radius*radius)hurtEnemy(G,e,crit(G,dmg));}}
 
@@ -195,13 +200,14 @@ function step(G,dt){
   if(p.iframe>0)p.iframe-=dt;
 
   // 스폰
-  G.spawnTimer-=dt;
-  let rate=Math.max(0.28,1.2-G.t*0.0025);
-  let batch=2+Math.floor(G.t/55);
-  if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
-  if(!G.finalBoss&&G.spawnTimer<=0&&G.enemies.length<200){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
-  G.bossTimer-=dt;if(!G.finalBoss&&G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}
-  G.midTimer-=dt;if(!G.finalBoss&&G.midTimer<=0){spawnMok(G);G.midTimer=165;}
+  const eventActive=G.bossAlive||G.mokAlive>0;
+  if(!G.finalBoss&&!eventActive){
+    G.spawnTimer-=dt;
+    const rate=Math.max(0.28,1.2-G.t*0.0025), batch=2+Math.floor(G.t/55);
+    if(G.spawnTimer<=0&&G.enemies.length<200){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
+    G.eventTimer-=dt;
+    if(G.eventTimer<=0&&G.eventIdx<EVENT_SEQ.length){const ev=EVENT_SEQ[G.eventIdx];G.eventIdx++;if(ev==='mok')spawnMok(G);else spawnBoss(G);}
+  }
 
   // 발사
   G.fireTimer-=dt;if(G.fireTimer<=0){G.fireTimer=0.36/G.st.fireRate;if(G.enemies.length)fire(G);}

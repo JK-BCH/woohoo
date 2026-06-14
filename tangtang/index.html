@@ -81,6 +81,13 @@
   <button class="btn" id="retryBtn" style="margin-top:14px;">다시 출근</button>
 </div>
 
+<div class="panel" id="winPanel">
+  <h1 style="color:#ffd84a;">🎓 임용 성공!</h1>
+  <p style="margin-bottom:10px;">병락·의중·수환을 모두 물리치고 <b>테뉴어 트랙</b>에 올랐다.<br>당신은 살아남은 포닥이다. 🎉</p>
+  <div id="winStat" style="max-width:380px;max-height:58vh;overflow-y:auto;"></div>
+  <button class="btn" id="winBtn" style="margin-top:14px;">새 커리어 시작</button>
+</div>
+
 <script>
 "use strict";
 /* ===========================================================================
@@ -345,7 +352,7 @@ function newGame(){
     fireTimer:0,
     novaTimer:0,
     orbitAngle:0,
-    bossTimer:120, bossAlive:false, bossIdx:0,
+    bossTimer:120, bossAlive:false, bossIdx:0, finalBoss:false,
     midTimer:75,
     cam:{x:0,y:0},
     shake:0, flash:0,
@@ -458,17 +465,19 @@ const BOSSES = [
 ];
 function bossAmmo(e){ return e.ammo==='food' ? FOODS[rint(0,FOODS.length-1)] : e.ammo; }
 function spawnBoss(){
+  const isFinal = (G.bossIdx===2);   // 3번째 보스(수환) = 최종 보스
   const b = BOSSES[G.bossIdx % BOSSES.length]; G.bossIdx++;
   const hpScale = 1 + G.t*0.008;
   const ang=rnd(0,TAU), rad=Math.max(VW,VH)*0.6+60;
   G.enemies.push({
-    type:'boss', boss:true, spr:b.spr, ammo:b.ammo,
+    type:'boss', boss:true, final:isFinal, spr:b.spr, ammo:b.ammo,
     x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
     r:42, hp:b.hp*hpScale, maxhp:b.hp*hpScale, speed:56, dmg:b.dmg, xp:60,
     color:b.color, ranged:true, fire:1.4, hit:0, name:b.name,
   });
   G.bossAlive=true;
-  G.banner={txt:'⚠ '+b.name, sub:b.intro, life:3};
+  if(isFinal){ G.finalBoss=true; G.banner={txt:'⚠ 최종 보스: '+b.name, sub:'쓰러뜨리면 끝 — 잡몹은 더 안 나온다', life:3.6}; }
+  else G.banner={txt:'⚠ '+b.name, sub:b.intro, life:3};
   sfx(80,0.5,'sawtooth',0.07);
 }
 function spawnMok(){
@@ -621,6 +630,7 @@ function killEnemy(e){
   }
   for(let i=0;i<(e.boss?30:6);i++) burst(e.x,e.y,e.color);
   if(e.boss){G.bossAlive=false; G.shake=14; G.rerolls++; G.banner={txt:'🎲 리롤 +1',sub:'보스 격파 보상',life:2.5}; }
+  if(e.final){ victory(); }   // 최종 보스 격파 → 엔딩
 }
 
 /* particles */
@@ -674,16 +684,16 @@ function update(dt){
   let rate = Math.max(0.28, 1.2 - G.t*0.0025);
   let batch = 2 + Math.floor(G.t/55);
   if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
-  if(G.spawnTimer<=0 && G.enemies.length<200){
+  if(!G.finalBoss && G.spawnTimer<=0 && G.enemies.length<200){   // 최종 보스 등장 후 잡몹 스폰 중단
     G.spawnTimer=rate;
     for(let i=0;i<batch;i++) spawnEnemy();
   }
   // boss
   G.bossTimer-=dt;
-  if(G.bossTimer<=0 && !G.bossAlive){ spawnBoss(); G.bossTimer=90; }
-  // 중간보스 三目 (돌진 트리오)
+  if(!G.finalBoss && G.bossTimer<=0 && !G.bossAlive){ spawnBoss(); G.bossTimer=90; }
+  // 중간보스 三目 (돌진 트리오) — 최종 보스 전까지만
   G.midTimer-=dt;
-  if(G.midTimer<=0){ spawnMok(); G.midTimer=165; }
+  if(!G.finalBoss && G.midTimer<=0){ spawnMok(); G.midTimer=165; }
 
   // auto fire
   G.fireTimer-=dt;
@@ -1359,13 +1369,12 @@ function start(){
   for(const k in upLevels) delete upLevels[k];
   document.getElementById('startPanel').classList.remove('show');
   document.getElementById('overPanel').classList.remove('show');
+  document.getElementById('winPanel').classList.remove('show');
   running=true; last=performance.now();
   startBgm();
   requestAnimationFrame(loop);
 }
-function gameOver(){
-  running=false;
-  stopBgm();
+function buildStats(){
   const m=Math.floor(G.t/60), s=Math.floor(G.t%60), dur=Math.max(1,G.t);
   const total=G.dmgTotal||0, dps=total/dur;
   const fmt=n=>Math.round(n).toLocaleString();
@@ -1404,16 +1413,27 @@ function gameOver(){
   }).join('') || '<div style="font-size:12px;color:#9aa5bd;">기록 없음</div>';
   // 유틸리티(비전투) 강화
   const util=['speed','hp','regen','magnet'].filter(k=>lv(k)>0).map(k=>{const u=UPGRADES.find(x=>x.id===k);return `${u.ic}${u.nm} Lv${lv(k)}`;}).join(' · ');
-  document.getElementById('overStat').innerHTML=`
+  return `
     <div style="font-size:13px;margin-bottom:6px;">버틴 시간 <b>${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</b> · Lv <b>${G.lv}</b> · 처치 <b>${G.kills}</b> · 보스 <b>${G.bossIdx}</b></div>
     <div style="font-size:14px;color:#ffd479;margin-bottom:8px;">총 딜량 <b>${fmt(total)}</b> · 전체 DPS <b>${dps.toFixed(0)}</b></div>
     <div style="font-weight:700;font-size:12.5px;margin:2px 0 2px;text-align:left;">📊 스킬별 딜 · DPS · 위력</div>
     ${cards}
     ${util?`<div style="font-size:11px;color:#8a93a8;margin-top:8px;text-align:left;">기타 강화: ${util}</div>`:''}`;
+}
+function gameOver(){
+  running=false; stopBgm();
+  document.getElementById('overStat').innerHTML=buildStats();
   document.getElementById('overPanel').classList.add('show');
+}
+function victory(){
+  running=false; stopBgm();
+  document.getElementById('winStat').innerHTML=buildStats();
+  document.getElementById('winPanel').classList.add('show');
+  sfx(660,0.2,'square',0.06); sfx(990,0.3,'square',0.05); sfx(1320,0.45,'sawtooth',0.05);
 }
 document.getElementById('startBtn').onclick=start;
 document.getElementById('retryBtn').onclick=start;
+document.getElementById('winBtn').onclick=start;
 </script>
 </body>
 </html>

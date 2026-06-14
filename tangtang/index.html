@@ -330,8 +330,8 @@ function newGame(){
     fireTimer:0,
     novaTimer:0,
     orbitAngle:0,
-    bossTimer:120, bossAlive:false, bossIdx:0, finalBoss:false,
-    midTimer:75,
+    bossAlive:false, bossIdx:0, finalBoss:false,
+    mokAlive:0, eventTimer:75, eventIdx:0,   // 이벤트 스케줄(三목↔보스 교대), 사이 90초는 몹 사냥
     cam:{x:0,y:0},
     shake:0, flash:0,
     banner:null,
@@ -461,6 +461,7 @@ const THEMES = {
   ]},
 };
 const BOSS_HP=[1600,2400,3300], BOSS_DMG=[20,24,28];
+const EVENT_SEQ=['mok','boss','mok','boss','mok','boss'];  // 三목↔보스 교대 (보스 3마리=1·2·최종)
 let THEME='party';   // 타이틀 메뉴에서 선택
 function spawnBoss(){
   const idx = G.bossIdx, isFinal = (idx===2);   // 3번째 보스 = 최종 보스
@@ -490,6 +491,7 @@ function spawnMok(){
       color:md.color, hit:0,
     });
   });
+  G.mokAlive=3;
   G.banner={txt:'⚠ 三目: 상목·중목·하목', sub:'돌진하는 세 눈이 나타났다', life:3};
   sfx(90,0.4,'sawtooth',0.06);
 }
@@ -627,7 +629,14 @@ function killEnemy(e){
     G.pickups.push({x:e.x, y:e.y, kind:'magnet', bob:rnd(0,TAU)});
   }
   for(let i=0;i<(e.boss?30:6);i++) burst(e.x,e.y,e.color);
-  if(e.boss){G.bossAlive=false; G.shake=14; G.rerolls++; G.banner={txt:'🎲 리롤 +1',sub:'보스 격파 보상',life:2.5}; }
+  if(e.boss){
+    G.bossAlive=false; G.shake=14; G.rerolls++; G.eventTimer=90;   // 처치 후 90초 몹 구간
+    G.banner={txt:'🎲 리롤 +1',sub:'보스 격파 보상',life:2.5};
+    for(const g of G.gems) g.suck=1;   // 보스 처치 → 자동 자석(화면 젬 전부 흡수)
+    G.particles.push({nova:true,x:G.player.x,y:G.player.y,r:14,maxr:Math.max(VW,VH)*0.62,life:0.5,color:'#48d1ff'});
+    sfx(1200,0.18,'sine',0.05);
+  }
+  if(e.mid){ G.mokAlive--; if(G.mokAlive<=0) G.eventTimer=90; }   // 三目 전멸 → 90초 몹 구간
   if(e.final){ victory(); }   // 최종 보스 격파 → 엔딩
 }
 
@@ -677,21 +686,20 @@ function update(dt){
   if(G.flash>0) G.flash-=dt*1.6;
   if(G.banner){ G.banner.life-=dt; if(G.banner.life<=0) G.banner=null; }
 
-  // spawn
-  G.spawnTimer-=dt;
-  let rate = Math.max(0.28, 1.2 - G.t*0.0025);
-  let batch = 2 + Math.floor(G.t/55);
-  if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
-  if(!G.finalBoss && G.spawnTimer<=0 && G.enemies.length<200){   // 최종 보스 등장 후 잡몹 스폰 중단
-    G.spawnTimer=rate;
-    for(let i=0;i<batch;i++) spawnEnemy();
+  // 이벤트 스케줄: 인터미션(몹 사냥) ↔ 이벤트(三목/보스) 교대. 한 번에 하나, 이벤트 중엔 몹 정지.
+  const eventActive = G.bossAlive || G.mokAlive>0;
+  if(!G.finalBoss && !eventActive){
+    // 인터미션: 잡몹 스폰
+    G.spawnTimer-=dt;
+    const rate = Math.max(0.28, 1.2 - G.t*0.0025), batch = 2 + Math.floor(G.t/55);
+    if(G.spawnTimer<=0 && G.enemies.length<200){ G.spawnTimer=rate; for(let i=0;i<batch;i++) spawnEnemy(); }
+    // 다음 이벤트 카운트다운
+    G.eventTimer-=dt;
+    if(G.eventTimer<=0 && G.eventIdx<EVENT_SEQ.length){
+      const ev=EVENT_SEQ[G.eventIdx]; G.eventIdx++;
+      if(ev==='mok') spawnMok(); else spawnBoss();
+    }
   }
-  // boss
-  G.bossTimer-=dt;
-  if(!G.finalBoss && G.bossTimer<=0 && !G.bossAlive){ spawnBoss(); G.bossTimer=90; }
-  // 중간보스 三目 (돌진 트리오) — 최종 보스 전까지만
-  G.midTimer-=dt;
-  if(!G.finalBoss && G.midTimer<=0){ spawnMok(); G.midTimer=165; }
 
   // auto fire
   G.fireTimer-=dt;

@@ -259,8 +259,10 @@ function step(G,dt){
   G.bullets=G.bullets.filter(b=>b.life>0);
 
   // 적 탄
+  const orbN=G.st.extra.orbit, orbR=ORBR(G);
   for(const eb of G.ebullets){eb.x+=eb.vx*dt;eb.y+=eb.vy*dt;eb.life-=dt;
-    if(p.iframe<=0&&d2(eb.x,eb.y,p.x,p.y)<(p.r+eb.r)*(p.r+eb.r)){p.hp-=eb.dmg;p.iframe=0.5;eb.life=0;}}
+    if(orbN>0&&eb.life>0){for(let i=0;i<orbN;i++){const a=G.orbitAngle+i*TAU/orbN,ox=p.x+Math.cos(a)*orbR,oy=p.y+Math.sin(a)*orbR;if(d2(ox,oy,eb.x,eb.y)<(17+eb.r)*(17+eb.r)){eb.life=0;break;}}}
+    if(eb.life>0&&p.iframe<=0&&d2(eb.x,eb.y,p.x,p.y)<(p.r+eb.r)*(p.r+eb.r)){p.hp-=eb.dmg;p.iframe=0.5;eb.life=0;}}
   G.ebullets=G.ebullets.filter(b=>b.life>0);
 
   // 적 이동/공격

@@ -508,7 +508,7 @@ const UPGRADES = [
   {id:'crit',ic:'💡', nm:'유레카', ds:'돌파구(치명타) 확률 +8%', max:8, apply:s=>s.crit+=0.08},
   {id:'area',ic:'🔓', nm:'오픈 액세스', ds:'영향 범위 +20%', max:7, apply:s=>s.area*=1.2},
   {id:'magnet',ic:'📚', nm:'레퍼런스 매니저', ds:'데이터 수집 범위 +40%', max:5, apply:(s,p)=>{p.pickup*=1.4;}},
-  {id:'orbit',ic:'👥', nm:'공동연구자', ds:'곁을 도는 협력자 +1 (반경↑)', max:7, apply:s=>s.extraWeapons.orbit+=1},
+  {id:'orbit',ic:'👥', nm:'공동연구자', ds:'곁을 도는 협력자 +1 (반경↑·적 발사체 요격)', max:7, apply:s=>s.extraWeapons.orbit+=1},
   {id:'nova',ic:'🎤', nm:'학회 발표', ds:'주기적 임팩트 폭발 +1', max:7, apply:s=>s.extraWeapons.nova+=1},
   {id:'chain',ic:'⚡', nm:'인용 연쇄', ds:'번개가 적 사이를 튄다 (+사거리/타격)', max:8, apply:s=>s.extraWeapons.chain+=1},
   {id:'beam',ic:'🔆', nm:'논문 레이저', ds:'주기적 관통 빔 발사 (+위력)', max:7, apply:s=>s.extraWeapons.beam+=1},
@@ -879,9 +879,19 @@ function update(dt){
   G.bullets=G.bullets.filter(b=>b.life>0);
 
   // enemy bullets
+  const orbN=G.stat.extraWeapons.orbit, orbR=ORBR();
   for(const eb of G.enemyBullets){
     eb.x+=eb.vx*dt; eb.y+=eb.vy*dt; eb.life-=dt;
-    if(p.iframe<=0 && dist2(eb.x,eb.y,p.x,p.y)<(p.r+eb.r)*(p.r+eb.r)){
+    // 공동연구자 미사일 방어: 공전 보호막에 닿은 적 발사체 요격
+    if(orbN>0 && eb.life>0){
+      for(let i=0;i<orbN;i++){
+        const a=G.orbitAngle+i*TAU/orbN, ox=p.x+Math.cos(a)*orbR, oy=p.y+Math.sin(a)*orbR;
+        if(dist2(ox,oy,eb.x,eb.y) < (17+eb.r)*(17+eb.r)){
+          eb.life=0; for(let k=0;k<4;k++) burst(eb.x,eb.y,'#9be8ff'); sfx(420,0.04,'square',0.03); break;
+        }
+      }
+    }
+    if(eb.life>0 && p.iframe<=0 && dist2(eb.x,eb.y,p.x,p.y)<(p.r+eb.r)*(p.r+eb.r)){
       hurtPlayer(eb.dmg); eb.life=0;
     }
   }
@@ -1397,7 +1407,7 @@ function buildStats(){
       case 'gun': return {nm:'📄 평타 (논문 투고)', evo:S.evo.preprint?'프리프린트 폭격':(S.evo.coauthor?'대형 컨소시엄':(S.evo.meta?'체계적 리뷰':(S.evo.nature?'Nature 표지':''))),
         sub:`타격 ~${Math.round(13*S.dmg)} ×${S.projCount}발 · 공격 Lv${lv('dmg')} · 연사 Lv${lv('fire')} · 관통 ${1+S.pierce} · 치명 ${critPct}%(×${S.critMul})`};
       case 'nova': return {nm:'🎤 학회 발표', lvl:lv('nova'), evo:(S.evo.keynote?'기조 강연':'')+awk('nova'), sub:`폭발 ~${Math.round(60*S.dmg*mx1(lv('nova'))*A('nova'))} · 3초마다`};
-      case 'orbit': return {nm:'👥 공동연구자', lvl:lv('orbit'), evo:(S.evo.lab?'대형 연구실':'')+awk('orbit'), sub:`접촉 ~${Math.round(18*S.dmg*A('orbit')*Math.pow(2,Math.min(mx1(lv('orbit'))-1,6)))}/회 · 위성 ${S.extraWeapons.orbit}개`};
+      case 'orbit': return {nm:'👥 공동연구자', lvl:lv('orbit'), evo:(S.evo.lab?'대형 연구실':'')+awk('orbit'), sub:`접촉 ~${Math.round(18*S.dmg*A('orbit')*Math.pow(2,Math.min(mx1(lv('orbit'))-1,6)))}/회 · 위성 ${S.extraWeapons.orbit}개 · 적 발사체 요격`};
       case 'chain': return {nm:'⚡ 인용 연쇄', lvl:lv('chain'), evo:(S.evo.surge?'동료 인용 폭주':'')+awk('chain'), sub:`연쇄 ~${Math.round(34*S.dmg*(1+0.4*mx1(lv('chain')))*A('chain'))} ×${4+mx1(lv('chain'))}타`};
       case 'beam': return {nm:'🔆 논문 레이저', lvl:lv('beam'), evo:(S.evo.carpet?'리뷰 융단 레이저':'')+awk('beam'), sub:`빔 ~${Math.round(44*S.dmg*mx1(lv('beam'))*A('beam')*(lv('beam')>=3?2:1))} · 관통`};
       case 'hole': return {nm:'🕳️ 데드라인 블랙홀', lvl:lv('hole'), evo:''+awk('hole'), sub:`흡입 ~${Math.round(11*S.dmg*mx1(lv('hole'))*A('hole'))}/0.2초`};

@@ -443,17 +443,17 @@ const AMMO_EMOJI={
   car:['🚗','🚙'], ball:['⚽'],
 };
 function bossAmmo(e){ const a=AMMO_EMOJI[e.ammo]; return a ? a[rint(0,a.length-1)] : null; }
-// 테마 3종 — 보스 로스터만 다름 (HP/DMG 동일). style: def/aim/ring/heavy (탄막 패턴)
+// 테마 3종 — 보스 로스터만 다름 (HP/DMG 동일). 9보스 각자 다른 탄막 style
 const THEMES = {
   party:{label:'🎉 파티', bosses:[
-    {name:'병락', spr:'p1', color:'#d24b3b', ammo:'west',  style:'def',   intro:'맛있는 거 먹을래?'},
-    {name:'지슬', spr:'p2', color:'#3aaf50', ammo:'kor',   style:'def',   intro:'김치는 다 떨어졌어'},
-    {name:'준식', spr:'p3', color:'#e0a020', ammo:'ramen', style:'def',   intro:'라면은 오늘뿐이네'},
+    {name:'병락', spr:'p1', color:'#d24b3b', ammo:'west',  style:'spiral', intro:'맛있는 거 먹을래?'},
+    {name:'지슬', spr:'p2', color:'#3aaf50', ammo:'kor',   style:'cross',  intro:'김치는 다 떨어졌어'},
+    {name:'준식', spr:'p3', color:'#e0a020', ammo:'ramen', style:'wave',   intro:'라면은 오늘뿐이네'},
   ]},
   drink:{label:'🍻 음주', bosses:[
-    {name:'수환', spr:'d1', color:'#4b6650', ammo:'soju',    style:'def', intro:'소주 한잔 해야지'},
-    {name:'자현', spr:'d2', color:'#7a4a30', ammo:'scotch',  style:'def', intro:'난 셰리가 좋아'},
-    {name:'건호', spr:'d3', color:'#3a4456', ammo:'bourbon', style:'def', intro:"Gordon's 스토어픽이야"},
+    {name:'수환', spr:'d1', color:'#4b6650', ammo:'soju',    style:'twin',   intro:'소주 한잔 해야지'},
+    {name:'자현', spr:'d2', color:'#7a4a30', ammo:'scotch',  style:'spray',  intro:'난 셰리가 좋아'},
+    {name:'건호', spr:'d3', color:'#3a4456', ammo:'bourbon', style:'flower', intro:"Gordon's 스토어픽이야"},
   ]},
   soccer:{label:'⚽ 축구', bosses:[
     {name:'주형', spr:'s1', color:'#c0392b', ammo:'car',  style:'heavy', intro:'6시 반에 출발할게요~'},
@@ -941,7 +941,7 @@ function update(dt){
           for(let i=0;i<k;i++) shoot(aim+(i-(k-1)/2)*sp, 300, 10, '#ffb05a');
           e.atkT=1.25; sfx(330,0.1,'square',0.04);
         }
-        else if(e.style==='ring'){           // 준혁: 회전 방사·나선 탄막
+        else if(e.style==='ring'){           // 준혁: 회전 방사·나선
           const k=e.pat===0?20:24;
           for(let i=0;i<k;i++) shoot(i*TAU/k + e.spin*(e.pat===1?2.2:1), 165, 11, '#ff5a8a');
           e.atkT=2.1; G.shake=6; sfx(110,0.2,'square',0.05);
@@ -951,7 +951,37 @@ function update(dt){
           else { for(let i=0;i<3;i++) shoot(aim+(i-1)*0.26, 150, 17, '#ff7a4a'); }
           e.atkT=2.7; G.shake=9; sfx(70,0.32,'sawtooth',0.06);
         }
-        else {                               // 기본: 방사 16 → 조준 5
+        else if(e.style==='spiral'){         // 병락: 회전 나선 (속도차로 팔 모양)
+          const dir=e.pat===0?1:-1;
+          for(let i=0;i<16;i++) shoot(dir*e.spin*5 + i*TAU/16, 120+i*8, 10, '#ff7ad1');
+          e.atkT=1.9; G.shake=5; sfx(240,0.14,'square',0.04);
+        }
+        else if(e.style==='cross'){          // 지슬: 회전 십자/대각 클러스터
+          const off=e.pat===0?0:TAU/8;
+          for(let k=0;k<4;k++){ const a=e.spin*1.5+off+k*TAU/4; for(let j=-1;j<=1;j++) shoot(a+j*0.13, 215, 10, '#7ad17a'); }
+          e.atkT=1.6; G.shake=5; sfx(180,0.12,'square',0.04);
+        }
+        else if(e.style==='wave'){           // 준식: 플레이어를 향한 넓은 파도
+          const k=e.pat===0?11:13, arc=0.62;
+          for(let i=0;i<k;i++) shoot(aim+(i/(k-1)-0.5)*2*arc, 225, 10, '#e0c050');
+          e.atkT=1.7; G.shake=6; sfx(200,0.14,'sawtooth',0.04);
+        }
+        else if(e.style==='twin'){           // 수환: 앞·뒤 양갈래 / 사방 조준
+          if(e.pat===0){ for(const base of [aim, aim+Math.PI]) for(let i=0;i<4;i++) shoot(base+(i-1.5)*0.2, 220, 10, '#9be8ff'); }
+          else { for(const base of [aim, aim+Math.PI/2, aim+Math.PI, aim-Math.PI/2]) for(let i=0;i<2;i++) shoot(base+(i-0.5)*0.22, 220, 10, '#9be8ff'); }
+          e.atkT=1.6; G.shake=5; sfx(160,0.12,'square',0.04);
+        }
+        else if(e.style==='spray'){          // 자현: 빠른 산탄 (넓고 빠름)
+          const k=e.pat===0?13:7, arc=e.pat===0?0.8:0.4;
+          for(let i=0;i<k;i++) shoot(aim+(i/(k-1)-0.5)*2*arc + rnd(-0.05,0.05), 320, 9, '#c08a4a');
+          e.atkT=1.05; sfx(360,0.08,'square',0.04);
+        }
+        else if(e.style==='flower'){         // 건호(최종): 이중 링 꽃 + 나선
+          if(e.pat===0){ for(let i=0;i<16;i++){ shoot(i*TAU/16+e.spin, 150, 10, '#ff5a8a'); shoot((i+0.5)*TAU/16+e.spin, 205, 10, '#ffb05a'); } }
+          else { for(let i=0;i<24;i++) shoot(i*TAU/24 + e.spin*2, 175, 11, '#ff7ad1'); }
+          e.atkT=2.2; G.shake=7; sfx(120,0.2,'square',0.05);
+        }
+        else {                               // 기본(def): 방사 16 → 조준 5
           if(e.pat===0){ for(let i=0;i<16;i++) shoot(i*TAU/16 + e.spin, 165, 11, '#ff5a8a'); e.atkT=2.3; G.shake=7; sfx(110,0.22,'square',0.05); }
           else { for(let i=0;i<5;i++) shoot(aim+(i-2)*0.17, 240, 10, '#ffb05a'); e.atkT=1.7; sfx(300,0.12,'square',0.04); }
         }

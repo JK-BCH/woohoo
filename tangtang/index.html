@@ -61,11 +61,17 @@
 
 <div class="panel show" id="startPanel">
   <h1>포닥 생존</h1>
-  <div style="color:#8fd2ff;font-weight:700;letter-spacing:2px;margin-bottom:14px;">v1.0</div>
-  <p>이공계 박사후연구원의 하루.<br>밀린 이메일·데드라인·Reviewer 2·PI 면담이 끝없이 몰려온다.<br>
-     이동만 하면 자동으로 <b>논문을 투고</b>해 막아낸다. 데이터를 모아 레벨업하고 커리어를 강화하라.<br>
-     멘탈이 0이 되면 <b>번아웃</b>이다.</p>
-  <button class="btn" id="startBtn">랩에 출근</button>
+  <div style="color:#8fd2ff;font-weight:700;letter-spacing:2px;margin-bottom:12px;">v1.1</div>
+  <p>이동만 하면 자동으로 <b>논문을 투고</b>해 막아낸다. 데이터를 모아 레벨업·각성하라.<br>
+     멘탈이 0이 되면 번아웃, 최종 보스를 잡으면 <b>임용 성공</b>.<br>
+     <b>테마를 골라 출근:</b> 보스 라인업이 달라진다.</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn" id="btnParty"  style="background:#d24b3b;box-shadow:0 4px 0 #8e2f24;">🎉 파티</button>
+    <button class="btn" id="btnDrink"  style="background:#5a8f4a;box-shadow:0 4px 0 #3a6230;">🍻 음주</button>
+    <button class="btn" id="btnSoccer" style="background:#1f64e0;box-shadow:0 4px 0 #143f8e;">⚽ 축구</button>
+  </div>
+  <div style="font-size:11px;color:#8a93a8;margin-top:12px;max-width:320px;line-height:1.5;">
+    🎉 병락·지슬·준식 (양식/한식/라면) · 🍻 수환·자현·건호 (소주/스카치/버번) · ⚽ 주형·의중·준혁 (자동차/축구공)</div>
 </div>
 
 <div class="panel" id="levelPanel">
@@ -232,55 +238,28 @@ function buildSprites(){
     '.PP..PP.',
   ],{K:'#1c2330',S:'#e9b893',G:'#44506b',T:'#d23b3b',P:'#1a1f2b'});
 
-  // 보스 3종 — 캐릭터 테마 (병락=셰프 / 의중=축구선수 / 수환=수염맨)
-  reg('boss1',[          // 병락: 요리사 모자 + 앞치마 (음식 투척)
-    '...HHHHHH...',
-    '..HHHHHHHH..',
-    '..SSSSSSSS..',
-    '..SKSSSSKS..',
-    '..SSSSSSSS..',
-    '..SSMMMMSS..',
-    '.BBBBBBBBBB.',
-    'BBBBAAAABBBB',
-    'BBBBAAAABBBB',
-    'BBBBBBBBBBBB',
-    'BBBBBBBBBBBB',
-    '.BB......BB.',
-    '.PP......PP.',
-    '.PP......PP.',
-  ],{H:'#f4f4f4',S:'#e9b893',K:'#222',B:'#d24b3b',A:'#f4f4f4',P:'#333',M:'#7a3b2a'});
-  reg('boss2',[          // 의중: 축구 유니폼 + 등번호 (축구공 강슛)
-    '...HHHHHH...',
-    '..HHHHHHHH..',
-    '..SSSSSSSS..',
-    '..SKSSSSKS..',
-    '..SSSSSSSS..',
-    '...SSSSSS...',
-    '.JJJJJJJJJJ.',
-    'JJJJNNNNJJJJ',
-    'JJJJNNNNJJJJ',
-    'JJJJJJJJJJJJ',
-    '.WWWWWWWWWW.',
-    '.WW......WW.',
-    '.LL......LL.',
-    '.LL......LL.',
-  ],{H:'#2b2118',S:'#e9b893',K:'#222',J:'#1f64e0',N:'#fff',W:'#eee',L:'#e9b893'});
-  reg('boss3',[          // 수환: 큰 수염맨
-    '...HHHHHH...',
-    '..HHHHHHHH..',
-    '..SSSSSSSS..',
-    '..SKSSSSKS..',
-    '..SSSSSSSS..',
-    '..DDDDDDDD..',
-    '.DDDDDDDDDD.',
-    'DDDDDDDDDDDD',
-    'DDDDDDDDDDDD',
-    '.DDDDDDDDDD.',
-    '..BBBBBBBB..',
-    '.BBBBBBBBBB.',
-    '.PP......PP.',
-    '.PP......PP.',
-  ],{H:'#241a10',S:'#e9b893',K:'#222',D:'#4a3520',B:'#4b5566',P:'#2a2f3a'});
+  // 보스 베이스 그리드 3종 (셰프=파티 / 수염맨=음주 / 축구선수=축구), 테마별 색 변주로 9종
+  const CHEF=[
+    '...HHHHHH...','..HHHHHHHH..','..SSSSSSSS..','..SKSSSSKS..','..SSSSSSSS..','..SSMMMMSS..',
+    '.BBBBBBBBBB.','BBBBAAAABBBB','BBBBAAAABBBB','BBBBBBBBBBBB','BBBBBBBBBBBB','.BB......BB.','.PP......PP.','.PP......PP.'];
+  const BEARD=[
+    '...HHHHHH...','..HHHHHHHH..','..SSSSSSSS..','..SKSSSSKS..','..SSSSSSSS..','..DDDDDDDD..',
+    '.DDDDDDDDDD.','DDDDDDDDDDDD','DDDDDDDDDDDD','.DDDDDDDDDD.','..BBBBBBBB..','.BBBBBBBBBB.','.PP......PP.','.PP......PP.'];
+  const SOCCER=[
+    '...HHHHHH...','..HHHHHHHH..','..SSSSSSSS..','..SKSSSSKS..','..SSSSSSSS..','...SSSSSS...',
+    '.JJJJJJJJJJ.','JJJJNNNNJJJJ','JJJJNNNNJJJJ','JJJJJJJJJJJJ','.WWWWWWWWWW.','.WW......WW.','.LL......LL.','.LL......LL.'];
+  // 파티(셰프) — 병락(빨강)/지슬(초록)/준식(주황)
+  reg('p1', CHEF,{H:'#f4f4f4',S:'#e9b893',K:'#222',B:'#d24b3b',A:'#f4f4f4',P:'#333',M:'#7a3b2a'});
+  reg('p2', CHEF,{H:'#f4f4f4',S:'#e9b893',K:'#222',B:'#3aaf50',A:'#f4f4f4',P:'#333',M:'#7a3b2a'});
+  reg('p3', CHEF,{H:'#f4f4f4',S:'#e9b893',K:'#222',B:'#e0a020',A:'#f4f4f4',P:'#333',M:'#7a3b2a'});
+  // 음주(수염맨) — 수환/자현(갈색)/건호(짙은)
+  reg('d1', BEARD,{H:'#241a10',S:'#e9b893',K:'#222',D:'#4a3520',B:'#4b6650',P:'#2a2f3a'});
+  reg('d2', BEARD,{H:'#3a2a1a',S:'#e9b893',K:'#222',D:'#5a4028',B:'#7a4a30',P:'#2a2f3a'});
+  reg('d3', BEARD,{H:'#1a1a22',S:'#e9b893',K:'#222',D:'#33302a',B:'#3a4456',P:'#2a2f3a'});
+  // 축구(선수) — 주형(빨강)/의중(파랑)/준혁(검정)
+  reg('s1', SOCCER,{H:'#2b2118',S:'#e9b893',K:'#222',J:'#c0392b',N:'#fff',W:'#eee',L:'#e9b893'});
+  reg('s2', SOCCER,{H:'#2b2118',S:'#e9b893',K:'#222',J:'#1f64e0',N:'#fff',W:'#eee',L:'#e9b893'});
+  reg('s3', SOCCER,{H:'#2b2118',S:'#e9b893',K:'#222',J:'#222',N:'#fff',W:'#eee',L:'#e9b893'});
   // 三目 중간보스 — 눈알 (홍채색으로 상/중/하 구분)
   const eye=[
     '..WWWWWW..',
@@ -422,12 +401,12 @@ function readMove(){
    ENEMY TYPES
    =========================================================================== */
 const ENEMY_TYPES = {
-  pipet:   {r:13, hp:28,  speed:60,  dmg:11, xp:2, color:'#6cbf6c', name:'피펫팅 잡무'},
-  email:   {r:9,  hp:13,  speed:100, dmg:7,  xp:2, color:'#5aa0ff', name:'밀린 이메일'},
-  deadline:{r:11, hp:22,  speed:105, dmg:11, xp:2, color:'#ff6b5a', name:'데드라인'},
-  reviewer:{r:20, hp:100, speed:42,  dmg:18, xp:4, color:'#b06cd1', name:'Reviewer 2'},
-  reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, color:'#ff8a4c', name:'리젝 레터', ranged:true, shots:2},
-  pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, color:'#44506b', name:'PI 면담',   ranged:true, shots:2},
+  pipet:   {r:13, hp:28,  speed:60,  dmg:10, xp:2, color:'#6cbf6c', name:'피펫팅 잡무'},
+  email:   {r:9,  hp:13,  speed:100, dmg:6,  xp:2, color:'#5aa0ff', name:'밀린 이메일'},
+  deadline:{r:11, hp:22,  speed:105, dmg:10, xp:2, color:'#ff6b5a', name:'데드라인'},
+  reviewer:{r:20, hp:100, speed:42,  dmg:16, xp:4, color:'#b06cd1', name:'Reviewer 2'},
+  reject:  {r:14, hp:32,  speed:48,  dmg:9,  xp:3, color:'#ff8a4c', name:'리젝 레터', ranged:true, shots:2},
+  pi:      {r:16, hp:60,  speed:54,  dmg:13, xp:4, color:'#44506b', name:'PI 면담',   ranged:true, shots:2},
   // 중간보스 三目 — 돌진 캐릭터
   sangmok: {r:30, hp:620, speed:46, dmg:20, xp:10, color:'#c0392b', name:'상목', dasher:true, mid:true},
   jungmok: {r:24, hp:440, speed:54, dmg:16, xp:8,  color:'#e08a2b', name:'중목', dasher:true, mid:true},
@@ -457,22 +436,42 @@ function spawnEnemy(){
     color:base.color, ranged:!!base.ranged, shots:base.shots||1, fire:rnd(1,2.5), hit:0,
   });
 }
-const FOODS=['🍔','🍕','🍗','🍙','🍜','🍰'];
-const BOSSES = [
-  {name:'병락', spr:'boss1', color:'#d24b3b', hp:1600, dmg:20, ammo:'food', intro:'"이거 먹고 힘내!" — 음식을 던진다'},
-  {name:'의중', spr:'boss2', color:'#1f64e0', hp:2400, dmg:24, ammo:'⚽',   intro:'"슛!" — 축구공을 강슛한다'},
-  {name:'수환', spr:'boss3', color:'#4b5566', hp:3300, dmg:28, ammo:null,   intro:'"…" — 수염을 쓰다듬는다'},
-];
-function bossAmmo(e){ return e.ammo==='food' ? FOODS[rint(0,FOODS.length-1)] : e.ammo; }
+// 보스 투척물(이모지) 세트
+const AMMO_EMOJI={
+  west:['🍔','🍕','🍟','🌭','🥩'], kor:['🍚','🍲','🍢','🥟','🍙'], ramen:['🍜'],
+  soju:['🍶'], scotch:['🥃'], bourbon:['🍾'],
+  car:['🚗','🚙'], ball:['⚽'],
+};
+function bossAmmo(e){ const a=AMMO_EMOJI[e.ammo]; return a ? a[rint(0,a.length-1)] : null; }
+// 테마 3종 — 보스 로스터만 다름 (HP/DMG 동일). style: def/aim/ring/heavy (탄막 패턴)
+const THEMES = {
+  party:{label:'🎉 파티', bosses:[
+    {name:'병락', spr:'p1', color:'#d24b3b', ammo:'west',  style:'def',   intro:'양식을 던진다 🍔'},
+    {name:'지슬', spr:'p2', color:'#3aaf50', ammo:'kor',   style:'def',   intro:'한식을 던진다 🍚'},
+    {name:'준식', spr:'p3', color:'#e0a020', ammo:'ramen', style:'def',   intro:'라면을 던진다 🍜'},
+  ]},
+  drink:{label:'🍻 음주', bosses:[
+    {name:'수환', spr:'d1', color:'#4b6650', ammo:'soju',    style:'def', intro:'소주를 던진다 🍶'},
+    {name:'자현', spr:'d2', color:'#7a4a30', ammo:'scotch',  style:'def', intro:'스카치를 던진다 🥃'},
+    {name:'건호', spr:'d3', color:'#3a4456', ammo:'bourbon', style:'def', intro:'버번을 던진다 🍾'},
+  ]},
+  soccer:{label:'⚽ 축구', bosses:[
+    {name:'주형', spr:'s1', color:'#c0392b', ammo:'car',  style:'heavy', intro:'자동차를 던진다 🚗 (느리고 큼)'},
+    {name:'의중', spr:'s2', color:'#1f64e0', ammo:'ball', style:'aim',   intro:'축구공 강슛 ⚽ (조준 연사)'},
+    {name:'준혁', spr:'s3', color:'#222222', ammo:'ball', style:'ring',  intro:'축구공 회전 탄막 ⚽ (방사·나선)'},
+  ]},
+};
+const BOSS_HP=[1600,2400,3300], BOSS_DMG=[20,24,28];
+let THEME='party';   // 타이틀 메뉴에서 선택
 function spawnBoss(){
-  const isFinal = (G.bossIdx===2);   // 3번째 보스(수환) = 최종 보스
-  const b = BOSSES[G.bossIdx % BOSSES.length]; G.bossIdx++;
-  const hpScale = 1 + G.t*0.008;
+  const idx = G.bossIdx, isFinal = (idx===2);   // 3번째 보스 = 최종 보스
+  const b = THEMES[THEME].bosses[idx % 3]; G.bossIdx++;
+  const hpScale = 1 + G.t*0.008, hp = BOSS_HP[idx]*hpScale;
   const ang=rnd(0,TAU), rad=Math.max(VW,VH)*0.6+60;
   G.enemies.push({
-    type:'boss', boss:true, final:isFinal, spr:b.spr, ammo:b.ammo,
+    type:'boss', boss:true, final:isFinal, spr:b.spr, ammo:b.ammo, style:b.style,
     x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
-    r:42, hp:b.hp*hpScale, maxhp:b.hp*hpScale, speed:56, dmg:b.dmg, xp:60,
+    r:42, hp:hp, maxhp:hp, speed:56, dmg:BOSS_DMG[idx], xp:60,
     color:b.color, ranged:true, fire:1.4, hit:0, name:b.name,
   });
   G.bossAlive=true;
@@ -910,23 +909,34 @@ function update(dt){
       e.x+=dx/m*e.speed*sf*dt; e.y+=dy/m*e.speed*sf*dt;
     }
     if(e.hit>0) e.hit-=dt;
-    // 보스 패턴: 방사 탄막 → 조준 5연사 → 돌진 순환 (빙결 중 정지)
+    // 보스 패턴: 스타일별 탄막 (def/aim/ring/heavy) → 돌진 순환
     if(e.boss){
       if(e.dashT>0){ e.dashT-=dt; e.x+=dx/m*300*dt; e.y+=dy/m*300*dt; }
       e.spin=(e.spin||0)+dt*0.7;
       e.atkT=(e.atkT==null?rnd(1.0,1.8):e.atkT)-dt;
       if(!(e.frozen>0) && e.atkT<=0){
         e.pat=((e.pat==null?-1:e.pat)+1)%3;
-        if(e.pat===0){            // 방사형 탄막
-          const k=16; for(let i=0;i<k;i++){ const a=i*TAU/k+e.spin;
-            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*165,vy:Math.sin(a)*165,r:11,dmg:e.dmg,life:5,color:'#ff5a8a',big:true,emoji:bossAmmo(e)}); }
-          e.atkT=2.3; G.shake=7; sfx(110,0.22,'square',0.05);
-        } else if(e.pat===1){     // 조준 5연사 부채꼴
-          for(let i=0;i<5;i++){ const a=Math.atan2(dy,dx)+(i-2)*0.17;
-            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*240,vy:Math.sin(a)*240,r:10,dmg:e.dmg,life:4,color:'#ffb05a',big:true,emoji:bossAmmo(e)}); }
-          e.atkT=1.7; sfx(300,0.12,'square',0.04);
-        } else {                  // 돌진
-          e.dashT=0.85; e.atkT=2.6; G.shake=5; sfx(80,0.3,'sawtooth',0.05);
+        const em=bossAmmo(e), aim=Math.atan2(dy,dx);
+        const shoot=(ang,spd,r,col)=>G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,r:r,dmg:e.dmg,life:r>13?6.5:5,color:col,big:true,emoji:em});
+        if(e.pat===2){ e.dashT=0.85; e.atkT=2.6; G.shake=5; sfx(80,0.3,'sawtooth',0.05); }
+        else if(e.style==='aim'){            // 의중: 빠른 조준 연사
+          const k=e.pat===0?7:5, sp=e.pat===0?0.12:0.22;
+          for(let i=0;i<k;i++) shoot(aim+(i-(k-1)/2)*sp, 300, 10, '#ffb05a');
+          e.atkT=1.25; sfx(330,0.1,'square',0.04);
+        }
+        else if(e.style==='ring'){           // 준혁: 회전 방사·나선 탄막
+          const k=e.pat===0?20:24;
+          for(let i=0;i<k;i++) shoot(i*TAU/k + e.spin*(e.pat===1?2.2:1), 165, 11, '#ff5a8a');
+          e.atkT=2.1; G.shake=6; sfx(110,0.2,'square',0.05);
+        }
+        else if(e.style==='heavy'){          // 주형: 느리고 큰 자동차
+          if(e.pat===0){ for(let i=0;i<8;i++) shoot(i*TAU/8 + e.spin, 120, 17, '#ff7a4a'); }
+          else { for(let i=0;i<3;i++) shoot(aim+(i-1)*0.26, 150, 17, '#ff7a4a'); }
+          e.atkT=2.7; G.shake=9; sfx(70,0.32,'sawtooth',0.06);
+        }
+        else {                               // 기본: 방사 16 → 조준 5
+          if(e.pat===0){ for(let i=0;i<16;i++) shoot(i*TAU/16 + e.spin, 165, 11, '#ff5a8a'); e.atkT=2.3; G.shake=7; sfx(110,0.22,'square',0.05); }
+          else { for(let i=0;i<5;i++) shoot(aim+(i-2)*0.17, 240, 10, '#ffb05a'); e.atkT=1.7; sfx(300,0.12,'square',0.04); }
         }
       }
     } else if(e.ranged && !(e.frozen>0)){
@@ -1123,8 +1133,8 @@ function render(){
   }
   ctx.shadowBlur=0;
   if(emojiBullets){
-    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='24px sans-serif';
-    for(const eb of emojiBullets){ const [sx,sy]=worldToScreen(eb.x,eb.y); ctx.fillText(eb.emoji,sx,sy); }
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    for(const eb of emojiBullets){ const [sx,sy]=worldToScreen(eb.x,eb.y); ctx.font=Math.round(eb.r*2.1)+'px sans-serif'; ctx.fillText(eb.emoji,sx,sy); }
     ctx.textAlign='left'; ctx.textBaseline='alphabetic';
   }
   // enemies
@@ -1364,7 +1374,8 @@ function stopBgm(){ if(bgmTimer){ clearInterval(bgmTimer); bgmTimer=null; } }
 /* ===========================================================================
    FLOW
    =========================================================================== */
-function start(){
+function start(theme){
+  if(theme) THEME=theme;
   G=newGame();
   for(const k in upLevels) delete upLevels[k];
   document.getElementById('startPanel').classList.remove('show');
@@ -1431,9 +1442,11 @@ function victory(){
   document.getElementById('winPanel').classList.add('show');
   sfx(660,0.2,'square',0.06); sfx(990,0.3,'square',0.05); sfx(1320,0.45,'sawtooth',0.05);
 }
-document.getElementById('startBtn').onclick=start;
-document.getElementById('retryBtn').onclick=start;
-document.getElementById('winBtn').onclick=start;
+document.getElementById('btnParty').onclick=()=>start('party');
+document.getElementById('btnDrink').onclick=()=>start('drink');
+document.getElementById('btnSoccer').onclick=()=>start('soccer');
+document.getElementById('retryBtn').onclick=()=>start();   // 직전 테마로 재시작
+document.getElementById('winBtn').onclick=()=>{ document.getElementById('winPanel').classList.remove('show'); document.getElementById('startPanel').classList.add('show'); };
 </script>
 </body>
 </html>

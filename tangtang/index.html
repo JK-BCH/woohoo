@@ -445,19 +445,19 @@ function bossAmmo(e){ const a=AMMO_EMOJI[e.ammo]; return a ? a[rint(0,a.length-1
 // 테마 3종 — 보스 로스터만 다름 (HP/DMG 동일). style: def/aim/ring/heavy (탄막 패턴)
 const THEMES = {
   party:{label:'🎉 파티', bosses:[
-    {name:'병락', spr:'p1', color:'#d24b3b', ammo:'west',  style:'def',   intro:'양식을 던진다 🍔'},
-    {name:'지슬', spr:'p2', color:'#3aaf50', ammo:'kor',   style:'def',   intro:'한식을 던진다 🍚'},
-    {name:'준식', spr:'p3', color:'#e0a020', ammo:'ramen', style:'def',   intro:'라면을 던진다 🍜'},
+    {name:'병락', spr:'p1', color:'#d24b3b', ammo:'west',  style:'def',   intro:'맛있는 거 먹을래?'},
+    {name:'지슬', spr:'p2', color:'#3aaf50', ammo:'kor',   style:'def',   intro:'김치는 다 떨어졌어'},
+    {name:'준식', spr:'p3', color:'#e0a020', ammo:'ramen', style:'def',   intro:'라면은 오늘뿐이네'},
   ]},
   drink:{label:'🍻 음주', bosses:[
-    {name:'수환', spr:'d1', color:'#4b6650', ammo:'soju',    style:'def', intro:'소주를 던진다 🍶'},
-    {name:'자현', spr:'d2', color:'#7a4a30', ammo:'scotch',  style:'def', intro:'스카치를 던진다 🥃'},
-    {name:'건호', spr:'d3', color:'#3a4456', ammo:'bourbon', style:'def', intro:'버번을 던진다 🍾'},
+    {name:'수환', spr:'d1', color:'#4b6650', ammo:'soju',    style:'def', intro:'소주 한잔 해야지'},
+    {name:'자현', spr:'d2', color:'#7a4a30', ammo:'scotch',  style:'def', intro:'난 셰리가 좋아'},
+    {name:'건호', spr:'d3', color:'#3a4456', ammo:'bourbon', style:'def', intro:"Gordon's 스토어픽이야"},
   ]},
   soccer:{label:'⚽ 축구', bosses:[
-    {name:'주형', spr:'s1', color:'#c0392b', ammo:'car',  style:'heavy', intro:'자동차를 던진다 🚗 (느리고 큼)'},
-    {name:'의중', spr:'s2', color:'#1f64e0', ammo:'ball', style:'aim',   intro:'축구공 강슛 ⚽ (조준 연사)'},
-    {name:'준혁', spr:'s3', color:'#222222', ammo:'ball', style:'ring',  intro:'축구공 회전 탄막 ⚽ (방사·나선)'},
+    {name:'주형', spr:'s1', color:'#c0392b', ammo:'car',  style:'heavy', intro:'6시 반에 출발할게요~'},
+    {name:'의중', spr:'s2', color:'#1f64e0', ammo:'ball', style:'aim',   intro:'난 골대 맞추기 잘 못해'},
+    {name:'준혁', spr:'s3', color:'#222222', ammo:'ball', style:'ring',  intro:'축구하셔야죠'},
   ]},
 };
 const BOSS_HP=[1600,2400,3300], BOSS_DMG=[20,24,28];
@@ -474,8 +474,8 @@ function spawnBoss(){
     color:b.color, ranged:true, fire:1.4, hit:0, name:b.name,
   });
   G.bossAlive=true;
-  if(isFinal){ G.finalBoss=true; G.banner={txt:'⚠ 최종 보스: '+b.name, sub:'쓰러뜨리면 끝 — 잡몹은 더 안 나온다', life:3.6}; }
-  else G.banner={txt:'⚠ '+b.name, sub:b.intro, life:3};
+  if(isFinal) G.finalBoss=true;
+  G.banner={txt:(isFinal?'⚠ 최종 보스: ':'⚠ ')+b.name, sub:b.intro, life:isFinal?3.6:3};
   sfx(80,0.5,'sawtooth',0.07);
 }
 function spawnMok(){

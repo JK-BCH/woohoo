@@ -225,26 +225,55 @@ function buildSprites(){
     '.PP..PP.',
   ],{K:'#1c2330',S:'#e9b893',G:'#44506b',T:'#d23b3b',P:'#1a1f2b'});
 
-  // 보스 3종 (로브 입은 위원회) — 팔레트만 교체
-  const bossRows=[
-    '....KKKK....',
-    '...KKKKKK...',
-    '..KMSSSSMK..',
-    '..MSEESEEM..',
-    '..MSSSSSSM..',
-    '.MMRRRRRRMM.',
-    'MMRRRRRRRRMM',
-    'MRRRRRRRRRRM',
-    'MRRRRRRRRRRM',
-    'MRRRRRRRRRRM',
-    'MRRRRRRRRRRM',
-    '.RRR....RRR.',
-    '.RR......RR.',
-    '.RR......RR.',
-  ];
-  reg('boss1', bossRows, {K:'#3a1a4a',M:'#d9b3ef',S:'#e9b893',E:'#ff3b3b',R:'#b06cd1'});
-  reg('boss2', bossRows, {K:'#5a4410',M:'#fff0c0',S:'#e9b893',E:'#7af',R:'#e0b24a'});
-  reg('boss3', bossRows, {K:'#3a0f18',M:'#ffd0d8',S:'#e9b893',E:'#fff',R:'#ff5577'});
+  // 보스 3종 — 캐릭터 테마 (병락=셰프 / 의중=축구선수 / 수환=수염맨)
+  reg('boss1',[          // 병락: 요리사 모자 + 앞치마 (음식 투척)
+    '...HHHHHH...',
+    '..HHHHHHHH..',
+    '..SSSSSSSS..',
+    '..SKSSSSKS..',
+    '..SSSSSSSS..',
+    '..SSMMMMSS..',
+    '.BBBBBBBBBB.',
+    'BBBBAAAABBBB',
+    'BBBBAAAABBBB',
+    'BBBBBBBBBBBB',
+    'BBBBBBBBBBBB',
+    '.BB......BB.',
+    '.PP......PP.',
+    '.PP......PP.',
+  ],{H:'#f4f4f4',S:'#e9b893',K:'#222',B:'#d24b3b',A:'#f4f4f4',P:'#333',M:'#7a3b2a'});
+  reg('boss2',[          // 의중: 축구 유니폼 + 등번호 (축구공 강슛)
+    '...HHHHHH...',
+    '..HHHHHHHH..',
+    '..SSSSSSSS..',
+    '..SKSSSSKS..',
+    '..SSSSSSSS..',
+    '...SSSSSS...',
+    '.JJJJJJJJJJ.',
+    'JJJJNNNNJJJJ',
+    'JJJJNNNNJJJJ',
+    'JJJJJJJJJJJJ',
+    '.WWWWWWWWWW.',
+    '.WW......WW.',
+    '.LL......LL.',
+    '.LL......LL.',
+  ],{H:'#2b2118',S:'#e9b893',K:'#222',J:'#1f64e0',N:'#fff',W:'#eee',L:'#e9b893'});
+  reg('boss3',[          // 수환: 큰 수염맨
+    '...HHHHHH...',
+    '..HHHHHHHH..',
+    '..SSSSSSSS..',
+    '..SKSSSSKS..',
+    '..SSSSSSSS..',
+    '..DDDDDDDD..',
+    '.DDDDDDDDDD.',
+    'DDDDDDDDDDDD',
+    'DDDDDDDDDDDD',
+    '.DDDDDDDDDD.',
+    '..BBBBBBBB..',
+    '.BBBBBBBBBB.',
+    '.PP......PP.',
+    '.PP......PP.',
+  ],{H:'#241a10',S:'#e9b893',K:'#222',D:'#4a3520',B:'#4b5566',P:'#2a2f3a'});
 }
 buildSprites();
 
@@ -402,17 +431,19 @@ function spawnEnemy(){
     color:base.color, ranged:!!base.ranged, shots:base.shots||1, fire:rnd(1,2.5), hit:0,
   });
 }
+const FOODS=['🍔','🍕','🍗','🍙','🍜','🍰'];
 const BOSSES = [
-  {name:'Reviewer 2 — Final Form', spr:'boss1', color:'#b06cd1', hp:1600, dmg:20, intro:'"Major revisions. 사실상 리젝입니다."'},
-  {name:'그랜트 심사위원회',          spr:'boss2', color:'#e0b24a', hp:2400, dmg:24, intro:'"예산이 삭감되어서요…"'},
-  {name:'테뉴어 트랙 위원회',         spr:'boss3', color:'#ff5577', hp:3300, dmg:28, intro:'"임팩트가 부족합니다."'},
+  {name:'병락', spr:'boss1', color:'#d24b3b', hp:1600, dmg:20, ammo:'food', intro:'"이거 먹고 힘내!" — 음식을 던진다'},
+  {name:'의중', spr:'boss2', color:'#1f64e0', hp:2400, dmg:24, ammo:'⚽',   intro:'"슛!" — 축구공을 강슛한다'},
+  {name:'수환', spr:'boss3', color:'#4b5566', hp:3300, dmg:28, ammo:null,   intro:'"…" — 수염을 쓰다듬는다'},
 ];
+function bossAmmo(e){ return e.ammo==='food' ? FOODS[rint(0,FOODS.length-1)] : e.ammo; }
 function spawnBoss(){
   const b = BOSSES[G.bossIdx % BOSSES.length]; G.bossIdx++;
   const hpScale = 1 + G.t*0.008;
   const ang=rnd(0,TAU), rad=Math.max(VW,VH)*0.6+60;
   G.enemies.push({
-    type:'boss', boss:true, spr:b.spr,
+    type:'boss', boss:true, spr:b.spr, ammo:b.ammo,
     x:G.player.x+Math.cos(ang)*rad, y:G.player.y+Math.sin(ang)*rad,
     r:42, hp:b.hp*hpScale, maxhp:b.hp*hpScale, speed:56, dmg:b.dmg, xp:60,
     color:b.color, ranged:true, fire:1.4, hit:0, name:b.name,
@@ -823,11 +854,11 @@ function update(dt){
         e.pat=((e.pat==null?-1:e.pat)+1)%3;
         if(e.pat===0){            // 방사형 탄막
           const k=16; for(let i=0;i<k;i++){ const a=i*TAU/k+e.spin;
-            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*165,vy:Math.sin(a)*165,r:9,dmg:e.dmg,life:5,color:'#ff5a8a',big:true}); }
+            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*165,vy:Math.sin(a)*165,r:11,dmg:e.dmg,life:5,color:'#ff5a8a',big:true,emoji:bossAmmo(e)}); }
           e.atkT=2.3; G.shake=7; sfx(110,0.22,'square',0.05);
         } else if(e.pat===1){     // 조준 5연사 부채꼴
           for(let i=0;i<5;i++){ const a=Math.atan2(dy,dx)+(i-2)*0.17;
-            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*240,vy:Math.sin(a)*240,r:8,dmg:e.dmg,life:4,color:'#ffb05a',big:true}); }
+            G.enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*240,vy:Math.sin(a)*240,r:10,dmg:e.dmg,life:4,color:'#ffb05a',big:true,emoji:bossAmmo(e)}); }
           e.atkT=1.7; sfx(300,0.12,'square',0.04);
         } else {                  // 돌진
           e.dashT=0.85; e.atkT=2.6; G.shake=5; sfx(80,0.3,'sawtooth',0.05);
@@ -1004,14 +1035,21 @@ function render(){
     }
     ctx.shadowBlur=0; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
   }
-  // enemy bullets (글로우 + 흰 코어 → 어두운 배경에서도 잘 보이게)
+  // enemy bullets (글로우 + 흰 코어, 보스는 테마 투척물 이모지)
   ctx.shadowColor='#ff7a7a'; ctx.shadowBlur=9;
+  let emojiBullets=null;
   for(const eb of G.enemyBullets){
+    if(eb.emoji){ (emojiBullets||(emojiBullets=[])).push(eb); continue; }
     const [sx,sy]=worldToScreen(eb.x,eb.y);
     ctx.fillStyle=eb.color; ctx.beginPath(); ctx.arc(sx,sy,eb.r,0,TAU); ctx.fill();
     ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.beginPath(); ctx.arc(sx,sy,eb.r*0.42,0,TAU); ctx.fill();
   }
   ctx.shadowBlur=0;
+  if(emojiBullets){
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='24px sans-serif';
+    for(const eb of emojiBullets){ const [sx,sy]=worldToScreen(eb.x,eb.y); ctx.fillText(eb.emoji,sx,sy); }
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  }
   // enemies
   for(const e of G.enemies){
     const [sx,sy]=worldToScreen(e.x,e.y);

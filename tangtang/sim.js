@@ -79,7 +79,7 @@ function crit(G,dmg){return Math.random()<G.st.crit?dmg*G.st.critMul:dmg;}
 function hurtEnemy(G,e,dmg){e.hp-=dmg;if(e.boss)G.bossMinFrac=Math.min(G.bossMinFrac,Math.max(0,e.hp)/e.maxhp);if(e.hp<=0&&!e.dead)killEnemy(G,e);}
 function killEnemy(G,e){
   e.dead=true;G.kills++;if(e.boss){G.bossKills++;G.bossAlive=false;}
-  const n=e.boss?12:(e.mid?5:1),gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false});
+  const n=e.boss?12:(e.mid?5:1),gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false,life:rnd(28,42)});
 }
 function explode(G,x,y,radius,dmg){for(const e of G.enemies){if(!e.dead&&d2(x,y,e.x,e.y)<radius*radius)hurtEnemy(G,e,crit(G,dmg));}}
 
@@ -289,8 +289,8 @@ function step(G,dt){
   }
   G.enemies=G.enemies.filter(e=>!e.dead);
 
-  // 젬 수집 (자석 범위 내 자동)
-  for(const g of G.gems){if(d2(g.x,g.y,p.x,p.y)<p.pickup*p.pickup){g.got=true;gainXP(G,g.v);}}
+  // 젬 수집 (자석 범위 내 자동) + 수명 만료 소멸
+  for(const g of G.gems){g.life-=dt;if(d2(g.x,g.y,p.x,p.y)<p.pickup*p.pickup){g.got=true;gainXP(G,g.v);}else if(g.life<=0){g.got=true;}}
   G.gems=G.gems.filter(g=>!g.got);
 
   if(p.hp<=0)G.dead=true;

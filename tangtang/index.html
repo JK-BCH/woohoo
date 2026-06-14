@@ -596,7 +596,7 @@ function killEnemy(e){
   const n = e.boss?12 : (e.mid?5:1);
   const gv = e.boss?15 : e.xp;
   for(let i=0;i<n;i++){
-    G.gems.push({x:e.x+rnd(-e.r,e.r), y:e.y+rnd(-e.r,e.r), v:gv, vx:0,vy:0});
+    G.gems.push({x:e.x+rnd(-e.r,e.r), y:e.y+rnd(-e.r,e.r), v:gv, vx:0,vy:0, life:rnd(28,42)});
   }
   // 가끔 마그넷 아이템 드랍 (잡몹만, ~0.6%) — 주우면 화면의 경험치를 일괄 흡수
   if(!e.boss && Math.random()<0.006){
@@ -935,14 +935,17 @@ function update(dt){
   }
   G.enemies=G.enemies.filter(e=>!e.dead);
 
-  // gems
+  // gems (수명 28~42초; 마지막 8초엔 플레이어로 천천히 끌려오다 그래도 못 닿으면 소멸 → 무한 적재 방지)
   for(const g of G.gems){
-    const d2=dist2(g.x,g.y,p.x,p.y);
-    if(g.suck || d2 < p.pickup*p.pickup){
-      const d=Math.sqrt(d2)||1, pull=g.suck?900:Math.min(420, 60+ (p.pickup-d)*6);
+    g.life-=dt;
+    const d2=dist2(g.x,g.y,p.x,p.y), dying=g.life<8;
+    if(g.suck || d2 < p.pickup*p.pickup || dying){
+      const d=Math.sqrt(d2)||1;
+      const pull = g.suck?900 : (d2<p.pickup*p.pickup ? Math.min(420,60+(p.pickup-d)*6) : 130);
       g.x+=(p.x-g.x)/d*pull*dt; g.y+=(p.y-g.y)/d*pull*dt;
     }
     if(d2 < (p.r+8)*(p.r+8)){ g.got=true; gainXP(g.v); }
+    else if(g.life<=0){ g.got=true; }   // 수명 만료 → 제거(거의 끌려와 수집됨)
   }
   G.gems=G.gems.filter(g=>!g.got);
 
@@ -1061,9 +1064,11 @@ function render(){
     }
   }
 
-  // gems
+  // gems (화면 밖은 스킵, 소멸 임박 시 깜빡임)
   for(const g of G.gems){
     const [sx,sy]=worldToScreen(g.x,g.y);
+    if(sx<-12||sx>VW+12||sy<-12||sy>VH+12) continue;
+    if(g.life<8 && Math.floor(g.life*6)%2===0) continue;
     ctx.fillStyle='#48d1ff';
     ctx.beginPath(); ctx.moveTo(sx,sy-5); ctx.lineTo(sx+4,sy); ctx.lineTo(sx,sy+5); ctx.lineTo(sx-4,sy); ctx.fill();
   }

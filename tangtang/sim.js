@@ -12,12 +12,12 @@ const TAU=Math.PI*2;
 const d2=(ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
 
 const ENEMY_TYPES={
-  pipet:   {r:13, hp:28,  speed:60,  dmg:11, xp:2},
-  email:   {r:9,  hp:13,  speed:100, dmg:7,  xp:2},
-  deadline:{r:11, hp:22,  speed:105, dmg:11, xp:2},
-  reviewer:{r:20, hp:100, speed:42,  dmg:18, xp:4},
-  reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, ranged:true, shots:2},
-  pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, ranged:true, shots:2},
+  pipet:   {r:13, hp:28,  speed:60,  dmg:10, xp:2},
+  email:   {r:9,  hp:13,  speed:100, dmg:6,  xp:2},
+  deadline:{r:11, hp:22,  speed:105, dmg:10, xp:2},
+  reviewer:{r:20, hp:100, speed:42,  dmg:16, xp:4},
+  reject:  {r:14, hp:32,  speed:48,  dmg:9,  xp:3, ranged:true, shots:2},
+  pi:      {r:16, hp:60,  speed:54,  dmg:13, xp:4, ranged:true, shots:2},
   sangmok: {r:30, hp:620, speed:46, dmg:20, xp:10, dasher:true, mid:true},
   jungmok: {r:24, hp:440, speed:54, dmg:16, xp:8,  dasher:true, mid:true},
   hamok:   {r:18, hp:300, speed:62, dmg:13, xp:6,  dasher:true, mid:true},

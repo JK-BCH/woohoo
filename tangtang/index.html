@@ -698,7 +698,7 @@ function update(dt){
       G.particles.push({nova:true,x:p.x,y:p.y,r:10,maxr:radius,life:0.35,color:'#6cf'});
       for(const e of G.enemies){
         if(dist2(p.x,p.y,e.x,e.y) < radius*radius){
-          const r=critRoll(20*G.stat.dmg*G.stat.extraWeapons.nova*aw('nova'));
+          const r=critRoll(60*G.stat.dmg*G.stat.extraWeapons.nova*aw('nova'));
           damageEnemy(e,r.d,r.crit,'nova');
           if(G.stat.evo.keynote) e.slow=2;
         }
@@ -739,7 +739,7 @@ function update(dt){
       G.beamTimer=2.5;
       const lv=G.stat.extraWeapons.beam, tgt=nearestEnemy(p.x,p.y);
       const ang=tgt?Math.atan2(tgt.y-p.y,tgt.x-p.x):Math.atan2(p.facing.y,p.facing.x);
-      const len=1100, width=(26+10*lv)*G.stat.area, dmgBeam=44*G.stat.dmg*lv*aw('beam');
+      const len=1100, width=(26+10*lv)*G.stat.area, dmgBeam=44*G.stat.dmg*lv*aw('beam')*(lv>=3?2:1);
       const fireBeam=(an)=>{
         const dx=Math.cos(an),dy=Math.sin(an);
         for(const e of G.enemies){
@@ -840,7 +840,7 @@ function update(dt){
     G.particles.push({x:ms.x,y:ms.y,vx:rnd(-20,20),vy:rnd(-20,20),life:0.3,color:'#ffae6c'});
     for(const e of G.enemies){
       if(e.dead) continue;
-      if(dist2(ms.x,ms.y,e.x,e.y)<(e.r+8)*(e.r+8)){ explode(ms.x,ms.y,72*G.stat.area,ms.dmg,'missile'); ms.life=0; break; }
+      if(dist2(ms.x,ms.y,e.x,e.y)<(e.r+8)*(e.r+8)){ explode(ms.x,ms.y,(72+(G.stat.awaken.missile?120:0))*G.stat.area,ms.dmg,'missile'); ms.life=0; break; }
     }
   }
   G.missiles=G.missiles.filter(m=>m.life>0);
@@ -939,13 +939,13 @@ function update(dt){
     }
     // orbit shield damage (반경↑, 각성 시 더 큼)
     if(orbitN>0){
-      const ORB=ORBR(), hb=18*aw('orbit');
+      const ORB=ORBR(), hb=18, oMul=Math.pow(2,Math.min(orbitN-1,6)); // 레벨당 ×2 (3렙≈×4), 상한 ×64
       for(let i=0;i<orbitN;i++){
         const a=G.orbitAngle+i*TAU/orbitN;
         const ox=p.x+Math.cos(a)*ORB, oy=p.y+Math.sin(a)*ORB;
         if(dist2(ox,oy,e.x,e.y)<(e.r+hb)*(e.r+hb)){
           if(!e._orbCd||e._orbCd<=0){
-            const r=critRoll(18*G.stat.dmg*aw('orbit')); damageEnemy(e,r.d,r.crit,'orbit'); e._orbCd=0.28;
+            const r=critRoll(18*G.stat.dmg*aw('orbit')*oMul); damageEnemy(e,r.d,r.crit,'orbit'); e._orbCd=0.28;
           }
         }
       }
@@ -1377,14 +1377,14 @@ function gameOver(){
     switch(k){
       case 'gun': return {nm:'📄 평타 (논문 투고)', evo:S.evo.preprint?'프리프린트 폭격':(S.evo.coauthor?'대형 컨소시엄':(S.evo.meta?'체계적 리뷰':(S.evo.nature?'Nature 표지':''))),
         sub:`타격 ~${Math.round(13*S.dmg)} ×${S.projCount}발 · 공격 Lv${lv('dmg')} · 연사 Lv${lv('fire')} · 관통 ${1+S.pierce} · 치명 ${critPct}%(×${S.critMul})`};
-      case 'nova': return {nm:'🎤 학회 발표', lvl:lv('nova'), evo:(S.evo.keynote?'기조 강연':'')+awk('nova'), sub:`폭발 ~${Math.round(20*S.dmg*mx1(lv('nova'))*A('nova'))} · 3초마다`};
-      case 'orbit': return {nm:'👥 공동연구자', lvl:lv('orbit'), evo:(S.evo.lab?'대형 연구실':'')+awk('orbit'), sub:`접촉 ~${Math.round(18*S.dmg*A('orbit'))}/회 · 위성 ${S.extraWeapons.orbit}개`};
+      case 'nova': return {nm:'🎤 학회 발표', lvl:lv('nova'), evo:(S.evo.keynote?'기조 강연':'')+awk('nova'), sub:`폭발 ~${Math.round(60*S.dmg*mx1(lv('nova'))*A('nova'))} · 3초마다`};
+      case 'orbit': return {nm:'👥 공동연구자', lvl:lv('orbit'), evo:(S.evo.lab?'대형 연구실':'')+awk('orbit'), sub:`접촉 ~${Math.round(18*S.dmg*A('orbit')*Math.pow(2,Math.min(mx1(lv('orbit'))-1,6)))}/회 · 위성 ${S.extraWeapons.orbit}개`};
       case 'chain': return {nm:'⚡ 인용 연쇄', lvl:lv('chain'), evo:(S.evo.surge?'동료 인용 폭주':'')+awk('chain'), sub:`연쇄 ~${Math.round(34*S.dmg*(1+0.4*mx1(lv('chain')))*A('chain'))} ×${4+mx1(lv('chain'))}타`};
-      case 'beam': return {nm:'🔆 논문 레이저', lvl:lv('beam'), evo:(S.evo.carpet?'리뷰 융단 레이저':'')+awk('beam'), sub:`빔 ~${Math.round(44*S.dmg*mx1(lv('beam'))*A('beam'))} · 관통`};
+      case 'beam': return {nm:'🔆 논문 레이저', lvl:lv('beam'), evo:(S.evo.carpet?'리뷰 융단 레이저':'')+awk('beam'), sub:`빔 ~${Math.round(44*S.dmg*mx1(lv('beam'))*A('beam')*(lv('beam')>=3?2:1))} · 관통`};
       case 'hole': return {nm:'🕳️ 데드라인 블랙홀', lvl:lv('hole'), evo:''+awk('hole'), sub:`흡입 ~${Math.round(11*S.dmg*mx1(lv('hole'))*A('hole'))}/0.2초`};
       case 'flame': return {nm:'🔥 분젠 화염방사', lvl:lv('flame'), evo:(S.evo.inferno?'초전도 인페르노':'')+awk('fire'), sub:`화염 ~${Math.round(9*S.dmg*mx1(lv('flame'))*A('fire'))} + 화상 ${Math.round((S.evo.inferno?9:5)*S.dmg*A('fire'))}/0.4초`};
       case 'freeze': return {nm:'❄️ 액체질소 빙결', lvl:lv('freeze'), evo:''+awk('freeze'), sub:`피해 ~${Math.round(8*S.dmg*mx1(lv('freeze'))*A('freeze'))} + 광역 동결`};
-      case 'missile': return {nm:'🚀 예산 유도탄', lvl:lv('missile'), evo:(S.evo.swarm?'대량 살포':'')+awk('missile'), sub:`폭발 ~${Math.round(34*S.dmg*A('missile'))} ×${(S.evo.swarm?2:1)+mx1(lv('missile'))+(S.awaken.missile?2:0)}발`};
+      case 'missile': return {nm:'🚀 예산 유도탄', lvl:lv('missile'), evo:(S.evo.swarm?'대량 살포':'')+awk('missile'), sub:`폭발 ~${Math.round(34*S.dmg*A('missile'))} ×${(S.evo.swarm?2:1)+mx1(lv('missile'))+(S.awaken.missile?2:0)}발${S.awaken.missile?' · 광역':''}`};
     }
     return {nm:k};
   };

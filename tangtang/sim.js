@@ -207,7 +207,7 @@ function step(G,dt){
   // nova
   if(G.st.extra.nova>0){G.novaTimer-=dt;if(G.novaTimer<=0){G.novaTimer=3.0;
     const radius=120*G.st.area*(1+0.25*(G.st.extra.nova-1));
-    for(const e of G.enemies){if(d2(p.x,p.y,e.x,e.y)<radius*radius){hurtEnemy(G,e,crit(G,20*G.st.dmg*G.st.extra.nova*aw(G,'nova')));if(G.st.evo.keynote)e.slow=2;}}}}
+    for(const e of G.enemies){if(d2(p.x,p.y,e.x,e.y)<radius*radius){hurtEnemy(G,e,crit(G,60*G.st.dmg*G.st.extra.nova*aw(G,'nova')));if(G.st.evo.keynote)e.slow=2;}}}}
   if(G.st.extra.orbit>0)G.orbitAngle+=dt*3.6;
   // ⚡ 인용 연쇄
   if(G.st.extra.chain>0){G.chainTimer-=dt;if(G.chainTimer<=0){G.chainTimer=1.5;
@@ -218,7 +218,7 @@ function step(G,dt){
   // 🔆 논문 레이저
   if(G.st.extra.beam>0){G.beamTimer-=dt;if(G.beamTimer<=0){G.beamTimer=2.5;
     const lv=G.st.extra.beam,tgt=nearest(G,p.x,p.y);
-    const ang=tgt?Math.atan2(tgt.y-p.y,tgt.x-p.x):0,len=1100,width=(26+10*lv)*G.st.area,dmgB=44*G.st.dmg*lv*aw(G,'beam');
+    const ang=tgt?Math.atan2(tgt.y-p.y,tgt.x-p.x):0,len=1100,width=(26+10*lv)*G.st.area,dmgB=44*G.st.dmg*lv*aw(G,'beam')*(lv>=3?2:1);
     const fb=(an)=>{const dx=Math.cos(an),dy=Math.sin(an);for(const e of G.enemies){if(e.dead)continue;const rx=e.x-p.x,ry=e.y-p.y,pr=rx*dx+ry*dy;if(pr<0||pr>len)continue;const bx=p.x+dx*pr,by=p.y+dy*pr,rr=width/2+e.r;if(d2(bx,by,e.x,e.y)<rr*rr)hurtEnemy(G,e,crit(G,dmgB));}};
     fb(ang);if(G.st.evo.carpet){fb(ang+Math.PI);fb(ang+Math.PI/2);fb(ang-Math.PI/2);}}}
   // 🕳️ 블랙홀
@@ -286,7 +286,7 @@ function step(G,dt){
     if(e.dasher){if(e.dashT>0){e.dashT-=dt;e.x+=dx/m*340*dt;e.y+=dy/m*340*dt;}else{e.dashCd=(e.dashCd==null?rnd(1.4,2.8):e.dashCd)-dt;if(e.dashCd<=0&&!(e.frozen>0)){e.dashT=0.45;e.dashCd=rnd(2.2,3.4);}}}
     if(m<e.r+p.r&&p.iframe<=0){p.hp-=e.dmg;p.iframe=0.5;}
     if(oN>0){const ORB=ORBR(G),hb=18*aw(G,'orbit');for(let i=0;i<oN;i++){const a=G.orbitAngle+i*TAU/oN;const ox=p.x+Math.cos(a)*ORB,oy=p.y+Math.sin(a)*ORB;
-      if(d2(ox,oy,e.x,e.y)<(e.r+hb)*(e.r+hb)){if(!e._oc||e._oc<=0){hurtEnemy(G,e,crit(G,18*G.st.dmg*aw(G,'orbit')));e._oc=0.28;}}}}
+      if(d2(ox,oy,e.x,e.y)<(e.r+hb)*(e.r+hb)){if(!e._oc||e._oc<=0){hurtEnemy(G,e,crit(G,18*G.st.dmg*aw(G,'orbit')*Math.pow(2,Math.min(oN-1,6))));e._oc=0.28;}}}}
     if(e._oc>0)e._oc-=dt;
   }
   G.enemies=G.enemies.filter(e=>!e.dead);

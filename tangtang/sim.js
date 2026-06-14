@@ -22,9 +22,8 @@ const ENEMY_TYPES={
   jungmok: {r:24, hp:440, speed:54, dmg:16, xp:8,  dasher:true, mid:true},
   hamok:   {r:18, hp:300, speed:62, dmg:13, xp:6,  dasher:true, mid:true},
 };
-const EVENT_SEQ=["mok","boss","mok","boss","mok","boss"];
 const BOSSES=[
-  {hp:1600,dmg:20},{hp:2400,dmg:24},{hp:3300,dmg:28},
+  {hp:2000,dmg:20},{hp:3400,dmg:24},{hp:6600,dmg:28},
 ];
 const UP_MAX={dmg:12,fire:10,proj:8,pierce:7,speed:8,hp:8,regen:7,crit:8,area:7,magnet:5,orbit:7,nova:7,chain:8,beam:7,hole:6,flame:8,freeze:6,missile:7};
 // 실전형 우선순위 (낮을수록 먼저). 생존 위급 시 regen/hp 가중.
@@ -40,7 +39,7 @@ function makeGame(){
     enemies:[],bullets:[],ebullets:[],gems:[],
     spawnTimer:0,fireTimer:0,novaTimer:0,orbitAngle:0,chainTimer:0,beamTimer:0,holeTimer:0,holes:[],
     flameTimer:0,freezeTimer:0,missileTimer:0,missiles:[],
-    bossAlive:false,bossIdx:0,finalBoss:false,won:false,mokAlive:0,eventTimer:75,eventIdx:0,
+    bossAlive:false,bossIdx:0,finalBoss:false,won:false,bossTimer:90,mokTimer:55,mokAlive:0,
     up:{},
     dead:false,
     bossMinFrac:1,
@@ -83,8 +82,8 @@ function hurtEnemy(G,e,dmg){e.hp-=dmg;if(e.boss)G.bossMinFrac=Math.min(G.bossMin
 function killEnemy(G,e){
   e.dead=true;G.kills++;
   const n=e.boss?12:(e.mid?5:1),gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false,life:rnd(28,42)});
-  if(e.boss){G.bossKills++;G.bossAlive=false;G.eventTimer=90;for(const g of G.gems){if(!g.got){g.got=true;gainXP(G,g.v);}}}  // 보스 처치 → 자동 자석
-  if(e.mid){G.mokAlive--;if(G.mokAlive<=0)G.eventTimer=90;}
+  if(e.boss){G.bossKills++;G.bossAlive=false;G.bossTimer=90;for(const g of G.gems){if(!g.got){g.got=true;gainXP(G,g.v);}}}  // 보스 처치 → 자동 자석
+  if(e.mid){G.mokAlive--;}
   if(e.final)G.won=true;
 }
 function explode(G,x,y,radius,dmg){for(const e of G.enemies){if(!e.dead&&d2(x,y,e.x,e.y)<radius*radius)hurtEnemy(G,e,crit(G,dmg));}}
@@ -199,15 +198,15 @@ function step(G,dt){
   if(p.regen>0&&p.hp<p.maxhp)p.hp=Math.min(p.maxhp,p.hp+p.regen*dt);
   if(p.iframe>0)p.iframe-=dt;
 
-  // 스폰
-  const eventActive=G.bossAlive||G.mokAlive>0;
-  if(!G.finalBoss&&!eventActive){
+  // 스폰: 보스=이벤트(보스전 중 잡몹 정지), 첫 보스 90초·사망 기점 90초 뒤
+  if(!G.finalBoss&&!G.bossAlive){
     G.spawnTimer-=dt;
     const rate=Math.max(0.28,1.2-G.t*0.0025), batch=2+Math.floor(G.t/55);
     if(G.spawnTimer<=0&&G.enemies.length<200){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
-    G.eventTimer-=dt;
-    if(G.eventTimer<=0&&G.eventIdx<EVENT_SEQ.length){const ev=EVENT_SEQ[G.eventIdx];G.eventIdx++;if(ev==='mok')spawnMok(G);else spawnBoss(G);}
+    G.bossTimer-=dt; if(G.bossTimer<=0)spawnBoss(G);
   }
+  // 三目: 시간 독립
+  if(!G.finalBoss){G.mokTimer-=dt; if(G.mokTimer<=0&&G.mokAlive<=0){spawnMok(G);G.mokTimer=110;}}
 
   // 발사
   G.fireTimer-=dt;if(G.fireTimer<=0){G.fireTimer=0.36/G.st.fireRate;if(G.enemies.length)fire(G);}

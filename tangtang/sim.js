@@ -18,6 +18,9 @@ const ENEMY_TYPES={
   reviewer:{r:20, hp:100, speed:42,  dmg:18, xp:4},
   reject:  {r:14, hp:32,  speed:48,  dmg:10, xp:3, ranged:true, shots:2},
   pi:      {r:16, hp:60,  speed:54,  dmg:14, xp:4, ranged:true, shots:2},
+  sangmok: {r:30, hp:620, speed:46, dmg:20, xp:10, dasher:true, mid:true},
+  jungmok: {r:24, hp:440, speed:54, dmg:16, xp:8,  dasher:true, mid:true},
+  hamok:   {r:18, hp:300, speed:62, dmg:13, xp:6,  dasher:true, mid:true},
 };
 const BOSSES=[
   {hp:1600,dmg:20},{hp:2400,dmg:24},{hp:3300,dmg:28},
@@ -36,7 +39,7 @@ function makeGame(){
     enemies:[],bullets:[],ebullets:[],gems:[],
     spawnTimer:0,fireTimer:0,novaTimer:0,orbitAngle:0,chainTimer:0,beamTimer:0,holeTimer:0,holes:[],
     flameTimer:0,freezeTimer:0,missileTimer:0,missiles:[],
-    bossTimer:120,bossAlive:false,bossIdx:0,
+    bossTimer:120,bossAlive:false,bossIdx:0,midTimer:75,
     up:{},
     dead:false,
     bossMinFrac:1,
@@ -66,12 +69,17 @@ function spawnBoss(G){
     r:42,hp:b.hp*hpS,maxhp:b.hp*hpS,speed:56,dmg:b.dmg,xp:40,ranged:true,fire:1.4,slow:0});
   G.bossAlive=true;
 }
+function spawnMok(G){
+  const hpS=1+G.t*0.012+Math.max(0,G.t-180)*0.02, base=rnd(0,TAU);
+  ['sangmok','jungmok','hamok'].forEach((k,i)=>{const md=ENEMY_TYPES[k],a=base+i*2.1,rad=Math.max(VW,VH)*0.6+50;
+    G.enemies.push({type:k,mid:true,dasher:true,x:G.p.x+Math.cos(a)*rad,y:G.p.y+Math.sin(a)*rad,r:md.r,hp:md.hp*hpS,maxhp:md.hp*hpS,speed:md.speed,dmg:md.dmg,xp:md.xp,slow:0});});
+}
 
 function crit(G,dmg){return Math.random()<G.st.crit?dmg*G.st.critMul:dmg;}
 function hurtEnemy(G,e,dmg){e.hp-=dmg;if(e.boss)G.bossMinFrac=Math.min(G.bossMinFrac,Math.max(0,e.hp)/e.maxhp);if(e.hp<=0&&!e.dead)killEnemy(G,e);}
 function killEnemy(G,e){
   e.dead=true;G.kills++;if(e.boss){G.bossKills++;G.bossAlive=false;}
-  const n=e.boss?12:1,gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false});
+  const n=e.boss?12:(e.mid?5:1),gv=e.boss?15:e.xp;for(let i=0;i<n;i++)G.gems.push({x:e.x,y:e.y,v:gv,got:false});
 }
 function explode(G,x,y,radius,dmg){for(const e of G.enemies){if(!e.dead&&d2(x,y,e.x,e.y)<radius*radius)hurtEnemy(G,e,crit(G,dmg));}}
 
@@ -190,6 +198,7 @@ function step(G,dt){
   if(G.bossAlive){ rate*=1.9; batch=Math.max(1,batch-1); } // 보스전엔 잡몹 억제
   if(G.spawnTimer<=0&&G.enemies.length<300){G.spawnTimer=rate;for(let i=0;i<batch;i++)spawnEnemy(G);}
   G.bossTimer-=dt;if(G.bossTimer<=0&&!G.bossAlive){spawnBoss(G);G.bossTimer=90;}
+  G.midTimer-=dt;if(G.midTimer<=0){spawnMok(G);G.midTimer=165;}
 
   // 발사
   G.fireTimer-=dt;if(G.fireTimer<=0){G.fireTimer=0.36/G.st.fireRate;if(G.enemies.length)fire(G);}
@@ -272,6 +281,7 @@ function step(G,dt){
         else{e.dashT=0.85;e.atkT=2.6;}
       }
     } else if(e.ranged&&!(e.frozen>0)){e.fire-=dt;if(e.fire<=0&&m<540){e.fire=3.0;const base=Math.atan2(dy,dx),n=e.shots||1,bd=Math.round(e.dmg*0.6);for(let i=0;i<n;i++){const a=base+(i-(n-1)/2)*0.17;G.ebullets.push({x:e.x,y:e.y,vx:Math.cos(a)*160,vy:Math.sin(a)*160,r:8,dmg:bd,life:2.6});}}}
+    if(e.dasher){if(e.dashT>0){e.dashT-=dt;e.x+=dx/m*340*dt;e.y+=dy/m*340*dt;}else{e.dashCd=(e.dashCd==null?rnd(1.4,2.8):e.dashCd)-dt;if(e.dashCd<=0&&!(e.frozen>0)){e.dashT=0.45;e.dashCd=rnd(2.2,3.4);}}}
     if(m<e.r+p.r&&p.iframe<=0){p.hp-=e.dmg;p.iframe=0.5;}
     if(oN>0){for(let i=0;i<oN;i++){const a=G.orbitAngle+i*TAU/oN;const ox=p.x+Math.cos(a)*60,oy=p.y+Math.sin(a)*60;
       if(d2(ox,oy,e.x,e.y)<(e.r+12)*(e.r+12)){if(!e._oc||e._oc<=0){hurtEnemy(G,e,crit(G,12*G.st.dmg));e._oc=0.3;}}}}

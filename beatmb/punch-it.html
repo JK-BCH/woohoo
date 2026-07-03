@@ -98,6 +98,7 @@
   <button id="start-btn">▶ 시작하기</button>
 </div>
 
+<script src="opponent-name.js"></script>
 <script>
 "use strict";
 /* =========================================================
@@ -260,8 +261,13 @@ const WEAPONS = [
 ];
 
 /* ---------------- 게임 상태 ---------------- */
+// 기본 상대 이름: opponent-name.js(git 전용 설정 파일)에서 읽고, 없으면 폴백
+const DEFAULT_OPP_NAME =
+  (typeof window.OPP_DEFAULT_NAME === "string" && window.OPP_DEFAULT_NAME.trim())
+    ? window.OPP_DEFAULT_NAME.trim().slice(0, 10)
+    : "김전술 감독";
 const S = {
-  started:false, name:"김전술 감독", score:0, combo:0, comboTimer:0, maxCombo:0,
+  started:false, name:DEFAULT_OPP_NAME, score:0, combo:0, comboTimer:0, maxCombo:0,
   gauge:0, weapon:WEAPONS[0],
   hitstop:0, slowmo:0, shakeMag:0, shakeX:0, shakeY:0, flash:0, critFlash:0,
   punch:0, cine:0, tintA:0, tintCol:"255,80,40",
@@ -1315,6 +1321,7 @@ canvas.addEventListener("touchstart", (e) => { e.preventDefault(); pointerHit(e)
 /* ---------------- 시작 ---------------- */
 const intro = document.getElementById("intro");
 const nameInput = document.getElementById("pname");
+nameInput.placeholder = "상대 이름 짓기 (예: " + DEFAULT_OPP_NAME + ")";
 function startGame() {
   ensureAudio();
   const n = nameInput.value.trim();
